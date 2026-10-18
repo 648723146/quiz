@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>题库练习</title>
+<style>
+:root{
+  --bg:#eef2f7; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+  --line:#e2e8f0; --soft:#f8fafc; --soft2:#f1f5f9;
+  --blue:#2563eb; --green:#10b981; --red:#ef4444;
+  --tagbg:#e0e7ff; --tagfg:#4338ca;
+  --navbg:rgba(255,255,255,.94);
+  --shadow:0 2px 12px rgba(15,23,42,.07);
+}
+body.theme-dark{
+  --bg:#0b1220; --card:#141d2f; --text:#e5e7eb; --muted:#94a3b8;
+  --line:#26334a; --soft:#1a2740; --soft2:#16213a;
+  --blue:#3b82f6; --green:#34d399; --red:#f87171;
+  --tagbg:#26335a; --tagfg:#a5b4fc;
+  --navbg:rgba(20,29,47,.94);
+  --shadow:0 2px 12px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:var(--bg); color:var(--text);
+  -webkit-tap-highlight-color:transparent;
+  transition:background .2s,color .2s;
+}
+body.font-s{font-size:14px;}
+body.font-m{font-size:16px;}
+body.font-l{font-size:18px;}
+
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 120px;}
+
+.header-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.header-top h1{font-size:1.15em;margin:0;letter-spacing:.3px;}
+.bank-name{font-size:.75em;color:var(--muted);}
+.bank-row{display:flex;gap:8px;margin-top:10px;align-items:center;}
+.bank-row select{
+  flex:1;min-width:0;padding:10px 12px;border-radius:11px;border:1.5px solid var(--line);
+  background:var(--card);color:var(--text);font-size:.9em;font-family:inherit;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;
+}
+.bank-row button{
+  flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:11px;
+  padding:9px 12px;font-size:1em;font-family:inherit;cursor:pointer;color:var(--text);line-height:1;
+}
+.bank-row button:hover{background:var(--soft);}
+.bank-row button:disabled{opacity:.5;cursor:default;}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+.seg{display:inline-flex;background:var(--card);border-radius:12px;padding:3px;box-shadow:var(--shadow);}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:9px;font-size:.86em;color:var(--muted);cursor:pointer;font-weight:500;transition:.15s;font-family:inherit;}
+.seg button.active{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.35);}
+
+.searchrow{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;}
+.searchrow input[type=text]{
+  flex:1 1 160px;min-width:120px;padding:10px 12px;border-radius:11px;
+  border:1.5px solid var(--line);background:var(--card);color:var(--text);
+  font-size:.88em;font-family:inherit;
+}
+.searchrow input[type=text]:focus{outline:none;border-color:#93c5fd;}
+.searchrow select{
+  flex:0 0 auto;max-width:130px;padding:10px 28px 10px 10px;border-radius:11px;
+  border:1.5px solid var(--line);background:var(--card);color:var(--text);
+  font-size:.85em;font-family:inherit;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 9px center;
+}
+.searchrow button{
+  flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--text);
+  border-radius:11px;padding:9px 11px;font-size:.9em;font-family:inherit;cursor:pointer;line-height:1;
+}
+.searchrow button:hover{background:var(--soft);}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
+.stat{background:var(--card);border-radius:12px;padding:10px 6px;text-align:center;box-shadow:var(--shadow);}
+.stat .num{display:block;font-size:1.15em;font-weight:700;color:var(--blue);}
+.stat .lbl{display:block;font-size:.7em;color:var(--muted);margin-top:2px;}
+
+.progress{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden;}
+.progress .bar{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:99px;transition:width .25s;}
+
+.card{background:var(--card);border-radius:16px;padding:18px 16px;margin-top:14px;box-shadow:var(--shadow);}
+.qmeta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.tag{font-size:.68em;padding:3px 9px;border-radius:99px;font-weight:600;background:var(--tagbg);color:var(--tagfg);}
+.tag.judge{background:rgba(16,185,129,.16);color:#047857;}
+.tag.know{background:var(--soft2);color:var(--muted);font-weight:500;}
+.tag.miss{background:rgba(239,68,68,.14);color:#b91c1c;}
+.tag.ok{background:rgba(16,185,129,.16);color:#047857;}
+.tag.due{background:rgba(245,158,11,.16);color:#b45309;}
+.qno{margin-left:auto;font-size:.75em;color:var(--muted);}
+.star-btn{border:0;background:transparent;font-size:1.2em;line-height:1;cursor:pointer;color:#f59e0b;padding:0 2px;}
+.qtext{font-size:1.06em;line-height:1.65;font-weight:500;margin-bottom:16px;}
+
+.hint{font-size:.78em;color:#b45309;background:rgba(245,158,11,.13);border-radius:8px;padding:8px 11px;margin:0 0 14px;line-height:1.55;}
+
+.opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:.96em;line-height:1.5;color:var(--text);cursor:pointer;font-family:inherit;transition:.15s;}
+.opt:last-child{margin-bottom:0;}
+.opt:hover:not(.locked){border-color:#93c5fd;background:var(--soft2);}
+.opt .key{flex:0 0 24px;height:24px;border-radius:50%;background:var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:.78em;font-weight:700;margin-top:1px;}
+.opt.correct{border-color:var(--green);background:rgba(16,185,129,.1);}
+.opt.correct .key{background:var(--green);color:#fff;}
+.opt.wrong{border-color:var(--red);background:rgba(239,68,68,.1);}
+.opt.wrong .key{background:var(--red);color:#fff;}
+.opt.dim{opacity:.55;}
+.opt.locked{cursor:default;}
+
+.fb{margin-top:14px;padding:10px 14px;border-radius:10px;font-size:.95em;font-weight:600;}
+.fb.ok{background:rgba(16,185,129,.12);color:#047857;}
+.fb.no{background:rgba(239,68,68,.12);color:#b91c1c;}
+.ex{margin-top:10px;padding:10px 14px;background:var(--soft2);border-radius:10px;font-size:.86em;line-height:1.7;color:var(--text);}
+
+.retry-btn{width:100%;margin-top:12px;padding:11px;border-radius:11px;border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
+body.theme-dark .retry-btn{color:#a5b4fc;border-color:#3730a3;}
+.retry-btn:hover{background:rgba(99,102,241,.18);}
+
+.ai-zone{margin-top:14px;}
+.ai-btn{width:100%;padding:12px;border-radius:11px;border:1.5px dashed #a5b4fc;background:rgba(99,102,241,.1);color:#4338ca;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
+body.theme-dark .ai-btn{color:#a5b4fc;border-color:#3730a3;}
+.ai-btn:hover:not(:disabled){background:rgba(99,102,241,.2);}
+.ai-btn:disabled{opacity:.65;cursor:default;}
+.ai-out{margin-top:10px;padding:13px 15px;background:var(--soft2);border-left:3px solid #6366f1;border-radius:8px;font-size:.9em;line-height:1.8;white-space:pre-wrap;word-break:break-word;color:var(--text);}
+.ai-out:empty{display:none;margin:0;padding:0;border:0;}
+.ai-out.err{background:rgba(239,68,68,.1);border-left-color:var(--red);color:#b91c1c;}
+.ai-foot{display:flex;justify-content:flex-end;margin-top:6px;}
+.ai-foot button{border:0;background:transparent;color:var(--muted);font-size:.75em;font-family:inherit;cursor:pointer;padding:4px 6px;}
+.ai-foot button:hover{color:var(--red);}
+
+.empty{text-align:center;padding:44px 10px;}
+.empty .big{font-size:2.6em;}
+.empty h2{font-size:1.05em;margin:10px 0 6px;}
+.empty p{font-size:.85em;color:var(--muted);margin:0 0 16px;line-height:1.7;}
+.empty .acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.empty .acts button{border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:11px;padding:11px 20px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;}
+.empty .acts button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:var(--navbg);backdrop-filter:blur(10px);border-top:1px solid var(--line);}
+.nav button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px 8px;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
+.nav button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+.nav button:disabled{opacity:.4;cursor:not-allowed;}
+
+dialog{border:0;border-radius:16px;padding:0;width:min(92vw,560px);max-height:88vh;box-shadow:0 20px 60px rgba(15,23,42,.28);color:var(--text);font-family:inherit;background:var(--card);}
+dialog::backdrop{background:rgba(15,23,42,.45);}
+.dlg-body{padding:20px 20px 16px;overflow-y:auto;max-height:88vh;}
+.dlg-body h3{font-size:1.05em;margin:0 0 4px;}
+.dlg-body p.sub{font-size:.78em;color:var(--muted);margin:0 0 14px;line-height:1.6;}
+.dlg-body label{display:block;font-size:.78em;color:var(--muted);margin:14px 0 6px;font-weight:600;}
+.dlg-body input[type=password],.dlg-body input[type=text],.dlg-body select,.dlg-body textarea{
+  width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;
+  font-size:.92em;font-family:inherit;background:var(--soft);color:var(--text);
+}
+.dlg-body textarea{min-height:170px;resize:vertical;line-height:1.6;font-size:.85em;}
+.dlg-body input:focus,.dlg-body select:focus,.dlg-body textarea:focus{outline:none;border-color:#93c5fd;background:var(--card);}
+.dlg-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap;}
+.dlg-actions button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:11px 20px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text);}
+.dlg-actions button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+.dlg-actions button.danger{background:var(--red);border-color:var(--red);color:#fff;}
+.dlg-actions button:hover:not(.primary):not(.danger){background:var(--soft);}
+.format-box{margin-top:12px;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:240px;overflow:auto;}
+.format-box pre{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.72em;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--muted);}
+.copy-format-btn{margin-top:10px;width:100%;padding:11px;border-radius:10px;border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;font-size:.88em;font-weight:600;font-family:inherit;cursor:pointer;}
+body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
+.copy-format-btn:hover{background:rgba(99,102,241,.2);}
+.save-msg{font-size:.8em;color:var(--green);font-weight:600;margin-left:8px;}
+.tip{font-size:.76em;color:var(--muted);line-height:1.7;margin:14px 0 0;}
+.divider{border:0;border-top:1px solid var(--line);margin:18px 0 0;}
+
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.modal.show{display:flex;}
+.modal-box{background:var(--card);border-radius:16px;padding:20px;width:min(92vw,420px);box-shadow:0 20px 60px rgba(15,23,42,.28);}
+.modal-box h3{font-size:1.05em;margin:0 0 14px;}
+.modal-box input{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.92em;font-family:inherit;background:var(--soft);color:var(--text);}
+.modal-box input:focus{outline:none;border-color:#93c5fd;background:var(--card);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
+.modal-actions button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 18px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text);}
+.modal-actions button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+@media (min-width: 860px) {
+  .wrap{max-width:1100px;padding:20px 24px 120px;}
+  .card{padding:24px 28px;}
+  .opt{padding:15px 18px;gap:14px;}
+  .opt .key{flex-basis:28px;height:28px;width:28px;}
+  .seg button{padding:10px 22px;}
+  .stat{padding:14px 10px;}
+}
+</style>
+</head>
+<body class="theme-light font-m">
+
+<div class="wrap">
+  <header>
+    <div class="header-top">
+      <h1>题库练习</h1>
+      <span class="bank-name" id="bankNameDisplay"></span>
+    </div>
+    <div class="bank-row">
+      <select id="bankSelect" title="选择题库"></select>
+      <button id="newBankBtn" title="新建题库">＋</button>
+      <button id="importBtn" title="导入题库 / 分享码">📥</button>
+      <button id="shareBtn" title="导出 / 分享码">📤</button>
+      <button id="syncBtn" title="同步">☁️</button>
+      <button id="settingsBtn" title="设置">⚙️</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="seg" id="typeSeg">
+      <button data-t="all">全部</button>
+      <button data-t="choice">单选</button>
+      <button data-t="judge">判断</button>
+    </div>
+    <div class="seg" id="modeSeg">
+      <button data-m="seq">顺序</button>
+      <button data-m="rand">随机</button>
+      <button data-m="wrong">错题</button>
+      <button data-m="star">收藏</button>
+    </div>
+  </div>
+
+  <div class="searchrow">
+    <input type="text" id="searchInput" placeholder="搜题（题干 / 选项 / 解析）" autocomplete="off">
+    <select id="tagSelect" title="按标签筛选"></select>
+    <button id="fontBtn" title="字号">A</button>
+    <button id="themeBtn" title="夜间模式">🌙</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span class="num" id="stAnswered">0</span><span class="lbl">已答</span></div>
+    <div class="stat"><span class="num" id="stRate">--</span><span class="lbl">正确率</span></div>
+    <div class="stat"><span class="num" id="stWrong">0</span><span class="lbl">错题</span></div>
+    <div class="stat"><span class="num" id="stProgress">0/0</span><span class="lbl">本组进度</span></div>
+  </div>
+
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <main id="card"></main>
+</div>
+
+<nav class="nav">
+  <button id="prevBtn">← 上一题</button>
+  <button id="nextBtn" class="primary">下一题 →</button>
+</nav>
+
+<dialog id="importDlg">
+  <div class="dlg-body">
+    <h3>导入</h3>
+    <p class="sub">可以粘贴「题库文本」，也可以粘贴别人发来的「分享码」（QZ1: 开头）。</p>
+    <label for="importText">粘贴内容</label>
+    <textarea id="importText" placeholder="题库文本，或 QZ1: 开头的分享码…"></textarea>
+    <button class="copy-format-btn" id="copyFormatBtn">📋 复制格式说明（可直接发给 AI 生成题库）</button>
+    <div class="format-box"><pre id="formatSpec"></pre></div>
+    <div class="dlg-actions">
+      <button id="importCancel">取消</button>
+      <button id="importConfirm" class="primary">导入</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="shareDlg">
+  <div class="dlg-body">
+    <h3>分享 / 导出</h3>
+    <p class="sub">分享码包含题目、选项、答案、解析和标签，不含你的答题记录。</p>
+    <label>分享码（发给别人，对方点 📥 粘贴即可）</label>
+    <textarea id="shareCode" readonly style="min-height:120px;"></textarea>
+    <button class="copy-format-btn" id="copyShareBtn">📋 复制分享码</button>
+
+    <hr class="divider">
+    <label>题库文本（可编辑后重新导入）</label>
+    <textarea id="shareText" readonly></textarea>
+    <button class="copy-format-btn" id="copyTextBtn">📋 复制题库文本</button>
+
+    <div class="dlg-actions">
+      <button id="shareClose">关闭</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="settingsDlg">
+  <div class="dlg-body">
+    <h3>设置</h3>
+    <p class="sub">API Key 和 GitHub Token 只保存在这台设备的浏览器里，不会上传。分享页面给别人时，对方需自己填。</p>
+
+    <label for="aiKey">DeepSeek API Key</label>
+    <input type="password" id="aiKey" placeholder="sk-... 从 platform.deepseek.com 创建" autocomplete="off" spellcheck="false">
+
+    <label for="aiModel">模型</label>
+    <select id="aiModel">
+      <option value="deepseek-chat">deepseek-chat（速度快，推荐）</option>
+      <option value="deepseek-reasoner">deepseek-reasoner（会推理，稍慢）</option>
+    </select>
+
+    <div class="dlg-actions">
+      <button id="aiSave" class="primary">保存 Key</button>
+      <span class="save-msg" id="aiSaveMsg"></span>
+    </div>
+
+    <hr class="divider">
+    <label style="margin-top:18px;">GitHub 同步（Gist）</label>
+    <p class="sub" style="margin:0 0 10px;">填写后会自动拉取并合并多台设备的答题记录、复习进度、收藏和 AI 解析。题库本身的更新仍走分享码。</p>
+
+    <label for="gistId">Gist ID</label>
+    <input type="text" id="gistId" placeholder="例如 a1b2c3d4e5f6..." autocomplete="off" spellcheck="false">
+
+    <label for="ghToken">Classic Token</label>
+    <input type="password" id="ghToken" placeholder="ghp_... 只勾选 gist 权限" autocomplete="off" spellcheck="false">
+
+    <div class="dlg-actions" style="justify-content:flex-start;">
+      <button id="ghSave" class="primary">保存</button>
+      <button id="ghSyncNow">立即同步</button>
+      <span class="save-msg" id="ghSaveMsg"></span>
+    </div>
+    <p class="tip" id="ghStatus"></p>
+
+    <hr class="divider">
+
+    <label>数据备份</label>
+    <div class="dlg-actions" style="justify-content:flex-start;margin-top:8px;">
+      <button id="backupBtn">备份全部数据</button>
+      <button id="restoreBtn">恢复备份</button>
+    </div>
+    <input type="file" id="restoreFile" accept=".json,application/json" hidden>
+    <p class="tip">备份文件包含题库、答题记录、错题进度和 AI 解析。若已配置 GitHub 同步，一般不需要再用本地备份。</p>
+
+    <hr class="divider">
+
+    <label>当前题库</label>
+    <div class="dlg-actions" style="justify-content:flex-start;margin-top:8px;">
+      <button id="renameBankBtn">重命名</button>
+      <button id="clearRecordsBtn">清空答题记录</button>
+      <button id="deleteBankBtn" class="danger">删除题库</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="modal" id="nameModal">
+  <div class="modal-box">
+    <h3 id="nameModalTitle">新建题库</h3>
+    <input type="text" id="nameModalInput" placeholder="输入题库名称">
+    <div class="modal-actions">
+      <button id="nameModalCancel">取消</button>
+      <button id="nameModalOk" class="primary">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAY = 86400000;
+const STATE_KEY = 'quiz-v5-state';
+const AI_KEY = 'quiz-v5-ai';
+const GH_KEY = 'quiz-v5-github';
+const SHARE_PREFIX = 'QZ1:';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function uid(){ return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function reviewInterval(n){ if(n <= 1) return DAY; if(n === 2) return 3*DAY; return 7*DAY; }
+function fmtLeft(ms){ if(ms <= 0) return '现在'; const h = Math.ceil(ms/3600000); return h < 24 ? h + ' 小时后' : Math.ceil(ms/86400000) + ' 天后'; }
+function copyText(text, okMsg){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>{ if(okMsg) alert(okMsg); })
+      .catch(()=>{ alert('复制失败，请长按文本框手动复制。'); });
+  }else{ alert('当前浏览器不支持自动复制，请长按文本框手动复制。'); }
+}
+
+let state = {
+  banks: {},
+  currentBankId: null,
+  ui: { filterType:'all', mode:'seq', theme:'light', font:'m', search:'', tag:'all' }
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STATE_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d && typeof d === 'object'){
+      state.banks = d.banks || {};
+      state.currentBankId = d.currentBankId || null;
+      state.ui = Object.assign(state.ui, d.ui || {});
+    }
+  }catch(e){ console.warn(e); }
+}
+function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); } }
+
+function getAICfg(){ try{ const d = JSON.parse(localStorage.getItem(AI_KEY)||'{}'); return { key:d.key||'', model:d.model||'deepseek-chat' }; } catch(e){ return { key:'', model:'deepseek-chat' }; } }
+function setAICfg(cfg){ try{ localStorage.setItem(AI_KEY, JSON.stringify(cfg)); }catch(e){} }
+
+function getGHCfg(){ try{ const d = JSON.parse(localStorage.getItem(GH_KEY)||'{}'); return { gistId:d.gistId||'', token:d.token||'', lastSyncAt:d.lastSyncAt||0 }; } catch(e){ return { gistId:'', token:'', lastSyncAt:0 }; } }
+function setGHCfg(cfg){ try{ localStorage.setItem(GH_KEY, JSON.stringify(cfg)); }catch(e){} }
+function touchLastSync(){ const c = getGHCfg(); c.lastSyncAt = Date.now(); setGHCfg(c); }
+
+function getBank(){ return state.currentBankId ? state.banks[state.currentBankId] : null; }
+
+function makeBank(name, questions){
+  return {
+    id: uid(),
+    name: name || '未命名题库',
+    createdAt: Date.now(),
+    questions: (questions||[]).map((q,i)=>({
+      id: 'q' + i,
+      type: q.type === 'judge' ? 'judge' : 'choice',
+      q: q.q,
+      options: q.options,
+      answer: q.answer,
+      explain: q.explain || '',
+      tag: q.tag || ''
+    })),
+    records: {}, ai: {}, stars: []
+  };
+}
+
+let list = [], idx = 0, qMap = {};
+
+function buildList(resetIdx){
+  const bank = getBank();
+  if(!bank){ list = []; idx = 0; qMap = {}; return; }
+  qMap = {};
+  bank.questions.forEach(q => { qMap[q.id] = q; });
+
+  const ui = state.ui;
+  let pool = bank.questions.slice();
+  if(ui.filterType !== 'all') pool = pool.filter(q => q.type === ui.filterType);
+  if(ui.tag && ui.tag !== 'all') pool = pool.filter(q => (q.tag||'') === ui.tag);
+
+  const kw = (ui.search||'').trim().toLowerCase();
+  if(kw){
+    pool = pool.filter(q =>
+      q.q.toLowerCase().includes(kw) ||
+      (q.options||[]).some(o => String(o).toLowerCase().includes(kw)) ||
+      (q.explain||'').toLowerCase().includes(kw)
+    );
+  }
+
+  if(ui.mode === 'wrong'){
+    const recs = bank.records;
+    const now = Date.now();
+    pool = pool.filter(q => {
+      const r = recs[q.id];
+      return r && r.wrongCount > 0 && (r.streak||0) < 3;
+    });
+    pool.sort((a,b)=>{
+      const na = (recs[a.id]||{}).nextReviewAt || 0;
+      const nb = (recs[b.id]||{}).nextReviewAt || 0;
+      const da = na <= now ? 0 : 1, db = nb <= now ? 0 : 1;
+      if(da !== db) return da - db;
+      return na - nb;
+    });
+  }else if(ui.mode === 'star'){
+    const set = new Set(bank.stars || []);
+    pool = pool.filter(q => set.has(q.id));
+  }else if(ui.mode === 'rand'){
+    pool = shuffle(pool);
+  }
+
+  list = pool.map(q => q.id);
+  if(resetIdx) idx = 0;
+  if(idx >= list.length) idx = Math.max(0, list.length - 1);
+  if(idx < 0) idx = 0;
+}
+
+function getQuestion(){ return qMap[list[idx]] || null; }
+function isLocked(q){
+  const bank = getBank(); if(!bank) return false;
+  const r = bank.records[q.id];
+  if(!r) return false;
+  return (r.nextReviewAt || 0) > Date.now();
+}
+
+let aiCtrl = null;
+function abortAI(){ if(aiCtrl){ try{ aiCtrl.abort(); }catch(e){} aiCtrl = null; } }
+
+function renderAll(){
+  abortAI();
+  renderBankSelect();
+  renderTagSelect();
+  renderStats();
+  renderCard();
+  $('prevBtn').disabled = idx <= 0;
+  $('nextBtn').disabled = idx >= list.length - 1;
+}
+
+function renderBankSelect(){
+  const sel = $('bankSelect');
+  const ids = Object.keys(state.banks);
+  sel.innerHTML = ids.length
+    ? ids.map(id => `<option value="${id}">${esc(state.banks[id].name)}（${state.banks[id].questions.length}）</option>`).join('')
+    : '<option value="">（无题库）</option>';
+  const bank = getBank();
+  if(bank) sel.value = bank.id;
+  $('bankNameDisplay').textContent = bank
+    ? '共 ' + bank.questions.length + ' 题 · 收藏 ' + (bank.stars||[]).length
+    : '';
+}
+
+function renderTagSelect(){
+  const sel = $('tagSelect');
+  const bank = getBank();
+  const tags = [];
+  if(bank){
+    const seen = new Set();
+    bank.questions.forEach(q => {
+      const t = (q.tag||'').trim();
+      if(t && !seen.has(t)){ seen.add(t); tags.push(t); }
+    });
+  }
+  let html = '<option value="all">全部标签</option>';
+  tags.sort().forEach(t => { html += `<option value="${esc(t)}">${esc(t)}</option>`; });
+  sel.innerHTML = html;
+  sel.value = tags.includes(state.ui.tag) ? state.ui.tag : 'all';
+  if(!tags.includes(state.ui.tag)) state.ui.tag = 'all';
+}
+
+function renderStats(){
+  const bank = getBank();
+  if(!bank){
+    $('stAnswered').textContent='0'; $('stRate').textContent='--';
+    $('stWrong').textContent='0'; $('stProgress').textContent='0/0';
+    $('bar').style.width='0%'; return;
+  }
+  const recs = bank.records;
+  const answeredIds = Object.keys(recs).filter(id => recs[id] && recs[id].lastChoice != null);
+  const total = answeredIds.length;
+  const ok = answeredIds.filter(id => recs[id].correct).length;
+  const wrongCount = bank.questions.filter(q => {
+    const r = recs[q.id];
+    return r && r.wrongCount > 0 && (r.streak||0) < 3;
+  }).length;
+  $('stAnswered').textContent = total;
+  $('stRate').textContent = total ? Math.round(ok/total*100) + '%' : '--';
+  $('stWrong').textContent = wrongCount;
+  const done = list.filter(id => recs[id] && recs[id].lastChoice != null).length;
+  $('stProgress').textContent = done + '/' + list.length;
+  $('bar').style.width = list.length ? (done/list.length*100) + '%' : '0%';
+}
+
+function renderCard(){
+  const card = $('card');
+  const bank = getBank();
+  const q = getQuestion();
+
+  if(!bank){
+    card.innerHTML = `<div class="card empty">
+      <div class="big">📚</div>
+      <h2>还没有题库</h2>
+      <p>导入一个题库开始练习，或先新建一个空题库再导入题目。</p>
+      <div class="acts">
+        <button class="primary" data-act="open-import">📥 导入题库</button>
+        <button data-act="new-bank">＋ 新建空题库</button>
+      </div>
+    </div>`;
+    return;
+  }
+  if(!q){
+    const m = state.ui.mode;
+    card.innerHTML = `<div class="card empty">
+      <div class="big">${m==='wrong'?'🎉':(m==='star'?'☆':'📭')}</div>
+      <h2>${m==='wrong'?'没有待复习的错题':(m==='star'?'还没有收藏的题':'当前筛选没有题目')}</h2>
+      <p>${m==='wrong'?'答错的题会按 1 天 → 3 天 → 7 天 的间隔出现，答对 3 次才算攻克。':'换个模式或清空搜索试试。'}</p>
+    </div>`;
+    return;
+  }
+
+  const rec = bank.records[q.id];
+  const locked = isLocked(q);
+  const starred = (bank.stars||[]).includes(q.id);
+  const due = rec && rec.wrongCount > 0 && (rec.streak||0) < 3;
+  const cachedAI = bank.ai[q.id];
+
+  let tags = `<span class="tag ${q.type==='judge'?'judge':''}">${q.type==='judge'?'判断题':'单选题'}</span>`;
+  if(q.tag) tags += `<span class="tag know">${esc(q.tag)}</span>`;
+  if(due && locked) tags += `<span class="tag due">待复习</span>`;
+  else if(due) tags += `<span class="tag miss">错 ${rec.wrongCount} 次</span>`;
+  if(rec && rec.wrongCount > 0 && (rec.streak||0) >= 3) tags += `<span class="tag ok">已攻克</span>`;
+
+  let optsHtml = '';
+  q.options.forEach((opt,i)=>{
+    let cls = 'opt';
+    if(locked){
+      cls += ' locked';
+      if(i === q.answer) cls += ' correct';
+      else if(i === rec.lastChoice) cls += ' wrong';
+      else cls += ' dim';
+    }
+    const key = q.type === 'judge' ? (i===0?'✓':'✗') : 'ABCD'[i];
+    optsHtml += `<button class="${cls}" data-i="${i}">
+      <span class="key">${key}</span>
+      <span class="txt">${esc(opt)}</span>
+    </button>`;
+  });
+
+  let body = '';
+  if(locked){
+    if(rec.correct){
+      body += `<div class="fb ok">✓ 回答正确</div>`;
+    }else{
+      const ansText = q.type === 'judge' ? esc(q.options[q.answer])
+        : `${'ABCD'[q.answer]}. ${esc(q.options[q.answer])}`;
+      body += `<div class="fb no">✗ 回答错误，正确答案：<b>${ansText}</b></div>`;
+    }
+    const myChoice = q.type === 'judge' ? esc(q.options[rec.lastChoice])
+      : `${'ABCD'[rec.lastChoice]}. ${esc(q.options[rec.lastChoice])}`;
+    const meta = [];
+    meta.push('本次选：' + myChoice);
+    if(rec.wrongCount > 0) meta.push('累计错 ' + rec.wrongCount + ' 次');
+    if((rec.streak||0) > 0) meta.push('连续对 ' + rec.streak + ' 次');
+    if((rec.nextReviewAt||0) > Date.now()) meta.push('下次复习：' + fmtLeft(rec.nextReviewAt - Date.now()));
+    body += `<div class="ex">${meta.join('；')}。</div>`;
+    if(q.explain) body += `<div class="ex"><b>解析：</b>${esc(q.explain)}</div>`;
+    body += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
+    body += `<div class="ai-zone">
+      <button class="ai-btn" data-act="ai">${cachedAI ? '🔄 重新解析这道题' : '✨ AI 解析这道题'}</button>
+      <div class="ai-out" id="aiOut">${cachedAI ? esc(cachedAI) : ''}</div>
+      ${cachedAI ? '<div class="ai-foot"><button data-act="ai-clear">清除本题 AI 解析</button></div>' : ''}
+    </div>`;
+  }else{
+    if(rec && rec.lastChoice != null){
+      body += `<div class="hint">到了复习时间，重新作答一次。上次选的是：${
+        q.type === 'judge' ? esc(q.options[rec.lastChoice])
+          : `${'ABCD'[rec.lastChoice]}. ${esc(q.options[rec.lastChoice])}`
+      }</div>`;
+    }
+  }
+
+  card.innerHTML = `<div class="card">
+    <div class="qmeta">
+      ${tags}
+      <button class="star-btn" data-act="star" title="收藏">${starred?'★':'☆'}</button>
+      <span class="qno">${idx+1} / ${list.length}</span>
+    </div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="options">${optsHtml}</div>
+    <div class="feedback">${body}</div>
+  </div>`;
+}
+
+function answerWith(q, chosen){
+  const bank = getBank(); if(!bank) return;
+  if(isLocked(q)) return;
+  const correct = chosen === q.answer;
+  const now = Date.now();
+  let r = bank.records[q.id];
+  if(!r) r = { lastChoice:null, correct:null, wrongCount:0, streak:0, lastAt:0, nextReviewAt:0 };
+  r.lastChoice = chosen;
+  r.correct = correct;
+  r.lastAt = now;
+  if(correct){
+    r.streak = (r.streak || 0) + 1;
+    if(r.wrongCount > 0 && r.streak >= 3) r.nextReviewAt = now + 30 * DAY;
+    else r.nextReviewAt = now + reviewInterval(Math.max(r.streak, 1));
+  }else{
+    r.wrongCount = (r.wrongCount || 0) + 1;
+    r.streak = 0;
+    r.nextReviewAt = now + reviewInterval(r.wrongCount);
+  }
+  bank.records[q.id] = r;
+  saveState();
+  renderStats();
+  renderCard();
+  $('prevBtn').disabled = idx <= 0;
+  $('nextBtn').disabled = idx >= list.length - 1;
+}
+
+function toggleStar(){
+  const bank = getBank(); const q = getQuestion();
+  if(!bank || !q) return;
+  bank.stars = bank.stars || [];
+  const i = bank.stars.indexOf(q.id);
+  if(i >= 0) bank.stars.splice(i,1); else bank.stars.push(q.id);
+  saveState();
+  renderBankSelect();
+  if(state.ui.mode === 'star') buildList(false);
+  renderCard();
+}
+
+function buildPrompt(q, rec){
+  const typeText = q.type === 'choice' ? '单选题' : '判断题';
+  const optText = q.options.map((o,i)=>`${'ABCD'[i]}. ${o}`).join('\n');
+  const ansText = q.type === 'choice' ? `${'ABCD'[q.answer]}. ${q.options[q.answer]}` : q.options[q.answer];
+  const chosenText = q.type === 'choice' ? `${'ABCD'[rec.lastChoice]}. ${q.options[rec.lastChoice]}` : q.options[rec.lastChoice];
+  return `请讲解下面这道${typeText}题，对象是正在备考的一线操作工。
+
+【题干】
+${q.q}
+
+【选项】
+${optText}
+
+【正确答案】
+${ansText}
+
+【学员选择】
+${chosenText}（${rec.correct ? '答对了' : '答错了'}）
+
+请严格按下面格式输出，不要 Markdown、不要加粗符号、不要分点符号，总字数在 100 字以内，分行：
+
+正确答案：xxx
+
+为什么对：用一两句话说明依据。
+
+错在哪：学员所选错在哪里；若学员答对，就写一个最容易混淆的点。
+
+记住：一句话口诀或关键结论。`;
+}
+
+async function runAI(){
+  const q = getQuestion(); const bank = getBank();
+  if(!q || !bank) return;
+  const rec = bank.records[q.id];
+  if(!rec || rec.lastChoice == null) return;
+  const btn = document.querySelector('.ai-btn');
+  const out = document.getElementById('aiOut');
+  if(!btn || !out) return;
+  const cfg = getAICfg();
+  if(!cfg.key){
+    out.textContent = '还没有填写 API Key。请点右上角 ⚙️ 设置，填入 DeepSeek 的 API Key 并保存。';
+    out.classList.add('err');
+    return;
+  }
+  abortAI();
+  aiCtrl = new AbortController();
+  const ctrl = aiCtrl;
+  btn.disabled = true;
+  btn.textContent = '解析中，请稍候…';
+  out.textContent = '';
+  out.classList.remove('err');
+  let full = ''; let gotContent = false;
+  try{
+    const res = await fetch('https://api.deepseek.com/chat/completions', {
+      method:'POST', signal: ctrl.signal,
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + cfg.key },
+      body: JSON.stringify({
+        model: cfg.model, stream: true, temperature: 0.3, max_tokens: 500,
+        messages:[
+          { role:'system', content:'你是化工装置的资深工艺工程师和内部培训讲师，长期给一线操作工做题库讲解。讲解必须符合化工生产实际，术语准确，不编造标准号和未经证实的数据；不确定时明确说明。输出必须简短，总字数在100字以内。' },
+          { role:'user', content: buildPrompt(q, rec) }
+        ]
+      })
+    });
+    if(!res.ok){
+      let detail = '';
+      try{ const j = await res.json(); detail = j.error && j.error.message ? '：' + j.error.message : ''; }catch(e){}
+      throw new Error('请求失败（HTTP ' + res.status + '）' + detail);
+    }
+    const reader = res.body.getReader();
+    const dec = new TextDecoder('utf-8');
+    let buf = '';
+    while(true){
+      const { done, value } = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, { stream:true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for(const line of lines){
+        const t = line.trim();
+        if(!t.startsWith('data:')) continue;
+        const data = t.slice(5).trim();
+        if(data === '[DONE]') continue;
+        try{
+          const j = JSON.parse(data);
+          const d = j.choices && j.choices[0] && j.choices[0].delta;
+          if(d && d.content){ gotContent = true; full += d.content; out.textContent = full; }
+          else if(d && d.reasoning_content && !gotContent){ out.textContent = '模型正在推理…'; }
+        }catch(e){}
+      }
+      if(ctrl.signal.aborted) break;
+    }
+    if(!full.trim()) throw new Error('模型没有返回内容，请稍后重试。');
+    bank.ai[q.id] = full;
+    saveState();
+    out.textContent = full;
+    btn.textContent = '🔄 重新解析这道题';
+    const zone = btn.parentElement;
+    if(zone && !zone.querySelector('[data-act="ai-clear"]')){
+      const foot = document.createElement('div');
+      foot.className = 'ai-foot';
+      foot.innerHTML = '<button data-act="ai-clear">清除本题 AI 解析</button>';
+      zone.appendChild(foot);
+    }
+  }catch(err){
+    if(err.name === 'AbortError') return;
+    let msg = err.message || '未知错误';
+    if(err.name === 'TypeError'){ msg = '网络请求失败：可能是网络中断，或当前页面来源不被允许跨域访问。建议把 html 文件保存到本地，用浏览器直接打开再试。'; }
+    out.textContent = '解析失败：' + msg;
+    out.classList.add('err');
+    btn.textContent = '✨ 重试 AI 解析';
+  }finally{
+    if(aiCtrl === ctrl) aiCtrl = null;
+    if(btn) btn.disabled = false;
+  }
+}
+
+function collectSyncData(){
+  const banks = {};
+  Object.keys(state.banks).forEach(bid => {
+    const b = state.banks[bid];
+    banks[bid] = {
+      name: b.name,
+      createdAt: b.createdAt,
+      questions: b.questions,
+      records: b.records || {},
+      ai: b.ai || {},
+      stars: b.stars || []
+    };
+  });
+  return { v:5, savedAt: Date.now(), currentBankId: state.currentBankId, banks };
+}
+
+function mergeRemote(remote){
+  if(!remote || !remote.banks || typeof remote.banks !== 'object') return { mergedRecords:0, addedBanks:0 };
+  let mergedRecords = 0, addedBanks = 0;
+
+  Object.keys(remote.banks).forEach(bid => {
+    const r = remote.banks[bid];
+    if(!r) return;
+    const local = state.banks[bid];
+
+    if(!local){
+      if(Array.isArray(r.questions) && r.questions.length){
+        state.banks[bid] = {
+          id: bid,
+          name: r.name || '同步题库',
+          createdAt: r.createdAt || Date.now(),
+          questions: r.questions,
+          records: r.records || {},
+          ai: r.ai || {},
+          stars: r.stars || []
+        };
+        addedBanks++;
+      }
+      return;
+    }
+
+    if(r.records && typeof r.records === 'object'){
+      Object.keys(r.records).forEach(qid => {
+        const rr = r.records[qid];
+        if(!rr) return;
+        const lr = local.records[qid];
+        if(!lr || (rr.lastAt||0) > (lr.lastAt||0)){
+          local.records[qid] = rr;
+          mergedRecords++;
+        }
+      });
+    }
+
+    if(Array.isArray(r.stars)){
+      local.stars = local.stars || [];
+      const set = new Set(local.stars);
+      r.stars.forEach(x => set.add(x));
+      local.stars = Array.from(set);
+    }
+
+    if(r.ai && typeof r.ai === 'object'){
+      Object.keys(r.ai).forEach(qid => {
+        if(!local.ai[qid] && r.ai[qid]) local.ai[qid] = r.ai[qid];
+      });
+    }
+  });
+
+  return { mergedRecords, addedBanks };
+}
+
+async function pullRemote(){
+  const cfg = getGHCfg();
+  if(!cfg.gistId || !cfg.token) throw new Error('未配置 GitHub 同步');
+  const res = await fetch('https://api.github.com/gists/' + encodeURIComponent(cfg.gistId), {
+    headers: { 'Authorization': 'Bearer ' + cfg.token, 'Accept': 'application/vnd.github+json' }
+  });
+  if(res.status === 401) throw new Error('Token 无效或已过期');
+  if(res.status === 404) throw new Error('Gist 不存在或无权访问（请确认 Gist ID 和 Token 是否对应）');
+  if(!res.ok) throw new Error('拉取失败 HTTP ' + res.status);
+
+  const data = await res.json();
+  const files = data.files || {};
+  let file = files['quiz-sync.json'] || Object.values(files)[0];
+  if(!file) return null;
+
+  let content = file.content;
+  if(file.truncated && file.raw_url){
+    const raw = await fetch(file.raw_url);
+    content = await raw.text();
+  }
+  if(!content || !content.trim()) return null;
+  try{ return JSON.parse(content); }catch(e){ return null; }
+}
+
+async function pushRemote(){
+  const cfg = getGHCfg();
+  if(!cfg.gistId || !cfg.token) throw new Error('未配置 GitHub 同步');
+  const data = collectSyncData();
+  const body = { files: { 'quiz-sync.json': { content: JSON.stringify(data) } } };
+  const res = await fetch('https://api.github.com/gists/' + encodeURIComponent(cfg.gistId), {
+    method: 'PATCH',
+    headers: {
+      'Authorization': 'Bearer ' + cfg.token,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if(res.status === 401) throw new Error('Token 无效或已过期');
+  if(res.status === 404) throw new Error('Gist 不存在或无权访问');
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error('推送失败 HTTP ' + res.status + '：' + t.slice(0, 120));
+  }
+  return true;
+}
+
+let syncing = false;
+async function syncNow(showAlert){
+  if(syncing) return;
+  const cfg = getGHCfg();
+  if(!cfg.gistId || !cfg.token){
+    if(showAlert){
+      alert('还没有配置 GitHub 同步。请点右上角 ⚙️ 设置，填写 Gist ID 和 Classic Token。');
+      $('settingsDlg').showModal();
+    }
+    return;
+  }
+
+  syncing = true;
+  const btn = $('syncBtn');
+  if(btn){ btn.disabled = true; btn.textContent = '☁️…'; }
+
+  try{
+    const remote = await pullRemote();
+    const stat = mergeRemote(remote);
+    await pushRemote();
+    touchLastSync();
+    saveState();
+    buildList(false);
+    renderAll();
+    if(btn){ btn.textContent = '☁️✓'; }
+    setTimeout(()=>{ if(btn) btn.textContent = '☁️'; }, 1800);
+    if(showAlert){
+      const parts = [];
+      if(stat.mergedRecords) parts.push('合并 ' + stat.mergedRecords + ' 条记录');
+      if(stat.addedBanks) parts.push('同步 ' + stat.addedBanks + ' 个题库');
+      alert('同步完成' + (parts.length ? '：' + parts.join('，') : '（无变化）'));
+    }
+    renderGHStatus();
+  }catch(err){
+    console.error('同步失败', err);
+    if(btn){ btn.textContent = '☁️✗'; setTimeout(()=>{ if(btn) btn.textContent = '☁️'; }, 1800); }
+    if(showAlert) alert('同步失败：' + (err.message || '未知错误'));
+    renderGHStatus(err.message);
+  }finally{
+    syncing = false;
+    if(btn) btn.disabled = false;
+  }
+}
+
+function renderGHStatus(errMsg){
+  const el = $('ghStatus');
+  if(!el) return;
+  const cfg = getGHCfg();
+  if(!cfg.gistId || !cfg.token){
+    el.textContent = '尚未配置 GitHub 同步。';
+    return;
+  }
+  if(errMsg){
+    el.textContent = '同步失败：' + errMsg;
+    return;
+  }
+  const t = cfg.lastSyncAt ? new Date(cfg.lastSyncAt).toLocaleString('zh-CN') : '从未同步';
+  el.textContent = '已配置。上次同步：' + t;
+}
+
+const FORMAT_SPEC = `# 题库名称：示例题库
+
+## 单选题
+1. 集中分散控制系统的英文缩写是(    )。
+A. DCS
+B. DOS
+C. DDC
+D. DDS
+答案：A
+解析：DCS 是 Distributed Control System 的缩写。
+标签：仪表
+
+2. 下一道单选题的题干
+A. 选项一
+B. 选项二
+C. 选项三
+D. 选项四
+答案：B
+
+## 判断题
+1. DCS 是以分散的控制适应分散的过程对象，以集中的监视、操作和管理达到掌管全局目的。
+答案：正确
+解析：这是 DCS 的基本设计思想。
+标签：仪表
+
+2. 另一道判断题
+答案：错误
+
+说明：
+- 题库名称写在第一行 # 题库名称：后面
+- 单选和判断分别放在 ## 单选题 / ## 判断题 下面
+- 题目用 1. 2. 3. 开头
+- 选项用 A. B. C. D. 开头
+- 答案写“答案：A”或“答案：正确/错误”
+- 解析和标签可选，各占一行`;
+
+function parseImport(text){
+  const src = String(text).trim();
+  if(!src) return null;
+
+  if(src.startsWith(SHARE_PREFIX)){
+    try{
+      const json = decodeURIComponent(escape(atob(src.slice(SHARE_PREFIX.length))));
+      const d = JSON.parse(json);
+      if(!d || !Array.isArray(d.q)) return null;
+      return {
+        name: d.n || '分享题库',
+        questions: d.q.map(x => ({
+          type: x.t === 'judge' ? 'judge' : 'choice',
+          q: x.q, options: x.o, answer: x.a, explain: x.e || '', tag: x.g || ''
+        }))
+      };
+    }catch(e){ return null; }
+  }
+
+  const lines = src.replace(/\r\n?/g,'\n').split('\n');
+  let bankName = ''; let section = null; let cur = null; const out = [];
+  const flush = () => { if(cur){ out.push(cur); cur = null; } };
+
+  for(const raw of lines){
+    const line = raw.trim();
+    if(!line) continue;
+    let m = line.match(/^#\s*题库名称\s*[：:]\s*(.+)$/);
+    if(m){ bankName = m[1].trim(); continue; }
+    if(/^##/.test(line)){
+      flush();
+      const t = line.replace(/^#+\s*/, '');
+      if(/判断/.test(t)) section = 'judge';
+      else if(/单选|选择/.test(t)) section = 'choice';
+      continue;
+    }
+    m = line.match(/^(\d+)\s*[\.、\)）]\s*(.+)$/);
+    if(m){ flush(); cur = { type: section || 'choice', q: m[2].trim(), options: [], rawAnswer:'', explain:'', tag:'' }; continue; }
+    if(!cur) continue;
+    m = line.match(/^([A-Da-d])\s*[\.、\)）]\s*(.+)$/);
+    if(m){ cur.options.push({ key: m[1].toUpperCase(), text: m[2].trim() }); continue; }
+    m = line.match(/^答案\s*[：:]\s*(.+)$/);
+    if(m){ cur.rawAnswer = m[1].trim(); continue; }
+    m = line.match(/^解析\s*[：:]\s*(.+)$/);
+    if(m){ cur.explain = m[1].trim(); continue; }
+    m = line.match(/^标签\s*[：:]\s*(.+)$/);
+    if(m){ cur.tag = m[1].trim(); continue; }
+    if(cur.options.length > 0 && !cur.rawAnswer) cur.options[cur.options.length-1].text += ' ' + line;
+    else if(cur.q && !cur.rawAnswer) cur.q += ' ' + line;
+  }
+  flush();
+
+  const valid = [];
+  for(const q of out){
+    const v = (q.rawAnswer || '').trim();
+    const isJudge = q.type === 'judge' ||
+      (!q.options.length && /^(正确|错误|对|错|是|否|√|×|true|false|T|F|Y|N)$/i.test(v));
+    if(isJudge){
+      if(!q.q) continue;
+      if(/^(正确|对|是|√|true|t|y|yes)$/i.test(v)) q.answer = 0;
+      else if(/^(错误|错|否|×|false|f|n|no)$/i.test(v)) q.answer = 1;
+      else continue;
+      q.type = 'judge'; q.options = ['正确','错误'];
+      delete q.rawAnswer; valid.push(q); continue;
+    }
+    const letters = v.replace(/[^A-Da-d]/g,'');
+    if(!letters) continue;
+    const idxAns = 'ABCD'.indexOf(letters[0].toUpperCase());
+    if(idxAns < 0) continue;
+    const opts = ['','','',''];
+    q.options.forEach(o => { const i = 'ABCD'.indexOf(o.key); if(i >= 0) opts[i] = o.text; });
+    if(opts.filter(Boolean).length < 2) continue;
+    q.type = 'choice'; q.options = opts; q.answer = idxAns;
+    delete q.rawAnswer; valid.push(q);
+  }
+
+  return {
+    name: bankName || ('导入题库 ' + new Date().toLocaleString('zh-CN')),
+    questions: valid
+  };
+}
+
+function encodeShare(bank){
+  const payload = { n: bank.name, q: bank.questions.map(q => ({ t: q.type, q: q.q, o: q.options, a: q.answer, e: q.explain || '', g: q.tag || '' })) };
+  return SHARE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+
+function bankToText(bank){
+  const lines = [`# 题库名称：${bank.name}`, ''];
+  const choices = bank.questions.filter(q => q.type === 'choice');
+  const judges = bank.questions.filter(q => q.type === 'judge');
+  if(choices.length){
+    lines.push('## 单选题', '');
+    choices.forEach((q,i)=>{
+      lines.push(`${i+1}. ${q.q}`);
+      q.options.forEach((o,j)=> lines.push(`${'ABCD'[j]}. ${o}`));
+      lines.push(`答案：${'ABCD'[q.answer]}`);
+      if(q.explain) lines.push(`解析：${q.explain}`);
+      if(q.tag) lines.push(`标签：${q.tag}`);
+      lines.push('');
+    });
+  }
+  if(judges.length){
+    lines.push('## 判断题', '');
+    judges.forEach((q,i)=>{
+      lines.push(`${i+1}. ${q.q}`);
+      lines.push(`答案：${q.answer === 0 ? '正确' : '错误'}`);
+      if(q.explain) lines.push(`解析：${q.explain}`);
+      if(q.tag) lines.push(`标签：${q.tag}`);
+      lines.push('');
+    });
+  }
+  return lines.join('\n');
+}
+
+let nameResolver = null;
+function askName(title, defaultValue){
+  return new Promise(resolve => {
+    $('nameModalTitle').textContent = title;
+    $('nameModalInput').value = defaultValue || '';
+    $('nameModal').classList.add('show');
+    setTimeout(()=>{ $('nameModalInput').focus(); $('nameModalInput').select(); }, 50);
+    nameResolver = resolve;
+  });
+}
+$('nameModalCancel').onclick = () => { $('nameModal').classList.remove('show'); if(nameResolver){ nameResolver(null); nameResolver = null; } };
+$('nameModalOk').onclick = () => { const v = $('nameModalInput').value.trim(); $('nameModal').classList.remove('show'); if(nameResolver){ nameResolver(v || null); nameResolver = null; } };
+$('nameModalInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); $('nameModalOk').click(); } else if(e.key === 'Escape'){ e.preventDefault(); $('nameModalCancel').click(); } });
+
+$('card').addEventListener('click', e => {
+  const actEl = e.target.closest('[data-act]');
+  if(actEl){
+    const a = actEl.dataset.act;
+    const q = getQuestion(); const bank = getBank();
+    if(a === 'open-import'){ openImport(); return; }
+    if(a === 'new-bank'){ createNewBank(); return; }
+    if(a === 'star'){ toggleStar(); return; }
+    if(a === 'ai'){ runAI(); return; }
+    if(a === 'ai-clear'){
+      if(!q || !bank) return;
+      delete bank.ai[q.id]; saveState();
+      const out = document.getElementById('aiOut');
+      const btn = document.querySelector('.ai-btn');
+      if(out){ out.textContent = ''; out.classList.remove('err'); }
+      if(btn) btn.textContent = '✨ AI 解析这道题';
+      const foot = actEl.parentElement; if(foot) foot.remove();
+      return;
+    }
+    if(a === 'retry'){
+      if(!q || !bank) return;
+      const r = bank.records[q.id];
+      if(r){ r.nextReviewAt = 0; saveState(); renderCard(); }
+      return;
+    }
+    return;
+  }
+  const opt = e.target.closest('.opt');
+  if(opt){ const q = getQuestion(); if(q) answerWith(q, Number(opt.dataset.i)); }
+});
+
+$('prevBtn').onclick = () => { if(idx > 0){ idx--; renderAll(); } };
+$('nextBtn').onclick = () => { if(idx < list.length - 1){ idx++; renderAll(); } };
+
+$('typeSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  state.ui.filterType = b.dataset.t; saveState(); syncSegs(); buildList(true); renderAll();
+});
+$('modeSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  state.ui.mode = b.dataset.m; saveState(); syncSegs(); buildList(true); renderAll();
+});
+function syncSegs(){
+  document.querySelectorAll('#typeSeg button').forEach(b => b.classList.toggle('active', b.dataset.t === state.ui.filterType));
+  document.querySelectorAll('#modeSeg button').forEach(b => b.classList.toggle('active', b.dataset.m === state.ui.mode));
+}
+
+$('bankSelect').addEventListener('change', e => {
+  const id = e.target.value; if(!state.banks[id]) return;
+  state.currentBankId = id;
+  state.ui.search = ''; $('searchInput').value = '';
+  saveState(); buildList(true); renderAll();
+});
+
+$('searchInput').addEventListener('input', e => {
+  state.ui.search = e.target.value; saveState(); buildList(true); renderAll();
+});
+
+$('tagSelect').addEventListener('change', e => {
+  state.ui.tag = e.target.value; saveState(); buildList(true); renderAll();
+});
+
+$('fontBtn').onclick = () => {
+  const order = ['s','m','l'];
+  const i = order.indexOf(state.ui.font);
+  state.ui.font = order[(i+1) % order.length];
+  applyThemeFont(); saveState();
+};
+$('themeBtn').onclick = () => {
+  state.ui.theme = state.ui.theme === 'dark' ? 'light' : 'dark';
+  applyThemeFont(); saveState();
+};
+function applyThemeFont(){
+  document.body.className = 'theme-' + state.ui.theme + ' font-' + state.ui.font;
+  $('themeBtn').textContent = state.ui.theme === 'dark' ? '☀️' : '🌙';
+  const label = { s:'小', m:'中', l:'大' }[state.ui.font];
+  $('fontBtn').textContent = 'A·' + label;
+}
+
+async function createNewBank(){
+  const name = await askName('新建题库', '新题库');
+  if(!name) return;
+  const bank = makeBank(name, []);
+  state.banks[bank.id] = bank; state.currentBankId = bank.id;
+  saveState(); buildList(true); renderAll();
+  alert('题库已创建。点 📥 导入题目，或先在别处生成题库文本再导入。');
+}
+$('newBankBtn').onclick = createNewBank;
+
+function openImport(){
+  $('importText').value = '';
+  $('formatSpec').textContent = FORMAT_SPEC;
+  $('importDlg').showModal();
+}
+$('importBtn').onclick = openImport;
+$('importCancel').onclick = () => $('importDlg').close();
+$('importConfirm').onclick = () => {
+  const text = $('importText').value.trim();
+  if(!text){ alert('请先粘贴内容'); return; }
+  const result = parseImport(text);
+  if(!result || !result.questions.length){
+    alert('没有解析到有效题目。请检查：\n1. 题号是否用 1. 2. 开头\n2. 选项是否用 A. B. C. D. 开头\n3. 答案行是否为“答案：A”或“答案：正确”\n4. 分享码是否完整（QZ1: 开头）');
+    return;
+  }
+  const bank = makeBank(result.name, result.questions);
+  state.banks[bank.id] = bank;
+  state.currentBankId = bank.id;
+  state.ui.mode = 'seq'; state.ui.filterType = 'all';
+  state.ui.search = ''; state.ui.tag = 'all';
+  $('searchInput').value = '';
+  saveState();
+  $('importDlg').close();
+  syncSegs(); buildList(true); renderAll();
+  alert(`导入成功：${result.name}\n共 ${result.questions.length} 道题`);
+};
+$('copyFormatBtn').onclick = () => copyText(FORMAT_SPEC, '格式说明已复制，去发给 AI 生成题库吧。');
+
+$('shareBtn').onclick = () => {
+  const bank = getBank(); if(!bank){ alert('还没有题库'); return; }
+  $('shareCode').value = encodeShare(bank);
+  $('shareText').value = bankToText(bank);
+  $('shareDlg').showModal();
+};
+$('shareClose').onclick = () => $('shareDlg').close();
+$('copyShareBtn').onclick = () => copyText($('shareCode').value, '分享码已复制。对方在 📥 导入里粘贴即可。');
+$('copyTextBtn').onclick = () => copyText($('shareText').value, '题库文本已复制。');
+
+$('settingsBtn').onclick = () => {
+  const cfg = getAICfg();
+  $('aiKey').value = cfg.key;
+  $('aiModel').value = cfg.model;
+  $('aiSaveMsg').textContent = '';
+  const gh = getGHCfg();
+  $('gistId').value = gh.gistId;
+  $('ghToken').value = gh.token;
+  $('ghSaveMsg').textContent = '';
+  renderGHStatus();
+  $('settingsDlg').showModal();
+};
+$('aiSave').onclick = () => {
+  const key = $('aiKey').value.trim();
+  const model = $('aiModel').value;
+  if(key && !/^sk-/.test(key)){ if(!confirm('这个 Key 不是以 sk- 开头，确定要保存吗？')) return; }
+  setAICfg({ key, model });
+  $('aiSaveMsg').textContent = key ? '已保存 ✓' : '已清空';
+  setTimeout(()=>{ $('aiSaveMsg').textContent = ''; }, 2500);
+};
+
+$('ghSave').onclick = () => {
+  const gistId = $('gistId').value.trim();
+  const token = $('ghToken').value.trim();
+  const old = getGHCfg();
+  setGHCfg({ gistId, token, lastSyncAt: old.lastSyncAt || 0 });
+  $('ghSaveMsg').textContent = (gistId && token) ? '已保存 ✓' : '已清空';
+  setTimeout(()=>{ $('ghSaveMsg').textContent = ''; }, 2500);
+  renderGHStatus();
+};
+$('ghSyncNow').onclick = () => { syncNow(true); };
+$('syncBtn').onclick = () => { syncNow(true); };
+
+$('backupBtn').onclick = () => {
+  const data = { v:5, savedAt: Date.now(), currentBankId: state.currentBankId, banks: state.banks };
+  const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const d = new Date();
+  const stamp = d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  a.href = url; a.download = '题库备份_' + stamp + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+};
+$('restoreBtn').onclick = () => $('restoreFile').click();
+$('restoreFile').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const d = JSON.parse(reader.result);
+      if(!d || !d.banks || typeof d.banks !== 'object') throw new Error('格式不对');
+      if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')) return;
+      state.banks = d.banks;
+      state.currentBankId = d.currentBankId && state.banks[d.currentBankId] ? d.currentBankId : Object.keys(d.banks)[0] || null;
+      saveState();
+      $('settingsDlg').close();
+      buildList(true); renderAll();
+      alert('恢复完成。');
+    }catch(err){ alert('恢复失败：' + (err.message || '文件无法解析')); }
+  };
+  reader.readAsText(f);
+  e.target.value = '';
+});
+
+$('renameBankBtn').onclick = async () => {
+  const bank = getBank(); if(!bank) return;
+  const name = await askName('重命名题库', bank.name); if(!name) return;
+  bank.name = name; saveState(); renderBankSelect();
+};
+$('clearRecordsBtn').onclick = () => {
+  const bank = getBank(); if(!bank) return;
+  if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏和 AI 解析吗？题目会保留。`)) return;
+  bank.records = {}; bank.ai = {}; bank.stars = [];
+  saveState(); buildList(true); renderAll();
+  $('settingsDlg').close();
+};
+$('deleteBankBtn').onclick = () => {
+  const bank = getBank(); if(!bank) return;
+  if(!confirm(`确定删除题库“${bank.name}”吗？该题库的所有记录会一起删除，无法恢复。`)) return;
+  delete state.banks[bank.id];
+  state.currentBankId = Object.keys(state.banks)[0] || null;
+  saveState(); $('settingsDlg').close();
+  buildList(true); renderAll();
+};
+
+document.addEventListener('keydown', e => {
+  if(document.querySelector('dialog[open]')) return;
+  if($('nameModal').classList.contains('show')) return;
+  if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  const q = getQuestion(); if(!q) return;
+  if(/^[1-4]$/.test(e.key)){
+    const i = Number(e.key) - 1;
+    if(i < q.options.length){ e.preventDefault(); answerWith(q, i); }
+  }else if(e.key === 'ArrowRight' || e.key === 'Enter'){
+    e.preventDefault(); if(idx < list.length - 1){ idx++; renderAll(); }
+  }else if(e.key === 'ArrowLeft'){
+    e.preventDefault(); if(idx > 0){ idx--; renderAll(); }
+  }
+});
+
+loadState();
+applyThemeFont();
+if(!state.currentBankId && Object.keys(state.banks).length) state.currentBankId = Object.keys(state.banks)[0];
+syncSegs();
+buildList(true);
+renderAll();
+
+setTimeout(()=>{
+  const cfg = getGHCfg();
+  if(cfg.gistId && cfg.token) syncNow(false);
+}, 1200);
+</script>
+</body>
+</html>
