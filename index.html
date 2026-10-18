@@ -95,10 +95,10 @@ body.font-l{font-size:18px;}
 .tag.ok{background:rgba(16,185,129,.16);color:#047857;}
 .tag.due{background:rgba(245,158,11,.16);color:#b45309;}
 .tag.hist{background:rgba(99,102,241,.14);color:#4338ca;}
+.tag.warn{background:rgba(220,38,38,.15);color:#b91c1c;font-weight:700;}
 .qno{margin-left:auto;font-size:.75em;color:var(--muted);}
 .star-btn{border:0;background:transparent;font-size:1.2em;line-height:1;cursor:pointer;color:#f59e0b;padding:0 2px;}
 .qtext{font-size:1.06em;line-height:1.65;font-weight:500;margin-bottom:16px;}
-
 .hint{font-size:.78em;color:#b45309;background:rgba(245,158,11,.13);border-radius:8px;padding:8px 11px;margin:0 0 14px;line-height:1.55;}
 
 .opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:.96em;line-height:1.5;color:var(--text);cursor:pointer;font-family:inherit;transition:.15s;}
@@ -171,6 +171,8 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .save-msg{font-size:.8em;color:var(--green);font-weight:600;margin-left:8px;}
 .tip{font-size:.76em;color:var(--muted);line-height:1.7;margin:14px 0 0;}
 .divider{border:0;border-top:1px solid var(--line);margin:18px 0 0;}
+.import-section{margin-top:10px;}
+.import-section .info{font-size:.78em;color:var(--muted);background:var(--soft2);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.55;}
 
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
 .modal.show{display:flex;}
@@ -203,7 +205,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
     <div class="bank-row">
       <select id="bankSelect" title="选择题库"></select>
       <button id="newBankBtn" title="新建题库">＋</button>
-      <button id="importBtn" title="导入题库 / 分享码">📥</button>
+      <button id="importBtn" title="导入题库 / 题目">📥</button>
       <button id="shareBtn" title="导出 / 分享码">📤</button>
       <button id="syncBtn" title="同步">☁️</button>
       <button id="settingsBtn" title="设置">⚙️</button>
@@ -251,11 +253,29 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <dialog id="importDlg">
   <div class="dlg-body">
     <h3>导入</h3>
-    <p class="sub">可以粘贴「题库文本」，也可以粘贴别人发来的「分享码」（QZ1: 开头）。</p>
-    <label for="importText">粘贴内容</label>
-    <textarea id="importText" placeholder="题库文本，或 QZ1: 开头的分享码…"></textarea>
-    <button class="copy-format-btn" id="copyFormatBtn">📋 复制格式说明（可直接发给 AI 生成题库）</button>
+
+    <div class="seg" id="importModeSeg" style="margin-bottom:14px;">
+      <button data-im="bank" class="active">导入题库</button>
+      <button data-im="questions">导入题目</button>
+    </div>
+
+    <div id="importBankSection">
+      <div class="info">粘贴题库文本或分享码。如果题库名已存在，会要求你改名后再导入。</div>
+      <label for="importText">粘贴内容</label>
+      <textarea id="importText" placeholder="题库文本，或 QZ1: 开头的分享码…"></textarea>
+    </div>
+
+    <div id="importQuestionsSection" style="display:none;">
+      <div class="info">把题目追加到选定题库末尾。新题 id 自动分配，不影响已有答题记录。</div>
+      <label for="importTargetBank">追加到题库</label>
+      <select id="importTargetBank"></select>
+      <label for="importQText">粘贴题目内容</label>
+      <textarea id="importQText" placeholder="题目文本，或 QZ1: 开头的分享码…"></textarea>
+    </div>
+
+    <button class="copy-format-btn" id="copyFormatBtn">📋 复制格式说明（可直接发给 AI）</button>
     <div class="format-box"><pre id="formatSpec"></pre></div>
+
     <div class="dlg-actions">
       <button id="importCancel">取消</button>
       <button id="importConfirm" class="primary">导入</button>
@@ -267,11 +287,11 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
   <div class="dlg-body">
     <h3>分享 / 导出</h3>
     <p class="sub">分享码包含题目、选项、答案、解析和标签，不含你的答题记录。</p>
-    <label>分享码（发给别人，对方点 📥 粘贴即可）</label>
+    <label>分享码</label>
     <textarea id="shareCode" readonly style="min-height:120px;"></textarea>
     <button class="copy-format-btn" id="copyShareBtn">📋 复制分享码</button>
     <hr class="divider">
-    <label>题库文本（可编辑后重新导入）</label>
+    <label>题库文本</label>
     <textarea id="shareText" readonly></textarea>
     <button class="copy-format-btn" id="copyTextBtn">📋 复制题库文本</button>
     <div class="dlg-actions">
@@ -301,7 +321,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 
     <hr class="divider">
     <label style="margin-top:18px;">GitHub 同步（Gist）</label>
-    <p class="sub" style="margin:0 0 10px;">同步答题记录、错题进度、收藏、AI 解析、两套模式的浏览历史与指针。</p>
+    <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。</p>
 
     <label for="gistId">Gist ID</label>
     <input type="text" id="gistId" placeholder="例如 a1b2c3d4e5f6..." autocomplete="off" spellcheck="false">
@@ -347,9 +367,10 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 
 <script>
 const DAY = 86400000;
-const STATE_KEY = 'quiz-v8-state';
-const AI_KEY = 'quiz-v8-ai';
-const GH_KEY = 'quiz-v8-github';
+const TOMBSTONE_TTL = 3 * DAY;
+const STATE_KEY = 'quiz-v9-state';
+const AI_KEY = 'quiz-v9-ai';
+const GH_KEY = 'quiz-v9-github';
 const SHARE_PREFIX = 'QZ1:';
 
 const $ = id => document.getElementById(id);
@@ -367,6 +388,7 @@ function copyText(text, okMsg){
 
 let state = {
   banks: {},
+  tombstones: {},
   currentBankId: null,
   ui: {
     filterType:'all', mode:'seq',
@@ -376,9 +398,7 @@ let state = {
   }
 };
 
-// 内存中的“当前显示完成页”状态，按模式独立
 let completionByMode = { seq:false, rand:false, wrong:false, star:false };
-// 错题/收藏的临时列表
 let dynList = [], dynPos = 0;
 
 function loadState(){
@@ -388,12 +408,15 @@ function loadState(){
     const d = JSON.parse(raw);
     if(d && typeof d === 'object'){
       state.banks = d.banks || {};
+      state.tombstones = d.tombstones || {};
       state.currentBankId = d.currentBankId || null;
       state.ui = Object.assign(state.ui, d.ui || {});
     }
   }catch(e){ console.warn(e); }
 }
-function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); } }
+function saveState(){
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); }
+}
 
 function getAICfg(){ try{ const d = JSON.parse(localStorage.getItem(AI_KEY)||'{}'); return { key:d.key||'', model:d.model||'deepseek-chat' }; } catch(e){ return { key:'', model:'deepseek-chat' }; } }
 function setAICfg(cfg){ try{ localStorage.setItem(AI_KEY, JSON.stringify(cfg)); }catch(e){} }
@@ -403,6 +426,38 @@ function setGHCfg(cfg){ try{ localStorage.setItem(GH_KEY, JSON.stringify(cfg)); 
 function touchLastSync(){ const c = getGHCfg(); c.lastSyncAt = Date.now(); setGHCfg(c); }
 
 function getBank(){ return state.currentBankId ? state.banks[state.currentBankId] : null; }
+
+function isBankNameTaken(name, exceptId){
+  const n = String(name||'').trim();
+  if(!n) return false;
+  for(const id in state.banks){
+    if(id === exceptId) continue;
+    if(state.banks[id].name === n) return true;
+  }
+  return false;
+}
+
+function getBankLastActivity(bank){
+  if(!bank) return 0;
+  let max = bank.createdAt || 0;
+  if(bank.records){
+    for(const qid in bank.records){
+      const r = bank.records[qid];
+      if(r && r.lastAt > max) max = r.lastAt;
+    }
+  }
+  if(bank.roundStartAt && bank.roundStartAt > max) max = bank.roundStartAt;
+  return max;
+}
+
+function nextQid(bank){
+  let maxN = -1;
+  bank.questions.forEach(q => {
+    const m = /^q(\d+)$/.exec(q.id);
+    if(m) maxN = Math.max(maxN, parseInt(m[1]));
+  });
+  return 'q' + (maxN + 1);
+}
 
 function makeBank(name, questions){
   const now = Date.now();
@@ -421,7 +476,6 @@ function makeBank(name, questions){
   };
 }
 
-// 初始化缺失的字段（兼容旧数据）
 function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
@@ -489,7 +543,6 @@ function pushHist(qid){
   saveState();
 }
 
-// 确保当前模式的历史和指针有效
 function ensureModeHistory(){
   const bank = getBank(); if(!bank) return;
   const m = state.ui.mode;
@@ -514,7 +567,6 @@ function ensureModeHistory(){
       if(bank[posKey] >= hist.length) bank[posKey] = hist.length - 1;
     }
   }else{
-    // 错题/收藏：重建动态列表
     rebuildDynList();
   }
 }
@@ -560,7 +612,6 @@ function rebuildDynList(){
   if(dynPos < 0) dynPos = 0;
 }
 
-// 获取当前题目
 function getCurrentQuestion(){
   const bank = getBank(); if(!bank) return null;
   const m = state.ui.mode;
@@ -578,7 +629,6 @@ function getCurrentQuestion(){
   return bank.questions.find(q => q.id === qid) || null;
 }
 
-// 计算显示序号
 function getDisplayIndex(q){
   const bank = getBank(); if(!bank || !q) return null;
   const m = state.ui.mode;
@@ -591,7 +641,7 @@ function getDisplayIndex(q){
     if(idx < 0) return { cur: 0, total: bank.randOrder.length };
     return { cur: idx + 1, total: bank.randOrder.length };
   }
-  return null; // 错题/收藏不显示序号
+  return null;
 }
 
 /* ======================= 渲染 ======================= */
@@ -610,13 +660,32 @@ function renderAll(){
 function renderBankSelect(){
   const sel = $('bankSelect');
   const ids = Object.keys(state.banks);
+
+  // 重名统计
+  const nameCount = {};
+  ids.forEach(id => {
+    const n = state.banks[id].name;
+    nameCount[n] = (nameCount[n] || 0) + 1;
+  });
+
   sel.innerHTML = ids.length
-    ? ids.map(id => `<option value="${id}">${esc(state.banks[id].name)}（${state.banks[id].questions.length}）</option>`).join('')
+    ? ids.map(id => {
+        const b = state.banks[id];
+        const marks = [];
+        if(nameCount[b.name] > 1) marks.push('重名');
+        if(b._conflictDelete) marks.push('删除冲突');
+        const tail = marks.length ? ' [' + marks.join('/') + ']' : '';
+        return `<option value="${id}">${esc(b.name)}（${b.questions.length}）${tail}</option>`;
+      }).join('')
     : '<option value="">（无题库）</option>';
+
   const bank = getBank();
   if(bank) sel.value = bank.id;
+
+  const conflictCount = ids.filter(id => state.banks[id]._conflictDelete).length;
   $('bankNameDisplay').textContent = bank
-    ? '共 ' + bank.questions.length + ' 题 · 收藏 ' + (bank.stars||[]).length
+    ? '共 ' + bank.questions.length + ' 题 · 收藏 ' + (bank.stars||[]).length +
+      (conflictCount ? ' · ⚠ ' + conflictCount + ' 个删除冲突' : '')
     : '';
 }
 
@@ -680,9 +749,21 @@ function renderCard(){
     return;
   }
 
+  if(bank._conflictDelete){
+    card.innerHTML = `<div class="card empty">
+      <div class="big">⚠</div>
+      <h2>删除冲突</h2>
+      <p>这个题库在另一台设备上被删除，但本机还有更新的答题记录。已保留本机题库。<br>若确认要删除，请点设置 → 删除题库；若想保留，直接开始刷题即可。</p>
+      <div class="acts">
+        <button data-act="open-settings">打开设置</button>
+        <button class="primary" data-act="dismiss-conflict">我知道了</button>
+      </div>
+    </div>`;
+    return;
+  }
+
   const m = state.ui.mode;
 
-  // 完成页
   if(completionByMode[m] && (m === 'seq' || m === 'rand')){
     let correct = 0;
     bank.questions.forEach(q => {
@@ -714,12 +795,9 @@ function renderCard(){
   const rec = bank.records[q.id];
   const answeredThisRound = isAnsweredThisRound(q.id, bank);
   const isHistory = currentModeIsHistoryMode();
-  const displayed = isHistory ? (answeredThisRound || (rec && rec.lastChoice != null && !answeredThisRound)) : true;
-  // 顺序/随机历史中的题：如果本轮答过，显示"本轮答过"；如果不是本轮答的，可能在其他模式答过，也显示已答只读
   const locked = answeredThisRound || (isHistory && rec && rec.lastChoice != null);
   const starred = (bank.stars||[]).includes(q.id);
   const cachedAI = bank.ai[q.id];
-
   const isHistoryBack = isHistory && !answeredThisRound && rec && rec.lastChoice != null;
 
   let tags = `<span class="tag ${q.type==='judge'?'judge':''}">${q.type==='judge'?'判断题':'单选题'}</span>`;
@@ -730,7 +808,6 @@ function renderCard(){
   else if(rec && (rec.streak||0) >= 3) tags += `<span class="tag ok">已攻克</span>`;
   if(starred) tags += `<span class="tag hist">收藏</span>`;
 
-  // 序号
   const dis = getDisplayIndex(q);
   const qnoHtml = dis ? `${dis.cur} / ${dis.total}` : `${dynPos+1} / ${dynList.length}`;
 
@@ -752,17 +829,15 @@ function renderCard(){
 
   let body = '';
   if(locked){
-    if(rec.correct){
-      body += `<div class="fb ok">✓ 回答正确</div>`;
-    }else{
+    if(rec.correct) body += `<div class="fb ok">✓ 回答正确</div>`;
+    else{
       const ansText = q.type === 'judge' ? esc(q.options[q.answer])
         : `${'ABCD'[q.answer]}. ${esc(q.options[q.answer])}`;
       body += `<div class="fb no">✗ 回答错误，正确答案：<b>${ansText}</b></div>`;
     }
     const myChoice = q.type === 'judge' ? esc(q.options[rec.lastChoice])
       : `${'ABCD'[rec.lastChoice]}. ${esc(q.options[rec.lastChoice])}`;
-    const meta = [];
-    meta.push('当时选：' + myChoice);
+    const meta = ['当时选：' + myChoice];
     if(rec.wrongCount > 0) meta.push('累计错 ' + rec.wrongCount + ' 次');
     if((rec.streak||0) > 0) meta.push('连续对 ' + rec.streak + ' 次');
     if((rec.nextReviewAt||0) > Date.now()) meta.push('下次复习：' + fmtLeft(rec.nextReviewAt - Date.now()));
@@ -793,16 +868,12 @@ function updateNavButtons(){
   const bank = getBank();
   const m = state.ui.mode;
 
-  if(!bank){
-    $('prevBtn').disabled = true;
-    $('nextBtn').disabled = true;
-    return;
-  }
+  if(!bank){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
+
+  if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
 
   if(completionByMode[m] && (m === 'seq' || m === 'rand')){
-    $('prevBtn').disabled = true;
-    $('nextBtn').disabled = true;
-    return;
+    $('prevBtn').disabled = true; $('nextBtn').disabled = true; return;
   }
 
   const hist = getHist();
@@ -811,9 +882,7 @@ function updateNavButtons(){
   $('prevBtn').disabled = pos <= 0;
 
   if(m === 'seq' || m === 'rand'){
-    // 如果历史还有下一个，可点
     if(pos >= 0 && pos < hist.length - 1){ $('nextBtn').disabled = false; return; }
-    // 否则找下一个未答
     const seq = getSeq(m);
     const curQid = hist[pos];
     let startIdx = 0;
@@ -840,9 +909,7 @@ function answerWith(q, chosen){
   const now = Date.now();
   let r = bank.records[q.id];
   if(!r) r = { lastChoice:null, correct:null, wrongCount:0, streak:0, lastAt:0, nextReviewAt:0 };
-  r.lastChoice = chosen;
-  r.correct = correct;
-  r.lastAt = now;
+  r.lastChoice = chosen; r.correct = correct; r.lastAt = now;
   if(correct){
     r.streak = (r.streak || 0) + 1;
     if(r.wrongCount > 0 && r.streak >= 3) r.nextReviewAt = now + 30 * DAY;
@@ -855,9 +922,7 @@ function answerWith(q, chosen){
   bank.records[q.id] = r;
   state.ui.progressAt = now;
   saveState();
-  renderStats();
-  renderCard();
-  updateNavButtons();
+  renderStats(); renderCard(); updateNavButtons();
 }
 
 function toggleStar(){
@@ -866,21 +931,19 @@ function toggleStar(){
   bank.stars = bank.stars || [];
   const i = bank.stars.indexOf(q.id);
   if(i >= 0) bank.stars.splice(i,1); else bank.stars.push(q.id);
-  saveState();
-  renderBankSelect();
-  renderCard();
-  updateNavButtons();
+  saveState(); renderBankSelect(); renderCard(); updateNavButtons();
 }
 
-/* ======================= 上一题 / 下一题 ======================= */
+/* ======================= 导航 ======================= */
 function goPrev(){
   const bank = getBank(); if(!bank) return;
+  if(bank._conflictDelete) return;
   const m = state.ui.mode;
 
   if(m === 'seq' || m === 'rand'){
-    if(completionByMode[m]){ completionByMode[m] = false; }
+    if(completionByMode[m]) completionByMode[m] = false;
     const pos = getPos();
-    if(pos > 0){ setPos(pos - 1); }
+    if(pos > 0) setPos(pos - 1);
     renderAll();
   }else{
     if(dynPos > 0){ dynPos--; renderAll(); }
@@ -889,22 +952,16 @@ function goPrev(){
 
 function goNext(){
   const bank = getBank(); if(!bank) return;
+  if(bank._conflictDelete) return;
   const m = state.ui.mode;
 
   if(m === 'seq' || m === 'rand'){
     if(completionByMode[m]) return;
-
     const hist = getHist();
     const pos = getPos();
 
-    // 历史下一个
-    if(pos >= 0 && pos < hist.length - 1){
-      setPos(pos + 1);
-      renderAll();
-      return;
-    }
+    if(pos >= 0 && pos < hist.length - 1){ setPos(pos + 1); renderAll(); return; }
 
-    // 找新的
     const seq = getSeq(m);
     const curQid = hist[pos];
     let startIdx = 0;
@@ -921,46 +978,30 @@ function goNext(){
         return;
       }
     }
-
-    // 没有下一个了 → 显示完成页
     completionByMode[m] = true;
     renderAll();
     return;
   }
 
-  // 错题/收藏
-  if(dynPos < dynList.length - 1){
-    dynPos++;
-    renderAll();
-  }
+  if(dynPos < dynList.length - 1){ dynPos++; renderAll(); }
 }
 
-/* ======================= 再来一轮 ======================= */
 function startNewRound(){
   const bank = getBank(); if(!bank) return;
   bank.roundStartAt = Date.now();
   bank.randOrder = shuffle(bank.questions.map(q => q.id));
-  bank.seqHistory = [];
-  bank.seqPos = -1;
-  bank.randHistory = [];
-  bank.randPos = -1;
-  dynList = [];
-  dynPos = 0;
+  bank.seqHistory = []; bank.seqPos = -1;
+  bank.randHistory = []; bank.randPos = -1;
+  dynList = []; dynPos = 0;
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   state.ui.progressAt = Date.now();
-  saveState();
-  ensureModeHistory();
-  renderAll();
+  saveState(); ensureModeHistory(); renderAll();
 }
 
-/* ======================= 模式切换 ======================= */
 function switchMode(newMode){
   state.ui.mode = newMode;
   state.ui.progressAt = Date.now();
-  saveState();
-  syncSegs();
-  ensureModeHistory();
-  renderAll();
+  saveState(); syncSegs(); ensureModeHistory(); renderAll();
 }
 
 function syncSegs(){
@@ -968,7 +1009,7 @@ function syncSegs(){
   document.querySelectorAll('#modeSeg button').forEach(b => b.classList.toggle('active', b.dataset.m === state.ui.mode));
 }
 
-/* ======================= AI 解析 ======================= */
+/* ======================= AI ======================= */
 function buildPrompt(q, rec){
   const typeText = q.type === 'choice' ? '单选题' : '判断题';
   const optText = q.options.map((o,i)=>`${'ABCD'[i]}. ${o}`).join('\n');
@@ -1010,17 +1051,14 @@ async function runAI(){
   const cfg = getAICfg();
   if(!cfg.key){
     out.textContent = '还没有填写 API Key。请点右上角 ⚙️ 设置，填入 DeepSeek 的 API Key 并保存。';
-    out.classList.add('err');
-    return;
+    out.classList.add('err'); return;
   }
   abortAI();
   aiCtrl = new AbortController();
   const ctrl = aiCtrl;
-  btn.disabled = true;
-  btn.textContent = '解析中，请稍候…';
-  out.textContent = '';
-  out.classList.remove('err');
-  let full = ''; let gotContent = false;
+  btn.disabled = true; btn.textContent = '解析中，请稍候…';
+  out.textContent = ''; out.classList.remove('err');
+  let full = '', gotContent = false;
   try{
     const res = await fetch('https://api.deepseek.com/chat/completions', {
       method:'POST', signal: ctrl.signal,
@@ -1045,8 +1083,7 @@ async function runAI(){
       const { done, value } = await reader.read();
       if(done) break;
       buf += dec.decode(value, { stream:true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
+      const lines = buf.split('\n'); buf = lines.pop();
       for(const line of lines){
         const t = line.trim();
         if(!t.startsWith('data:')) continue;
@@ -1062,8 +1099,7 @@ async function runAI(){
       if(ctrl.signal.aborted) break;
     }
     if(!full.trim()) throw new Error('模型没有返回内容，请稍后重试。');
-    bank.ai[q.id] = full;
-    saveState();
+    bank.ai[q.id] = full; saveState();
     out.textContent = full;
     btn.textContent = '🔄 重新解析这道题';
     const zone = btn.parentElement;
@@ -1098,62 +1134,75 @@ function collectSyncData(){
       roundStartAt: b.roundStartAt || 0,
       randOrder: b.randOrder || [],
       seqHistory: b.seqHistory || [],
-      seqPos: b.seqPos || 0,
+      seqPos: typeof b.seqPos === 'number' ? b.seqPos : -1,
       randHistory: b.randHistory || [],
-      randPos: b.randPos || 0
+      randPos: typeof b.randPos === 'number' ? b.randPos : -1
     };
   });
   return {
-    v:8,
+    v:9,
     savedAt: Date.now(),
     currentBankId: state.currentBankId,
     ui: {
       mode: state.ui.mode, filterType: state.ui.filterType, tag: state.ui.tag,
       progressAt: state.ui.progressAt
     },
-    banks
+    banks,
+    tombstones: state.tombstones
   };
 }
 
 function mergeRemote(remote){
+  const stat = { mergedRecords:0, addedBanks:0, deletedBanks:0, conflicts:[], uiMerged:false };
   if(!remote || !remote.banks || typeof remote.banks !== 'object'){
-    return { mergedRecords:0, addedBanks:0, uiMerged:false };
+    // 仍然处理远端 tombstone（防远端全部清空后又被恢复）
+    if(remote && remote.tombstones) applyRemoteTombstones(remote.tombstones, stat);
+    return stat;
   }
-  let mergedRecords = 0, addedBanks = 0;
 
+  // 1) 处理远端 tombstone：删除本机对应题库（时间优先）
+  applyRemoteTombstones(remote.tombstones || {}, stat);
+
+  // 2) 处理本地 tombstone：若远端有更新，撤销本地删除并标记冲突
+  Object.keys(state.tombstones).forEach(tid => {
+    const tomb = state.tombstones[tid];
+    const remoteBank = remote.banks[tid];
+    if(!remoteBank) return;
+    const remoteAct = getBankLastActivity(remoteBank);
+    if(remoteAct > tomb.deletedAt){
+      // 远端更新 → 撤销本地删除，加入远端题库并标记冲突
+      state.banks[tid] = buildLocalFromRemote(remoteBank, tid);
+      state.banks[tid]._conflictDelete = true;
+      delete state.tombstones[tid];
+      stat.conflicts.push(state.banks[tid].name);
+      stat.addedBanks++;
+    }
+  });
+
+  // 3) 合并每个远端题库
   Object.keys(remote.banks).forEach(bid => {
+    if(state.tombstones[bid]) return; // 已删除的
     const r = remote.banks[bid];
     if(!r) return;
     const local = state.banks[bid];
 
     if(!local){
       if(Array.isArray(r.questions) && r.questions.length){
-        state.banks[bid] = {
-          id: bid, name: r.name || '同步题库', createdAt: r.createdAt || Date.now(),
-          questions: r.questions, records: r.records || {},
-          ai: r.ai || {}, stars: r.stars || [],
-          roundStartAt: r.roundStartAt || 0,
-          randOrder: r.randOrder || [],
-          seqHistory: r.seqHistory || [],
-          seqPos: r.seqPos || 0,
-          randHistory: r.randHistory || [],
-          randPos: r.randPos || 0
-        };
-        addedBanks++;
+        state.banks[bid] = buildLocalFromRemote(r, bid);
+        stat.addedBanks++;
       }
       return;
     }
 
     ensureBankFields(local);
 
-    // 本轮起点：取更新
     if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
       local.roundStartAt = r.roundStartAt;
       local.randOrder = r.randOrder || [];
       local.seqHistory = r.seqHistory || [];
-      local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : 0;
+      local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : -1;
       local.randHistory = r.randHistory || [];
-      local.randPos = typeof r.randPos === 'number' ? r.randPos : 0;
+      local.randPos = typeof r.randPos === 'number' ? r.randPos : -1;
     }
 
     if(r.records && typeof r.records === 'object'){
@@ -1163,7 +1212,7 @@ function mergeRemote(remote){
         const lr = local.records[qid];
         if(!lr || (rr.lastAt||0) > (lr.lastAt||0)){
           local.records[qid] = rr;
-          mergedRecords++;
+          stat.mergedRecords++;
         }
       });
     }
@@ -1182,7 +1231,13 @@ function mergeRemote(remote){
     }
   });
 
-  let uiMerged = false;
+  // 4) 清理过期 tombstone
+  const now = Date.now();
+  Object.keys(state.tombstones).forEach(tid => {
+    if(now - state.tombstones[tid].deletedAt > TOMBSTONE_TTL) delete state.tombstones[tid];
+  });
+
+  // 5) UI 合并
   if(remote.ui && (remote.ui.progressAt||0) > (state.ui.progressAt||0)){
     state.ui.mode = remote.ui.mode || state.ui.mode;
     state.ui.filterType = remote.ui.filterType || state.ui.filterType;
@@ -1191,10 +1246,59 @@ function mergeRemote(remote){
     if(remote.currentBankId && state.banks[remote.currentBankId]){
       state.currentBankId = remote.currentBankId;
     }
-    uiMerged = true;
+    stat.uiMerged = true;
   }
 
-  return { mergedRecords, addedBanks, uiMerged };
+  // 当前题库可能被删除，切换
+  if(state.currentBankId && !state.banks[state.currentBankId]){
+    state.currentBankId = Object.keys(state.banks)[0] || null;
+  }
+
+  return stat;
+}
+
+function applyRemoteTombstones(remoteTombs, stat){
+  Object.keys(remoteTombs).forEach(tid => {
+    const tomb = remoteTombs[tid];
+    if(!tomb || !tomb.deletedAt) return;
+
+    if(!state.tombstones[tid] || tomb.deletedAt > state.tombstones[tid].deletedAt){
+      state.tombstones[tid] = tomb;
+    }
+
+    const localBank = state.banks[tid];
+    if(!localBank) return;
+
+    const localAct = getBankLastActivity(localBank);
+    if(tomb.deletedAt >= localAct){
+      // 删除优先
+      delete state.banks[tid];
+      stat.deletedBanks++;
+    }else{
+      // 冲突：本机更新 → 保留，标记
+      localBank._conflictDelete = true;
+      delete state.tombstones[tid];
+      stat.conflicts.push(localBank.name);
+    }
+  });
+}
+
+function buildLocalFromRemote(r, bid){
+  return {
+    id: bid,
+    name: r.name || '同步题库',
+    createdAt: r.createdAt || Date.now(),
+    questions: r.questions || [],
+    records: r.records || {},
+    ai: r.ai || {},
+    stars: r.stars || [],
+    roundStartAt: r.roundStartAt || 0,
+    randOrder: r.randOrder || [],
+    seqHistory: r.seqHistory || [],
+    seqPos: typeof r.seqPos === 'number' ? r.seqPos : -1,
+    randHistory: r.randHistory || [],
+    randPos: typeof r.randPos === 'number' ? r.randPos : -1
+  };
 }
 
 async function pullRemote(){
@@ -1271,8 +1375,12 @@ async function syncNow(showAlert){
       const parts = [];
       if(stat.mergedRecords) parts.push('合并 ' + stat.mergedRecords + ' 条记录');
       if(stat.addedBanks) parts.push('同步 ' + stat.addedBanks + ' 个题库');
-      if(stat.uiMerged) parts.push('已切换到最后作答设备');
-      alert('同步完成' + (parts.length ? '：' + parts.join('，') : '（无变化）'));
+      if(stat.deletedBanks) parts.push('删除 ' + stat.deletedBanks + ' 个题库');
+      let msg = '同步完成' + (parts.length ? '：' + parts.join('，') : '（无变化）');
+      if(stat.conflicts.length){
+        msg += '\n\n⚠ 删除冲突：' + stat.conflicts.join('、') + '\n已保留题库并标注，如需删除请手动操作。';
+      }
+      alert(msg);
     }
     renderGHStatus();
   }catch(err){
@@ -1297,7 +1405,7 @@ function renderGHStatus(errMsg){
 }
 
 /* ======================= 导入 / 导出 ======================= */
-const FORMAT_SPEC = `# 题库名称：示例题库
+const FORMAT_BANK = `# 题库名称：示例题库
 
 ## 单选题
 1. 集中分散控制系统的英文缩写是(    )。
@@ -1314,7 +1422,61 @@ D. DDS
 答案：正确
 标签：仪表`;
 
-function parseImport(text){
+const FORMAT_QUESTIONS = `## 单选题
+1. 集中分散控制系统的英文缩写是(    )。
+A. DCS
+B. DOS
+C. DDC
+D. DDS
+答案：A
+解析：DCS 是 Distributed Control System 的缩写。
+标签：仪表
+
+## 判断题
+1. DCS 是以分散的控制适应分散的过程对象，以集中的监视、操作和管理达到掌管全局目的。
+答案：正确
+标签：仪表
+
+说明：
+- 只需粘贴题目部分，不需要题库名
+- 题号用 1. 2. 3. 开头
+- 选项用 A. B. C. D. 开头
+- 答案写“答案：A”或“答案：正确/错误”
+- 解析和标签可选
+- 题目会追加到所选题库末尾，新题 id 自动分配`;
+
+let importMode = 'bank';
+let pendingImport = null;
+
+function setImportMode(m){
+  importMode = m;
+  document.querySelectorAll('#importModeSeg button').forEach(b => b.classList.toggle('active', b.dataset.im === m));
+  $('importBankSection').style.display = m === 'bank' ? '' : 'none';
+  $('importQuestionsSection').style.display = m === 'questions' ? '' : 'none';
+  $('formatSpec').textContent = m === 'bank' ? FORMAT_BANK : FORMAT_QUESTIONS;
+  pendingImport = null;
+}
+
+function fillImportTargetBanks(){
+  const sel = $('importTargetBank');
+  const ids = Object.keys(state.banks);
+  if(!ids.length){ sel.innerHTML = '<option>（无题库）</option>'; return; }
+  sel.innerHTML = ids.map(id => {
+    const b = state.banks[id];
+    return `<option value="${id}">${esc(b.name)}（${b.questions.length} 题）</option>`;
+  }).join('');
+  if(state.currentBankId && state.banks[state.currentBankId]) sel.value = state.currentBankId;
+}
+
+function openImport(){
+  setImportMode('bank');
+  $('importText').value = '';
+  $('importQText').value = '';
+  fillImportTargetBanks();
+  $('importDlg').showModal();
+}
+
+function parseImportText(text){
   const src = String(text).trim();
   if(!src) return null;
   if(src.startsWith(SHARE_PREFIX)){
@@ -1323,7 +1485,7 @@ function parseImport(text){
       const d = JSON.parse(json);
       if(!d || !Array.isArray(d.q)) return null;
       return {
-        name: d.n || '分享题库',
+        name: d.n || '',
         questions: d.q.map(x => ({
           type: x.t === 'judge' ? 'judge' : 'choice',
           q: x.q, options: x.o, answer: x.a, explain: x.e || '', tag: x.g || ''
@@ -1331,9 +1493,11 @@ function parseImport(text){
       };
     }catch(e){ return null; }
   }
+
   const lines = src.replace(/\r\n?/g,'\n').split('\n');
   let bankName = ''; let section = null; let cur = null; const out = [];
   const flush = () => { if(cur){ out.push(cur); cur = null; } };
+
   for(const raw of lines){
     const line = raw.trim();
     if(!line) continue;
@@ -1361,6 +1525,7 @@ function parseImport(text){
     else if(cur.q && !cur.rawAnswer) cur.q += ' ' + line;
   }
   flush();
+
   const valid = [];
   for(const q of out){
     const v = (q.rawAnswer || '').trim();
@@ -1384,12 +1549,99 @@ function parseImport(text){
     q.type = 'choice'; q.options = opts; q.answer = idxAns;
     delete q.rawAnswer; valid.push(q);
   }
-  return {
-    name: bankName || ('导入题库 ' + new Date().toLocaleString('zh-CN')),
-    questions: valid
-  };
+
+  return { name: bankName, questions: valid };
 }
 
+function doImportBank(result){
+  let name = result.name || ('导入题库 ' + new Date().toLocaleString('zh-CN'));
+  if(isBankNameTaken(name)){
+    const input = prompt(`题库名「${name}」已存在。请输入新名字：`, name + ' 2');
+    if(input == null) return;
+    const trimmed = input.trim();
+    if(!trimmed){ alert('名字不能为空'); return; }
+    if(isBankNameTaken(trimmed)){ alert('这个名字也被占用了，请换个名字再试。'); return; }
+    name = trimmed;
+  }
+  const bank = makeBank(name, result.questions);
+  state.banks[bank.id] = bank;
+  state.currentBankId = bank.id;
+  state.ui.mode = 'seq'; state.ui.filterType = 'all';
+  state.ui.search = ''; state.ui.tag = 'all';
+  state.ui.progressAt = Date.now();
+  $('searchInput').value = '';
+  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  dynList = []; dynPos = 0;
+  saveState();
+  $('importDlg').close();
+  syncSegs(); ensureModeHistory(); renderAll();
+  alert(`导入成功：${name}\n共 ${result.questions.length} 道题`);
+}
+
+function doImportQuestions(result){
+  const targetId = $('importTargetBank').value;
+  const bank = state.banks[targetId];
+  if(!bank){ alert('请选择目标题库'); return; }
+
+  const before = bank.questions.length;
+  const after = before + result.questions.length;
+
+  if(!confirm(`将向「${bank.name}」追加 ${result.questions.length} 道题。\n当前 ${before} 题，追加后 ${after} 题。\n确认吗？`)){
+    return;
+  }
+
+  const newIds = [];
+  result.questions.forEach(item => {
+    const qid = nextQid(bank);
+    bank.questions.push({
+      id: qid,
+      type: item.type === 'judge' ? 'judge' : 'choice',
+      q: item.q, options: item.options, answer: item.answer,
+      explain: item.explain || '', tag: item.tag || ''
+    });
+    newIds.push(qid);
+  });
+
+  // 把新题追加进随机序列末尾，保持已有随机序列稳定
+  ensureRandOrder(bank);
+  const expectedBefore = bank.questions.length - newIds.length;
+  if(bank.randOrder.length === expectedBefore){
+    bank.randOrder.push(...newIds);
+  }else{
+    bank.randOrder = shuffle(bank.questions.map(q => q.id));
+  }
+
+  state.ui.progressAt = Date.now();
+  saveState();
+  $('importDlg').close();
+  ensureModeHistory(); renderAll();
+  alert(`追加成功：${bank.name}\n新增 ${newIds.length} 题，当前共 ${bank.questions.length} 题`);
+}
+
+$('importModeSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  setImportMode(b.dataset.im);
+});
+
+$('importBtn').onclick = openImport;
+$('importCancel').onclick = () => $('importDlg').close();
+$('copyFormatBtn').onclick = () => {
+  const spec = importMode === 'bank' ? FORMAT_BANK : FORMAT_QUESTIONS;
+  copyText(spec, '格式说明已复制。');
+};
+$('importConfirm').onclick = () => {
+  const text = importMode === 'bank' ? $('importText').value.trim() : $('importQText').value.trim();
+  if(!text){ alert('请先粘贴内容'); return; }
+  const result = parseImportText(text);
+  if(!result || !result.questions.length){
+    alert('没有解析到有效题目。请检查题号、选项、答案行格式，或分享码是否完整。');
+    return;
+  }
+  if(importMode === 'bank') doImportBank(result);
+  else doImportQuestions(result);
+};
+
+/* ======================= 导出 / 分享 ======================= */
 function encodeShare(bank){
   const payload = { n: bank.name, q: bank.questions.map(q => ({ t: q.type, q: q.q, o: q.options, a: q.answer, e: q.explain || '', g: q.tag || '' })) };
   return SHARE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
@@ -1423,6 +1675,7 @@ function bankToText(bank){
   return lines.join('\n');
 }
 
+/* ======================= 名称弹窗 ======================= */
 let nameResolver = null;
 function askName(title, defaultValue){
   return new Promise(resolve => {
@@ -1437,7 +1690,7 @@ $('nameModalCancel').onclick = () => { $('nameModal').classList.remove('show'); 
 $('nameModalOk').onclick = () => { const v = $('nameModalInput').value.trim(); $('nameModal').classList.remove('show'); if(nameResolver){ nameResolver(v || null); nameResolver = null; } };
 $('nameModalInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); $('nameModalOk').click(); } else if(e.key === 'Escape'){ e.preventDefault(); $('nameModalCancel').click(); } });
 
-/* ======================= 事件 ======================= */
+/* ======================= 卡片事件 ======================= */
 $('card').addEventListener('click', e => {
   const actEl = e.target.closest('[data-act]');
   if(actEl){
@@ -1445,6 +1698,11 @@ $('card').addEventListener('click', e => {
     const q = getCurrentQuestion(); const bank = getBank();
     if(a === 'open-import'){ openImport(); return; }
     if(a === 'new-bank'){ createNewBank(); return; }
+    if(a === 'open-settings'){ $('settingsBtn').click(); return; }
+    if(a === 'dismiss-conflict'){
+      if(bank){ delete bank._conflictDelete; saveState(); renderAll(); }
+      return;
+    }
     if(a === 'star'){ toggleStar(); return; }
     if(a === 'ai'){ runAI(); return; }
     if(a === 'new-round'){ startNewRound(); return; }
@@ -1494,24 +1752,23 @@ $('bankSelect').addEventListener('change', e => {
   dynList = []; dynPos = 0;
   saveState();
   ensureBankFields(state.banks[id]);
-  ensureModeHistory();
-  renderAll();
+  ensureModeHistory(); renderAll();
 });
 
 $('searchInput').addEventListener('input', e => {
   state.ui.search = e.target.value;
   state.ui.progressAt = Date.now();
   saveState();
-  if(!currentModeIsHistoryMode()) { rebuildDynList(); renderAll(); }
-  else { renderAll(); }
+  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(); }
+  else renderAll();
 });
 
 $('tagSelect').addEventListener('change', e => {
   state.ui.tag = e.target.value;
   state.ui.progressAt = Date.now();
   saveState();
-  if(!currentModeIsHistoryMode()) { rebuildDynList(); renderAll(); }
-  else { renderAll(); }
+  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(); }
+  else renderAll();
 });
 
 $('fontBtn').onclick = () => {
@@ -1534,48 +1791,20 @@ function applyThemeFont(){
 async function createNewBank(){
   const name = await askName('新建题库', '新题库');
   if(!name) return;
-  const bank = makeBank(name, []);
-  state.banks[bank.id] = bank; state.currentBankId = bank.id;
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
-  dynList = []; dynPos = 0;
-  state.ui.progressAt = Date.now();
-  saveState();
-  ensureModeHistory();
-  renderAll();
-  alert('题库已创建。点 📥 导入题目。');
-}
-$('newBankBtn').onclick = createNewBank;
-
-function openImport(){
-  $('importText').value = '';
-  $('formatSpec').textContent = FORMAT_SPEC;
-  $('importDlg').showModal();
-}
-$('importBtn').onclick = openImport;
-$('importCancel').onclick = () => $('importDlg').close();
-$('importConfirm').onclick = () => {
-  const text = $('importText').value.trim();
-  if(!text){ alert('请先粘贴内容'); return; }
-  const result = parseImport(text);
-  if(!result || !result.questions.length){
-    alert('没有解析到有效题目。请检查题号、选项、答案行格式，或分享码是否完整。');
+  if(isBankNameTaken(name)){
+    alert('这个名字已被其他题库使用，请换个名字。');
     return;
   }
-  const bank = makeBank(result.name, result.questions);
+  const bank = makeBank(name, []);
   state.banks[bank.id] = bank;
   state.currentBankId = bank.id;
-  state.ui.mode = 'seq'; state.ui.filterType = 'all';
-  state.ui.search = ''; state.ui.tag = 'all';
-  state.ui.progressAt = Date.now();
-  $('searchInput').value = '';
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   dynList = []; dynPos = 0;
-  saveState();
-  $('importDlg').close();
-  syncSegs(); ensureModeHistory(); renderAll();
-  alert(`导入成功：${result.name}\n共 ${result.questions.length} 道题`);
-};
-$('copyFormatBtn').onclick = () => copyText(FORMAT_SPEC, '格式说明已复制。');
+  state.ui.progressAt = Date.now();
+  saveState(); ensureModeHistory(); renderAll();
+  alert('题库已创建。点 📥 导入 → 导入题目，向这个题库追加题目。');
+}
+$('newBankBtn').onclick = createNewBank;
 
 $('shareBtn').onclick = () => {
   const bank = getBank(); if(!bank){ alert('还没有题库'); return; }
@@ -1621,7 +1850,7 @@ $('ghSyncNow').onclick = () => { syncNow(true); };
 $('syncBtn').onclick = () => { syncNow(true); };
 
 $('backupBtn').onclick = () => {
-  const data = { v:8, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks };
+  const data = { v:9, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones };
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1641,6 +1870,7 @@ $('restoreFile').addEventListener('change', e => {
       if(!d || !d.banks || typeof d.banks !== 'object') throw new Error('格式不对');
       if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')) return;
       state.banks = d.banks;
+      state.tombstones = d.tombstones || {};
       Object.keys(state.banks).forEach(ensureBankFields);
       state.currentBankId = d.currentBankId && state.banks[d.currentBankId] ? d.currentBankId : Object.keys(d.banks)[0] || null;
       if(d.ui) state.ui = Object.assign(state.ui, d.ui);
@@ -1658,9 +1888,16 @@ $('restoreFile').addEventListener('change', e => {
 
 $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
-  const name = await askName('重命名题库', bank.name); if(!name) return;
-  bank.name = name; saveState(); renderBankSelect();
+  const name = await askName('重命名题库', bank.name);
+  if(!name) return;
+  if(isBankNameTaken(name, bank.id)){
+    alert('这个名字已被其他题库使用，请换个名字。');
+    return;
+  }
+  bank.name = name;
+  saveState(); renderBankSelect();
 };
+
 $('clearRecordsBtn').onclick = () => {
   const bank = getBank(); if(!bank) return;
   if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏和 AI 解析吗？`)) return;
@@ -1669,15 +1906,18 @@ $('clearRecordsBtn').onclick = () => {
   bank.randOrder = [];
   bank.seqHistory = []; bank.seqPos = -1;
   bank.randHistory = []; bank.randPos = -1;
+  delete bank._conflictDelete;
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
   saveState(); ensureModeHistory(); renderAll();
   $('settingsDlg').close();
 };
+
 $('deleteBankBtn').onclick = () => {
   const bank = getBank(); if(!bank) return;
-  if(!confirm(`确定删除题库“${bank.name}”吗？`)) return;
+  if(!confirm(`确定删除题库“${bank.name}”吗？删除会同步到其他设备（保留 3 天内有效）。`)) return;
+  state.tombstones[bank.id] = { name: bank.name, deletedAt: Date.now() };
   delete state.banks[bank.id];
   state.currentBankId = Object.keys(state.banks)[0] || null;
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
@@ -1705,6 +1945,14 @@ document.addEventListener('keydown', e => {
 /* ======================= 启动 ======================= */
 loadState();
 applyThemeFont();
+// 清理过期 tombstone
+(() => {
+  const now = Date.now();
+  Object.keys(state.tombstones).forEach(tid => {
+    if(now - state.tombstones[tid].deletedAt > TOMBSTONE_TTL) delete state.tombstones[tid];
+  });
+  saveState();
+})();
 if(!state.currentBankId && Object.keys(state.banks).length) state.currentBankId = Object.keys(state.banks)[0];
 Object.keys(state.banks).forEach(id => ensureBankFields(state.banks[id]));
 syncSegs();
