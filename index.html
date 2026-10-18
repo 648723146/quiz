@@ -86,6 +86,15 @@ body.font-l{font-size:18px;}
 .progress{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden;}
 .progress .bar{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:99px;transition:width .25s;}
 
+/* 每日横幅 */
+.daily-banner{
+  margin-top:12px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.12));
+  border:1px solid var(--line);border-radius:14px;padding:11px 14px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.82em;
+}
+.daily-banner .fire{font-size:1.2em;}
+.daily-banner .praise{margin-left:auto;color:#b45309;font-weight:600;font-size:.92em;}
+
 .card{background:var(--card);border-radius:16px;padding:18px 16px;margin-top:14px;box-shadow:var(--shadow);}
 .qmeta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
 .tag{font-size:.68em;padding:3px 9px;border-radius:99px;font-weight:600;background:var(--tagbg);color:var(--tagfg);}
@@ -98,6 +107,8 @@ body.font-l{font-size:18px;}
 .tag.warn{background:rgba(220,38,38,.15);color:#b91c1c;font-weight:700;}
 .qno{margin-left:auto;font-size:.75em;color:var(--muted);}
 .star-btn{border:0;background:transparent;font-size:1.2em;line-height:1;cursor:pointer;color:#f59e0b;padding:0 2px;}
+.note-btn{border:1.5px solid var(--line);background:var(--soft);border-radius:9px;padding:4px 9px;font-size:.72em;font-family:inherit;cursor:pointer;color:var(--muted);}
+.note-btn:hover{background:var(--soft2);}
 .qtext{font-size:1.06em;line-height:1.65;font-weight:500;margin-bottom:16px;}
 .hint{font-size:.78em;color:#b45309;background:rgba(245,158,11,.13);border-radius:8px;padding:8px 11px;margin:0 0 14px;line-height:1.55;}
 
@@ -132,6 +143,17 @@ body.theme-dark .ai-btn{color:#a5b4fc;border-color:#3730a3;}
 .ai-foot{display:flex;justify-content:flex-end;margin-top:6px;}
 .ai-foot button{border:0;background:transparent;color:var(--muted);font-size:.75em;font-family:inherit;cursor:pointer;padding:4px 6px;}
 .ai-foot button:hover{color:var(--red);}
+
+.followup{margin-top:10px;display:flex;gap:8px;}
+.followup input{flex:1;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:var(--soft);color:var(--text);font-size:.84em;font-family:inherit;}
+.followup input:focus{outline:none;border-color:#93c5fd;}
+.followup button{border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;border-radius:9px;padding:8px 13px;font-size:.82em;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;}
+body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
+.followup-out{margin-top:8px;padding:10px 13px;background:var(--soft2);border-radius:8px;font-size:.84em;line-height:1.7;white-space:pre-wrap;color:var(--text);}
+.followup-out:empty{display:none;}
+
+.note-box{margin-top:10px;padding:10px 13px;background:rgba(245,158,11,.09);border-left:3px solid #f59e0b;border-radius:8px;font-size:.84em;line-height:1.7;white-space:pre-wrap;color:var(--text);}
+.note-box:empty{display:none;}
 
 .empty{text-align:center;padding:44px 10px;}
 .empty .big{font-size:2.6em;}
@@ -174,12 +196,20 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .import-section{margin-top:10px;}
 .import-section .info{font-size:.78em;color:var(--muted);background:var(--soft2);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.55;}
 
+/* 统计表 */
+.stat-table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:8px;}
+.stat-table th,.stat-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;}
+.stat-table th{color:var(--muted);font-weight:600;font-size:.92em;}
+.stat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.stat-empty{font-size:.82em;color:var(--muted);padding:12px 0;}
+
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
 .modal.show{display:flex;}
 .modal-box{background:var(--card);border-radius:16px;padding:20px;width:min(92vw,420px);box-shadow:0 20px 60px rgba(15,23,42,.28);}
 .modal-box h3{font-size:1.05em;margin:0 0 14px;}
-.modal-box input{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.92em;font-family:inherit;background:var(--soft);color:var(--text);}
-.modal-box input:focus{outline:none;border-color:#93c5fd;background:var(--card);}
+.modal-box input,.modal-box textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.92em;font-family:inherit;background:var(--soft);color:var(--text);}
+.modal-box textarea{min-height:140px;resize:vertical;line-height:1.6;}
+.modal-box input:focus,.modal-box textarea:focus{outline:none;border-color:#93c5fd;background:var(--card);}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
 .modal-actions button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 18px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text);}
 .modal-actions button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
@@ -233,11 +263,13 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
     <button id="themeBtn" title="夜间模式">🌙</button>
   </div>
 
+  <div id="dailyBanner"></div>
+
   <div class="stats">
     <div class="stat"><span class="num" id="stAnswered">0</span><span class="lbl">本轮已答</span></div>
     <div class="stat"><span class="num" id="stRate">--</span><span class="lbl">正确率</span></div>
-    <div class="stat"><span class="num" id="stWrong">0</span><span class="lbl">错题</span></div>
-    <div class="stat"><span class="num" id="stProgress">0/0</span><span class="lbl">本轮进度</span></div>
+    <div class="stat"><span class="num" id="stWrong">0</span><span class="lbl">今日待复习</span></div>
+    <div class="stat"><span class="num" id="stStreak">0</span><span class="lbl">连续天数</span></div>
   </div>
 
   <div class="progress"><div class="bar" id="bar"></div></div>
@@ -253,18 +285,15 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <dialog id="importDlg">
   <div class="dlg-body">
     <h3>导入</h3>
-
     <div class="seg" id="importModeSeg" style="margin-bottom:14px;">
       <button data-im="bank" class="active">导入题库</button>
       <button data-im="questions">导入题目</button>
     </div>
-
     <div id="importBankSection">
       <div class="info">粘贴题库文本或分享码。如果题库名已存在，会要求你改名后再导入。</div>
       <label for="importText">粘贴内容</label>
       <textarea id="importText" placeholder="题库文本，或 QZ1: 开头的分享码…"></textarea>
     </div>
-
     <div id="importQuestionsSection" style="display:none;">
       <div class="info">把题目追加到选定题库末尾。新题 id 自动分配，不影响已有答题记录。</div>
       <label for="importTargetBank">追加到题库</label>
@@ -272,10 +301,8 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
       <label for="importQText">粘贴题目内容</label>
       <textarea id="importQText" placeholder="题目文本，或 QZ1: 开头的分享码…"></textarea>
     </div>
-
     <button class="copy-format-btn" id="copyFormatBtn">📋 复制格式说明（可直接发给 AI）</button>
     <div class="format-box"><pre id="formatSpec"></pre></div>
-
     <div class="dlg-actions">
       <button id="importCancel">取消</button>
       <button id="importConfirm" class="primary">导入</button>
@@ -286,7 +313,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <dialog id="shareDlg">
   <div class="dlg-body">
     <h3>分享 / 导出</h3>
-    <p class="sub">分享码包含题目、选项、答案、解析和标签，不含你的答题记录。</p>
+    <p class="sub">分享码包含题目、选项、答案、解析和标签，不含你的答题记录和笔记。</p>
     <label>分享码</label>
     <textarea id="shareCode" readonly style="min-height:120px;"></textarea>
     <button class="copy-format-btn" id="copyShareBtn">📋 复制分享码</button>
@@ -321,7 +348,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 
     <hr class="divider">
     <label style="margin-top:18px;">GitHub 同步（Gist）</label>
-    <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。</p>
+    <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。笔记随同步。</p>
 
     <label for="gistId">Gist ID</label>
     <input type="text" id="gistId" placeholder="例如 a1b2c3d4e5f6..." autocomplete="off" spellcheck="false">
@@ -335,6 +362,10 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
       <span class="save-msg" id="ghSaveMsg"></span>
     </div>
     <p class="tip" id="ghStatus"></p>
+
+    <hr class="divider">
+    <label>标签掌握度（全部历史）</label>
+    <div id="statsArea"></div>
 
     <hr class="divider">
     <label>数据备份</label>
@@ -365,19 +396,60 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
   </div>
 </div>
 
+<div class="modal" id="noteModal">
+  <div class="modal-box">
+    <h3>笔记</h3>
+    <textarea id="noteInput" placeholder="写下你的记忆点、易错原因、口诀…（会随同步保存）"></textarea>
+    <div class="modal-actions">
+      <button id="noteCancel">取消</button>
+      <button id="noteClear">清空</button>
+      <button id="noteSave" class="primary">保存</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const DAY = 86400000;
 const TOMBSTONE_TTL = 3 * DAY;
-const STATE_KEY = 'quiz-v9-state';
-const AI_KEY = 'quiz-v9-ai';
-const GH_KEY = 'quiz-v9-github';
+const STATE_KEY = 'quiz-v10-state';
+const AI_KEY = 'quiz-v10-ai';
+const GH_KEY = 'quiz-v10-github';
 const SHARE_PREFIX = 'QZ1:';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function uid(){ return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function reviewInterval(n){ if(n <= 1) return DAY; if(n === 2) return 3*DAY; return 7*DAY; }
+
+/* ======================= 4 点复习时间 ======================= */
+function nextReviewTime(wrongCount){
+  const now = new Date();
+  const today4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 4, 0, 0, 0);
+  let base = today4.getTime();
+  if(now.getTime() >= base) base += DAY;
+  if(wrongCount <= 1) return base;
+  if(wrongCount === 2) return base + 2 * DAY;
+  return base + 6 * DAY;
+}
+function getLogicalDateKey(){
+  const now = new Date();
+  const d = new Date(now);
+  if(now.getHours() < 4) d.setDate(d.getDate() - 1);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function getNext4amDateKey(){
+  const now = new Date();
+  const today4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 4, 0, 0, 0);
+  let target = today4;
+  if(now.getTime() >= today4.getTime()) target = new Date(today4.getTime() + DAY);
+  return target.getFullYear() + '-' + String(target.getMonth()+1).padStart(2,'0') + '-' + String(target.getDate()).padStart(2,'0');
+}
+function getPrevDateKey(key){
+  const parts = key.split('-').map(Number);
+  const d = new Date(parts[0], parts[1]-1, parts[2]);
+  d.setDate(d.getDate() - 1);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 function fmtLeft(ms){ if(ms <= 0) return '现在'; const h = Math.ceil(ms/3600000); return h < 24 ? h + ' 小时后' : Math.ceil(ms/86400000) + ' 天后'; }
 function copyText(text, okMsg){
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -386,20 +458,24 @@ function copyText(text, okMsg){
   }else{ alert('当前浏览器不支持自动复制，请长按文本框手动复制。'); }
 }
 
+/* ======================= 状态 ======================= */
 let state = {
   banks: {},
   tombstones: {},
   currentBankId: null,
+  stats: { daily: {}, streak: 0, lastStreakKey: '' },
   ui: {
     filterType:'all', mode:'seq',
     theme:'light', font:'m',
     search:'', tag:'all',
-    progressAt: 0
+    progressAt: 0,
+    lastRoundKey: ''
   }
 };
 
 let completionByMode = { seq:false, rand:false, wrong:false, star:false };
 let dynList = [], dynPos = 0;
+let followupCache = {};
 
 function loadState(){
   try{
@@ -410,13 +486,12 @@ function loadState(){
       state.banks = d.banks || {};
       state.tombstones = d.tombstones || {};
       state.currentBankId = d.currentBankId || null;
+      state.stats = d.stats || { daily:{}, streak:0, lastStreakKey:'' };
       state.ui = Object.assign(state.ui, d.ui || {});
     }
   }catch(e){ console.warn(e); }
 }
-function saveState(){
-  try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); }
-}
+function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); } }
 
 function getAICfg(){ try{ const d = JSON.parse(localStorage.getItem(AI_KEY)||'{}'); return { key:d.key||'', model:d.model||'deepseek-chat' }; } catch(e){ return { key:'', model:'deepseek-chat' }; } }
 function setAICfg(cfg){ try{ localStorage.setItem(AI_KEY, JSON.stringify(cfg)); }catch(e){} }
@@ -468,9 +543,10 @@ function makeBank(name, questions){
       q: q.q, options: q.options, answer: q.answer,
       explain: q.explain || '', tag: q.tag || ''
     })),
-    records: {}, ai: {}, stars: [],
+    records: {}, ai: {}, stars: [], notes: {},
     roundStartAt: now,
-    randOrder: [],
+    roundSeqOrder: [],
+    roundRandOrder: [],
     seqHistory: [], seqPos: -1,
     randHistory: [], randPos: -1
   };
@@ -479,7 +555,8 @@ function makeBank(name, questions){
 function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
-  if(!Array.isArray(bank.randOrder)) bank.randOrder = [];
+  if(!Array.isArray(bank.roundSeqOrder)) bank.roundSeqOrder = [];
+  if(!Array.isArray(bank.roundRandOrder)) bank.roundRandOrder = [];
   if(!Array.isArray(bank.seqHistory)) bank.seqHistory = [];
   if(typeof bank.seqPos !== 'number') bank.seqPos = -1;
   if(!Array.isArray(bank.randHistory)) bank.randHistory = [];
@@ -487,13 +564,7 @@ function ensureBankFields(bank){
   if(!Array.isArray(bank.stars)) bank.stars = [];
   if(!bank.records) bank.records = {};
   if(!bank.ai) bank.ai = {};
-}
-
-function ensureRandOrder(bank){
-  if(!bank) return;
-  if(!Array.isArray(bank.randOrder) || bank.randOrder.length !== bank.questions.length){
-    bank.randOrder = shuffle(bank.questions.map(q => q.id));
-  }
+  if(!bank.notes) bank.notes = {};
 }
 
 function isAnsweredThisRound(qid, bank){
@@ -503,15 +574,39 @@ function isAnsweredThisRound(qid, bank){
   return (r.lastAt || 0) >= (bank.roundStartAt || 0);
 }
 
-function currentModeIsHistoryMode(){
-  return state.ui.mode === 'seq' || state.ui.mode === 'rand';
+function buildRoundOrders(bank){
+  if(!bank) return;
+  const now = Date.now();
+  const dueWrong = [];
+  const others = [];
+  bank.questions.forEach(q => {
+    const r = bank.records[q.id];
+    if(r && r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now){
+      dueWrong.push(q);
+    }else{
+      others.push(q);
+    }
+  });
+  dueWrong.sort((a,b)=> (bank.records[a.id].nextReviewAt||0) - (bank.records[b.id].nextReviewAt||0));
+  const seqOrder = dueWrong.map(q=>q.id).concat(others.map(q=>q.id));
+  const randOthers = shuffle(others.map(q=>q.id));
+  const randOrder = dueWrong.map(q=>q.id).concat(randOthers);
+  bank.roundSeqOrder = seqOrder;
+  bank.roundRandOrder = randOrder;
 }
 
 function getSeq(mode){
   const bank = getBank(); if(!bank) return [];
-  if(mode === 'seq') return bank.questions.map(q => q.id);
-  ensureRandOrder(bank);
-  return bank.randOrder;
+  if(mode === 'seq'){
+    if(!Array.isArray(bank.roundSeqOrder) || bank.roundSeqOrder.length !== bank.questions.length) buildRoundOrders(bank);
+    return bank.roundSeqOrder;
+  }
+  if(!Array.isArray(bank.roundRandOrder) || bank.roundRandOrder.length !== bank.questions.length) buildRoundOrders(bank);
+  return bank.roundRandOrder;
+}
+
+function currentModeIsHistoryMode(){
+  return state.ui.mode === 'seq' || state.ui.mode === 'rand';
 }
 
 function getHist(){
@@ -520,14 +615,12 @@ function getHist(){
   if(state.ui.mode === 'rand') return bank.randHistory;
   return dynList;
 }
-
 function getPos(){
   const bank = getBank(); if(!bank) return 0;
   if(state.ui.mode === 'seq') return bank.seqPos;
   if(state.ui.mode === 'rand') return bank.randPos;
   return dynPos;
 }
-
 function setPos(v){
   const bank = getBank(); if(!bank) return;
   if(state.ui.mode === 'seq') bank.seqPos = v;
@@ -535,7 +628,6 @@ function setPos(v){
   else dynPos = v;
   saveState();
 }
-
 function pushHist(qid){
   const bank = getBank(); if(!bank) return;
   if(state.ui.mode === 'seq'){ bank.seqHistory.push(qid); bank.seqPos = bank.seqHistory.length - 1; }
@@ -575,11 +667,9 @@ function rebuildDynList(){
   const bank = getBank(); if(!bank) return;
   const m = state.ui.mode;
   const ui = state.ui;
-
   let pool = bank.questions.slice();
   if(ui.filterType !== 'all') pool = pool.filter(q => q.type === ui.filterType);
   if(ui.tag && ui.tag !== 'all') pool = pool.filter(q => (q.tag||'') === ui.tag);
-
   const kw = (ui.search||'').trim().toLowerCase();
   if(kw){
     pool = pool.filter(q =>
@@ -588,25 +678,23 @@ function rebuildDynList(){
       (q.explain||'').toLowerCase().includes(kw)
     );
   }
-
   if(m === 'wrong'){
     const now = Date.now();
     pool = pool.filter(q => {
       const r = bank.records[q.id];
-      return r && r.wrongCount > 0 && (r.streak||0) < 3;
+      if(!r || r.wrongCount === 0 || (r.streak||0) >= 3) return false;
+      if(isAnsweredThisRound(q.id, bank)) return false;
+      return !r.nextReviewAt || r.nextReviewAt <= now;
     });
     pool.sort((a,b)=>{
       const na = (bank.records[a.id]||{}).nextReviewAt || 0;
       const nb = (bank.records[b.id]||{}).nextReviewAt || 0;
-      const da = na <= now ? 0 : 1, db = nb <= now ? 0 : 1;
-      if(da !== db) return da - db;
       return na - nb;
     });
   }else if(m === 'star'){
     const set = new Set(bank.stars || []);
     pool = pool.filter(q => set.has(q.id));
   }
-
   dynList = pool.map(q => q.id);
   if(dynPos >= dynList.length) dynPos = Math.max(0, dynList.length - 1);
   if(dynPos < 0) dynPos = 0;
@@ -615,18 +703,14 @@ function rebuildDynList(){
 function getCurrentQuestion(){
   const bank = getBank(); if(!bank) return null;
   const m = state.ui.mode;
-
   if(m === 'seq' || m === 'rand'){
     const hist = m === 'seq' ? bank.seqHistory : bank.randHistory;
     const pos = m === 'seq' ? bank.seqPos : bank.randPos;
     if(pos < 0 || pos >= hist.length) return null;
-    const qid = hist[pos];
-    return bank.questions.find(q => q.id === qid) || null;
+    return bank.questions.find(q => q.id === hist[pos]) || null;
   }
-
   if(dynPos < 0 || dynPos >= dynList.length) return null;
-  const qid = dynList[dynPos];
-  return bank.questions.find(q => q.id === qid) || null;
+  return bank.questions.find(q => q.id === dynList[dynPos]) || null;
 }
 
 function getDisplayIndex(q){
@@ -637,21 +721,117 @@ function getDisplayIndex(q){
     return { cur: idx + 1, total: bank.questions.length };
   }
   if(m === 'rand'){
-    const idx = bank.randOrder.indexOf(q.id);
-    if(idx < 0) return { cur: 0, total: bank.randOrder.length };
-    return { cur: idx + 1, total: bank.randOrder.length };
+    const order = getSeq('rand');
+    const idx = order.indexOf(q.id);
+    if(idx < 0) return { cur: 0, total: order.length };
+    return { cur: idx + 1, total: order.length };
   }
   return null;
+}
+
+function getDueWrongCount(bank){
+  if(!bank) return 0;
+  const now = Date.now();
+  return bank.questions.filter(q => {
+    const r = bank.records[q.id];
+    return r && r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now;
+  }).length;
+}
+
+/* ======================= 每日重置 ======================= */
+function checkDailyReset(){
+  const key = getLogicalDateKey();
+  if(!state.ui.lastRoundKey){
+    state.ui.lastRoundKey = key;
+    saveState();
+    return false;
+  }
+  if(key !== state.ui.lastRoundKey){
+    const bank = getBank();
+    if(bank){
+      bank.roundStartAt = Date.now();
+      buildRoundOrders(bank);
+      bank.seqHistory = []; bank.seqPos = -1;
+      bank.randHistory = []; bank.randPos = -1;
+      dynList = []; dynPos = 0;
+      completionByMode = { seq:false, rand:false, wrong:false, star:false };
+    }
+    state.ui.lastRoundKey = key;
+    state.ui.progressAt = Date.now();
+    saveState();
+    return true;
+  }
+  return false;
+}
+
+/* ======================= 每日打卡 ======================= */
+function recordDailyAnswer(correct){
+  const key = getLogicalDateKey();
+  if(!state.stats) state.stats = { daily:{}, streak:0, lastStreakKey:'' };
+  if(!state.stats.daily) state.stats.daily = {};
+  if(!state.stats.daily[key]) state.stats.daily[key] = { answered:0, correct:0 };
+  state.stats.daily[key].answered++;
+  if(correct) state.stats.daily[key].correct++;
+
+  if(state.stats.daily[key].answered >= 10 && state.stats.lastStreakKey !== key){
+    const prev = getPrevDateKey(key);
+    const prevDaily = state.stats.daily[prev];
+    if(prevDaily && prevDaily.answered >= 10 && state.stats.lastStreakKey === prev){
+      state.stats.streak = (state.stats.streak || 0) + 1;
+    }else{
+      state.stats.streak = 1;
+    }
+    state.stats.lastStreakKey = key;
+  }
+  saveState();
+}
+
+function getTodayAnswered(){
+  const key = getLogicalDateKey();
+  return state.stats.daily[key] ? state.stats.daily[key].answered : 0;
+}
+function getWeekAnswered(){
+  const todayKey = getLogicalDateKey();
+  const parts = todayKey.split('-').map(Number);
+  const d = new Date(parts[0], parts[1]-1, parts[2]);
+  const dow = d.getDay() === 0 ? 7 : d.getDay();
+  d.setDate(d.getDate() - (dow - 1));
+  let total = 0;
+  for(let i=0;i<7;i++){
+    const k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    if(state.stats.daily[k]) total += state.stats.daily[k].answered;
+    d.setDate(d.getDate() + 1);
+  }
+  return total;
+}
+function getPraiseText(){
+  const today = getTodayAnswered();
+  const streak = state.stats.streak || 0;
+  const week = getWeekAnswered();
+  if(today >= 10){
+    if(streak >= 30) return '一个月了，这已经不是临时抱佛脚';
+    if(streak >= 7) return '一周全勤，节奏稳了';
+    if(streak >= 3) return '坚持三天，继续保持';
+    return '今天任务完成，干得漂亮';
+  }
+  if(today > 0){
+    const left = 10 - today;
+    return `再答 ${left} 题就打卡，加油`;
+  }
+  if(streak > 0) return '今天还没开始，先来一题热身';
+  return '每天 10 题，坚持就是胜利';
 }
 
 /* ======================= 渲染 ======================= */
 let aiCtrl = null;
 function abortAI(){ if(aiCtrl){ try{ aiCtrl.abort(); }catch(e){} aiCtrl = null; } }
 
-function renderAll(){
+function renderAll(skipReset){
+  if(!skipReset) checkDailyReset();
   abortAI();
   renderBankSelect();
   renderTagSelect();
+  renderDailyBanner();
   renderStats();
   renderCard();
   updateNavButtons();
@@ -660,14 +840,11 @@ function renderAll(){
 function renderBankSelect(){
   const sel = $('bankSelect');
   const ids = Object.keys(state.banks);
-
-  // 重名统计
   const nameCount = {};
   ids.forEach(id => {
     const n = state.banks[id].name;
     nameCount[n] = (nameCount[n] || 0) + 1;
   });
-
   sel.innerHTML = ids.length
     ? ids.map(id => {
         const b = state.banks[id];
@@ -678,14 +855,10 @@ function renderBankSelect(){
         return `<option value="${id}">${esc(b.name)}（${b.questions.length}）${tail}</option>`;
       }).join('')
     : '<option value="">（无题库）</option>';
-
   const bank = getBank();
   if(bank) sel.value = bank.id;
-
-  const conflictCount = ids.filter(id => state.banks[id]._conflictDelete).length;
   $('bankNameDisplay').textContent = bank
-    ? '共 ' + bank.questions.length + ' 题 · 收藏 ' + (bank.stars||[]).length +
-      (conflictCount ? ' · ⚠ ' + conflictCount + ' 个删除冲突' : '')
+    ? '共 ' + bank.questions.length + ' 题 · 收藏 ' + (bank.stars||[]).length
     : '';
 }
 
@@ -707,11 +880,25 @@ function renderTagSelect(){
   if(!tags.includes(state.ui.tag)) state.ui.tag = 'all';
 }
 
+function renderDailyBanner(){
+  const el = $('dailyBanner');
+  const today = getTodayAnswered();
+  const week = getWeekAnswered();
+  const streak = state.stats.streak || 0;
+  el.innerHTML = `<div class="daily-banner">
+    <span class="fire">🔥</span>
+    <span>连续学习 <b>${streak}</b> 天</span>
+    <span>今日已答 <b>${today}</b>/10</span>
+    <span>本周 <b>${week}</b> 题</span>
+    <span class="praise">${esc(getPraiseText())}</span>
+  </div>`;
+}
+
 function renderStats(){
   const bank = getBank();
   if(!bank){
     $('stAnswered').textContent='0'; $('stRate').textContent='--';
-    $('stWrong').textContent='0'; $('stProgress').textContent='0/0';
+    $('stWrong').textContent='0'; $('stStreak').textContent='0';
     $('bar').style.width='0%'; return;
   }
   let answered = 0, correct = 0;
@@ -721,14 +908,10 @@ function renderStats(){
       if(bank.records[q.id].correct) correct++;
     }
   });
-  const wrongCount = bank.questions.filter(q => {
-    const r = bank.records[q.id];
-    return r && r.wrongCount > 0 && (r.streak||0) < 3;
-  }).length;
   $('stAnswered').textContent = answered;
   $('stRate').textContent = answered ? Math.round(correct/answered*100) + '%' : '--';
-  $('stWrong').textContent = wrongCount;
-  $('stProgress').textContent = answered + '/' + bank.questions.length;
+  $('stWrong').textContent = getDueWrongCount(bank);
+  $('stStreak').textContent = state.stats.streak || 0;
   $('bar').style.width = bank.questions.length ? (answered/bank.questions.length*100) + '%' : '0%';
 }
 
@@ -787,18 +970,18 @@ function renderCard(){
     card.innerHTML = `<div class="card empty">
       <div class="big">${m==='wrong'?'🎉':(m==='star'?'☆':'📭')}</div>
       <h2>${m==='wrong'?'没有待复习的错题':(m==='star'?'还没有收藏的题':'当前没有题目')}</h2>
-      <p>${m==='wrong'?'答错的题会按 1 天 → 3 天 → 7 天 的间隔出现。':'换个模式或清空搜索试试。'}</p>
+      <p>${m==='wrong'?'答错的题会在凌晨 4 点后按间隔出现。':'换个模式或清空搜索试试。'}</p>
     </div>`;
     return;
   }
 
   const rec = bank.records[q.id];
   const answeredThisRound = isAnsweredThisRound(q.id, bank);
-  const isHistory = currentModeIsHistoryMode();
-  const locked = answeredThisRound || (isHistory && rec && rec.lastChoice != null);
+  const locked = answeredThisRound;
   const starred = (bank.stars||[]).includes(q.id);
   const cachedAI = bank.ai[q.id];
-  const isHistoryBack = isHistory && !answeredThisRound && rec && rec.lastChoice != null;
+  const note = bank.notes[q.id] || '';
+  const followup = followupCache[q.id] || '';
 
   let tags = `<span class="tag ${q.type==='judge'?'judge':''}">${q.type==='judge'?'判断题':'单选题'}</span>`;
   if(q.tag) tags += `<span class="tag know">${esc(q.tag)}</span>`;
@@ -843,19 +1026,26 @@ function renderCard(){
     if((rec.nextReviewAt||0) > Date.now()) meta.push('下次复习：' + fmtLeft(rec.nextReviewAt - Date.now()));
     body += `<div class="ex">${meta.join('；')}。</div>`;
     if(q.explain) body += `<div class="ex"><b>解析：</b>${esc(q.explain)}</div>`;
-    if(isHistoryBack) body += `<div class="hint">这是本轮已浏览过的题，只读回看。点「下一题」继续。</div>`;
     body += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
     body += `<div class="ai-zone">
       <button class="ai-btn" data-act="ai">${cachedAI ? '🔄 重新解析这道题' : '✨ AI 解析这道题'}</button>
       <div class="ai-out" id="aiOut">${cachedAI ? esc(cachedAI) : ''}</div>
       ${cachedAI ? '<div class="ai-foot"><button data-act="ai-clear">清除本题 AI 解析</button></div>' : ''}
+      ${cachedAI ? `<div class="followup">
+        <input type="text" id="followupInput" placeholder="继续追问，例如：为什么不是 B？">
+        <button data-act="ai-followup">追问</button>
+      </div>
+      <div class="followup-out" id="followupOut">${followup ? esc(followup) : ''}</div>` : ''}
     </div>`;
   }
+
+  if(note) body += `<div class="note-box">📝 ${esc(note)}</div>`;
 
   card.innerHTML = `<div class="card">
     <div class="qmeta">
       ${tags}
       <button class="star-btn" data-act="star" title="收藏">${starred?'★':'☆'}</button>
+      <button class="note-btn" data-act="note">📝 笔记</button>
       <span class="qno">${qnoHtml}</span>
     </div>
     <div class="qtext">${esc(q.q)}</div>
@@ -867,20 +1057,14 @@ function renderCard(){
 function updateNavButtons(){
   const bank = getBank();
   const m = state.ui.mode;
-
   if(!bank){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
-
   if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
-
   if(completionByMode[m] && (m === 'seq' || m === 'rand')){
     $('prevBtn').disabled = true; $('nextBtn').disabled = true; return;
   }
-
   const hist = getHist();
   const pos = getPos();
-
   $('prevBtn').disabled = pos <= 0;
-
   if(m === 'seq' || m === 'rand'){
     if(pos >= 0 && pos < hist.length - 1){ $('nextBtn').disabled = false; return; }
     const seq = getSeq(m);
@@ -913,14 +1097,15 @@ function answerWith(q, chosen){
   if(correct){
     r.streak = (r.streak || 0) + 1;
     if(r.wrongCount > 0 && r.streak >= 3) r.nextReviewAt = now + 30 * DAY;
-    else r.nextReviewAt = now + reviewInterval(Math.max(r.streak, 1));
+    else r.nextReviewAt = nextReviewTime(r.streak);
   }else{
     r.wrongCount = (r.wrongCount || 0) + 1;
     r.streak = 0;
-    r.nextReviewAt = now + reviewInterval(r.wrongCount);
+    r.nextReviewAt = nextReviewTime(r.wrongCount);
   }
   bank.records[q.id] = r;
   state.ui.progressAt = now;
+  recordDailyAnswer(correct);
   saveState();
   renderStats(); renderCard(); updateNavButtons();
 }
@@ -939,14 +1124,13 @@ function goPrev(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
   const m = state.ui.mode;
-
   if(m === 'seq' || m === 'rand'){
     if(completionByMode[m]) completionByMode[m] = false;
     const pos = getPos();
     if(pos > 0) setPos(pos - 1);
-    renderAll();
+    renderAll(true);
   }else{
-    if(dynPos > 0){ dynPos--; renderAll(); }
+    if(dynPos > 0){ dynPos--; renderAll(true); }
   }
 }
 
@@ -959,9 +1143,7 @@ function goNext(){
     if(completionByMode[m]) return;
     const hist = getHist();
     const pos = getPos();
-
-    if(pos >= 0 && pos < hist.length - 1){ setPos(pos + 1); renderAll(); return; }
-
+    if(pos >= 0 && pos < hist.length - 1){ setPos(pos + 1); renderAll(true); return; }
     const seq = getSeq(m);
     const curQid = hist[pos];
     let startIdx = 0;
@@ -974,34 +1156,44 @@ function goNext(){
         pushHist(seq[i]);
         state.ui.progressAt = Date.now();
         saveState();
-        renderAll();
+        renderAll(true);
         return;
       }
     }
     completionByMode[m] = true;
-    renderAll();
+    renderAll(true);
     return;
   }
 
-  if(dynPos < dynList.length - 1){ dynPos++; renderAll(); }
+  if(dynPos < dynList.length - 1){ dynPos++; renderAll(true); }
 }
 
-function startNewRound(){
+function startNewRound(isAuto){
   const bank = getBank(); if(!bank) return;
   bank.roundStartAt = Date.now();
-  bank.randOrder = shuffle(bank.questions.map(q => q.id));
+  buildRoundOrders(bank);
   bank.seqHistory = []; bank.seqPos = -1;
   bank.randHistory = []; bank.randPos = -1;
   dynList = []; dynPos = 0;
+  followupCache = {};
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   state.ui.progressAt = Date.now();
-  saveState(); ensureModeHistory(); renderAll();
+  if(isAuto){
+    state.ui.lastRoundKey = getLogicalDateKey();
+  }else{
+    const a = getLogicalDateKey();
+    const b = getNext4amDateKey();
+    state.ui.lastRoundKey = a > b ? a : b;
+  }
+  saveState();
+  ensureModeHistory();
+  renderAll(true);
 }
 
 function switchMode(newMode){
   state.ui.mode = newMode;
   state.ui.progressAt = Date.now();
-  saveState(); syncSegs(); ensureModeHistory(); renderAll();
+  saveState(); syncSegs(); ensureModeHistory(); renderAll(true);
 }
 
 function syncSegs(){
@@ -1109,6 +1301,14 @@ async function runAI(){
       foot.innerHTML = '<button data-act="ai-clear">清除本题 AI 解析</button>';
       zone.appendChild(foot);
     }
+    const fu = document.createElement('div');
+    fu.className = 'followup';
+    fu.innerHTML = `<input type="text" id="followupInput" placeholder="继续追问，例如：为什么不是 B？"><button data-act="ai-followup">追问</button>`;
+    zone.appendChild(fu);
+    const fuOut = document.createElement('div');
+    fuOut.className = 'followup-out';
+    fuOut.id = 'followupOut';
+    zone.appendChild(fuOut);
   }catch(err){
     if(err.name === 'AbortError') return;
     let msg = err.message || '未知错误';
@@ -1122,6 +1322,117 @@ async function runAI(){
   }
 }
 
+async function runFollowup(){
+  const q = getCurrentQuestion(); const bank = getBank();
+  if(!q || !bank) return;
+  const input = document.getElementById('followupInput');
+  const out = document.getElementById('followupOut');
+  if(!input || !out) return;
+  const question = input.value.trim();
+  if(!question) return;
+  const cfg = getAICfg();
+  if(!cfg.key){ out.textContent = '还没有填写 API Key。'; return; }
+
+  const rec = bank.records[q.id];
+  const originalPrompt = buildPrompt(q, rec);
+  const prevAI = bank.ai[q.id] || '';
+
+  input.value = '';
+  out.textContent = '思考中…';
+
+  let full = '';
+  try{
+    const res = await fetch('https://api.deepseek.com/chat/completions', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + cfg.key },
+      body: JSON.stringify({
+        model: cfg.model, stream: true, temperature: 0.3, max_tokens: 400,
+        messages:[
+          { role:'system', content:'你是化工装置的资深工艺工程师和内部培训讲师。请直接回答学员的追问，简洁准确，总字数在150字以内。' },
+          { role:'user', content: originalPrompt + '\n\n【你之前的解析】\n' + prevAI + '\n\n【学员追问】\n' + question }
+        ]
+      })
+    });
+    if(!res.ok) throw new Error('请求失败 HTTP ' + res.status);
+    const reader = res.body.getReader();
+    const dec = new TextDecoder('utf-8');
+    let buf = '';
+    while(true){
+      const { done, value } = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, { stream:true });
+      const lines = buf.split('\n'); buf = lines.pop();
+      for(const line of lines){
+        const t = line.trim();
+        if(!t.startsWith('data:')) continue;
+        const data = t.slice(5).trim();
+        if(data === '[DONE]') continue;
+        try{
+          const j = JSON.parse(data);
+          const d = j.choices && j.choices[0] && j.choices[0].delta;
+          if(d && d.content){ full += d.content; out.textContent = full; }
+        }catch(e){}
+      }
+    }
+    if(full.trim()) followupCache[q.id] = full;
+  }catch(err){
+    out.textContent = '追问失败：' + (err.message || '未知错误');
+  }
+}
+
+/* ======================= 笔记 ======================= */
+function openNote(){
+  const bank = getBank(); const q = getCurrentQuestion();
+  if(!bank || !q) return;
+  $('noteInput').value = bank.notes[q.id] || '';
+  $('noteModal').classList.add('show');
+  setTimeout(()=>$('noteInput').focus(), 50);
+}
+function closeNote(){ $('noteModal').classList.remove('show'); }
+$('noteCancel').onclick = closeNote;
+$('noteSave').onclick = () => {
+  const bank = getBank(); const q = getCurrentQuestion();
+  if(!bank || !q) return;
+  const v = $('noteInput').value.trim();
+  if(v) bank.notes[q.id] = v; else delete bank.notes[q.id];
+  saveState(); closeNote(); renderCard();
+};
+$('noteClear').onclick = () => {
+  const bank = getBank(); const q = getCurrentQuestion();
+  if(!bank || !q) return;
+  delete bank.notes[q.id];
+  saveState(); closeNote(); renderCard();
+};
+
+/* ======================= 统计页 ======================= */
+function renderStatsPage(){
+  const area = $('statsArea');
+  const map = {};
+  Object.keys(state.banks).forEach(bid => {
+    const b = state.banks[bid];
+    b.questions.forEach(q => {
+      const tag = (q.tag||'').trim() || '未分类';
+      if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
+      const r = b.records[q.id];
+      if(r && r.lastChoice != null){
+        map[tag].total++;
+        if(r.correct) map[tag].correct++;
+      }
+      if(r && r.wrongCount > 0 && (r.streak||0) < 3) map[tag].wrong++;
+    });
+  });
+  const tags = Object.keys(map).sort();
+  if(!tags.length){ area.innerHTML = '<div class="stat-empty">还没有答题记录。</div>'; return; }
+  let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">待复习</th></tr></thead><tbody>';
+  tags.forEach(tag => {
+    const m = map[tag];
+    const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
+    html += `<tr><td>${esc(tag)}</td><td class="num">${m.total}</td><td class="num">${rate}</td><td class="num">${m.wrong}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  area.innerHTML = html;
+}
+
 /* ======================= 同步 ======================= */
 function collectSyncData(){
   const banks = {};
@@ -1130,9 +1441,10 @@ function collectSyncData(){
     banks[bid] = {
       name: b.name, createdAt: b.createdAt,
       questions: b.questions, records: b.records || {},
-      ai: b.ai || {}, stars: b.stars || [],
+      ai: b.ai || {}, stars: b.stars || [], notes: b.notes || {},
       roundStartAt: b.roundStartAt || 0,
-      randOrder: b.randOrder || [],
+      roundSeqOrder: b.roundSeqOrder || [],
+      roundRandOrder: b.roundRandOrder || [],
       seqHistory: b.seqHistory || [],
       seqPos: typeof b.seqPos === 'number' ? b.seqPos : -1,
       randHistory: b.randHistory || [],
@@ -1140,147 +1452,18 @@ function collectSyncData(){
     };
   });
   return {
-    v:9,
+    v:10,
     savedAt: Date.now(),
     currentBankId: state.currentBankId,
     ui: {
       mode: state.ui.mode, filterType: state.ui.filterType, tag: state.ui.tag,
-      progressAt: state.ui.progressAt
+      progressAt: state.ui.progressAt,
+      lastRoundKey: state.ui.lastRoundKey
     },
+    stats: state.stats,
     banks,
     tombstones: state.tombstones
   };
-}
-
-function mergeRemote(remote){
-  const stat = { mergedRecords:0, addedBanks:0, deletedBanks:0, conflicts:[], uiMerged:false };
-  if(!remote || !remote.banks || typeof remote.banks !== 'object'){
-    // 仍然处理远端 tombstone（防远端全部清空后又被恢复）
-    if(remote && remote.tombstones) applyRemoteTombstones(remote.tombstones, stat);
-    return stat;
-  }
-
-  // 1) 处理远端 tombstone：删除本机对应题库（时间优先）
-  applyRemoteTombstones(remote.tombstones || {}, stat);
-
-  // 2) 处理本地 tombstone：若远端有更新，撤销本地删除并标记冲突
-  Object.keys(state.tombstones).forEach(tid => {
-    const tomb = state.tombstones[tid];
-    const remoteBank = remote.banks[tid];
-    if(!remoteBank) return;
-    const remoteAct = getBankLastActivity(remoteBank);
-    if(remoteAct > tomb.deletedAt){
-      // 远端更新 → 撤销本地删除，加入远端题库并标记冲突
-      state.banks[tid] = buildLocalFromRemote(remoteBank, tid);
-      state.banks[tid]._conflictDelete = true;
-      delete state.tombstones[tid];
-      stat.conflicts.push(state.banks[tid].name);
-      stat.addedBanks++;
-    }
-  });
-
-  // 3) 合并每个远端题库
-  Object.keys(remote.banks).forEach(bid => {
-    if(state.tombstones[bid]) return; // 已删除的
-    const r = remote.banks[bid];
-    if(!r) return;
-    const local = state.banks[bid];
-
-    if(!local){
-      if(Array.isArray(r.questions) && r.questions.length){
-        state.banks[bid] = buildLocalFromRemote(r, bid);
-        stat.addedBanks++;
-      }
-      return;
-    }
-
-    ensureBankFields(local);
-
-    if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
-      local.roundStartAt = r.roundStartAt;
-      local.randOrder = r.randOrder || [];
-      local.seqHistory = r.seqHistory || [];
-      local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : -1;
-      local.randHistory = r.randHistory || [];
-      local.randPos = typeof r.randPos === 'number' ? r.randPos : -1;
-    }
-
-    if(r.records && typeof r.records === 'object'){
-      Object.keys(r.records).forEach(qid => {
-        const rr = r.records[qid];
-        if(!rr) return;
-        const lr = local.records[qid];
-        if(!lr || (rr.lastAt||0) > (lr.lastAt||0)){
-          local.records[qid] = rr;
-          stat.mergedRecords++;
-        }
-      });
-    }
-
-    if(Array.isArray(r.stars)){
-      local.stars = local.stars || [];
-      const set = new Set(local.stars);
-      r.stars.forEach(x => set.add(x));
-      local.stars = Array.from(set);
-    }
-
-    if(r.ai && typeof r.ai === 'object'){
-      Object.keys(r.ai).forEach(qid => {
-        if(!local.ai[qid] && r.ai[qid]) local.ai[qid] = r.ai[qid];
-      });
-    }
-  });
-
-  // 4) 清理过期 tombstone
-  const now = Date.now();
-  Object.keys(state.tombstones).forEach(tid => {
-    if(now - state.tombstones[tid].deletedAt > TOMBSTONE_TTL) delete state.tombstones[tid];
-  });
-
-  // 5) UI 合并
-  if(remote.ui && (remote.ui.progressAt||0) > (state.ui.progressAt||0)){
-    state.ui.mode = remote.ui.mode || state.ui.mode;
-    state.ui.filterType = remote.ui.filterType || state.ui.filterType;
-    state.ui.tag = remote.ui.tag || state.ui.tag;
-    state.ui.progressAt = remote.ui.progressAt;
-    if(remote.currentBankId && state.banks[remote.currentBankId]){
-      state.currentBankId = remote.currentBankId;
-    }
-    stat.uiMerged = true;
-  }
-
-  // 当前题库可能被删除，切换
-  if(state.currentBankId && !state.banks[state.currentBankId]){
-    state.currentBankId = Object.keys(state.banks)[0] || null;
-  }
-
-  return stat;
-}
-
-function applyRemoteTombstones(remoteTombs, stat){
-  Object.keys(remoteTombs).forEach(tid => {
-    const tomb = remoteTombs[tid];
-    if(!tomb || !tomb.deletedAt) return;
-
-    if(!state.tombstones[tid] || tomb.deletedAt > state.tombstones[tid].deletedAt){
-      state.tombstones[tid] = tomb;
-    }
-
-    const localBank = state.banks[tid];
-    if(!localBank) return;
-
-    const localAct = getBankLastActivity(localBank);
-    if(tomb.deletedAt >= localAct){
-      // 删除优先
-      delete state.banks[tid];
-      stat.deletedBanks++;
-    }else{
-      // 冲突：本机更新 → 保留，标记
-      localBank._conflictDelete = true;
-      delete state.tombstones[tid];
-      stat.conflicts.push(localBank.name);
-    }
-  });
 }
 
 function buildLocalFromRemote(r, bid){
@@ -1292,13 +1475,151 @@ function buildLocalFromRemote(r, bid){
     records: r.records || {},
     ai: r.ai || {},
     stars: r.stars || [],
+    notes: r.notes || {},
     roundStartAt: r.roundStartAt || 0,
-    randOrder: r.randOrder || [],
+    roundSeqOrder: r.roundSeqOrder || [],
+    roundRandOrder: r.roundRandOrder || [],
     seqHistory: r.seqHistory || [],
     seqPos: typeof r.seqPos === 'number' ? r.seqPos : -1,
     randHistory: r.randHistory || [],
     randPos: typeof r.randPos === 'number' ? r.randPos : -1
   };
+}
+
+function mergeRemote(remote){
+  const stat = { mergedRecords:0, addedBanks:0, deletedBanks:0, conflicts:[], uiMerged:false };
+  if(!remote || !remote.banks || typeof remote.banks !== 'object'){
+    if(remote && remote.tombstones) applyRemoteTombstones(remote.tombstones, stat);
+    return stat;
+  }
+
+  applyRemoteTombstones(remote.tombstones || {}, stat);
+
+  Object.keys(state.tombstones).forEach(tid => {
+    const tomb = state.tombstones[tid];
+    const remoteBank = remote.banks[tid];
+    if(!remoteBank) return;
+    const remoteAct = getBankLastActivity(remoteBank);
+    if(remoteAct > tomb.deletedAt){
+      state.banks[tid] = buildLocalFromRemote(remoteBank, tid);
+      state.banks[tid]._conflictDelete = true;
+      delete state.tombstones[tid];
+      stat.conflicts.push(state.banks[tid].name);
+      stat.addedBanks++;
+    }
+  });
+
+  Object.keys(remote.banks).forEach(bid => {
+    if(state.tombstones[bid]) return;
+    const r = remote.banks[bid];
+    if(!r) return;
+    const local = state.banks[bid];
+    if(!local){
+      if(Array.isArray(r.questions) && r.questions.length){
+        state.banks[bid] = buildLocalFromRemote(r, bid);
+        stat.addedBanks++;
+      }
+      return;
+    }
+    ensureBankFields(local);
+    if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
+      local.roundStartAt = r.roundStartAt;
+      local.roundSeqOrder = r.roundSeqOrder || [];
+      local.roundRandOrder = r.roundRandOrder || [];
+      local.seqHistory = r.seqHistory || [];
+      local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : -1;
+      local.randHistory = r.randHistory || [];
+      local.randPos = typeof r.randPos === 'number' ? r.randPos : -1;
+    }
+    if(r.records && typeof r.records === 'object'){
+      Object.keys(r.records).forEach(qid => {
+        const rr = r.records[qid]; if(!rr) return;
+        const lr = local.records[qid];
+        if(!lr || (rr.lastAt||0) > (lr.lastAt||0)){
+          local.records[qid] = rr;
+          stat.mergedRecords++;
+        }
+      });
+    }
+    if(Array.isArray(r.stars)){
+      local.stars = local.stars || [];
+      const set = new Set(local.stars);
+      r.stars.forEach(x => set.add(x));
+      local.stars = Array.from(set);
+    }
+    if(r.ai && typeof r.ai === 'object'){
+      Object.keys(r.ai).forEach(qid => {
+        if(!local.ai[qid] && r.ai[qid]) local.ai[qid] = r.ai[qid];
+      });
+    }
+    if(r.notes && typeof r.notes === 'object'){
+      if(!local.notes) local.notes = {};
+      Object.keys(r.notes).forEach(qid => {
+        if(!local.notes[qid] && r.notes[qid]) local.notes[qid] = r.notes[qid];
+      });
+    }
+  });
+
+  if(remote.stats){
+    if(!state.stats) state.stats = { daily:{}, streak:0, lastStreakKey:'' };
+    if(remote.stats.daily){
+      Object.keys(remote.stats.daily).forEach(k => {
+        const rd = remote.stats.daily[k];
+        const ld = state.stats.daily[k];
+        if(!ld || rd.answered > ld.answered){
+          state.stats.daily[k] = rd;
+        }
+      });
+    }
+    if((remote.stats.streak||0) > (state.stats.streak||0)) state.stats.streak = remote.stats.streak;
+    if(remote.stats.lastStreakKey && remote.stats.lastStreakKey > (state.stats.lastStreakKey||'')){
+      state.stats.lastStreakKey = remote.stats.lastStreakKey;
+    }
+  }
+
+  if(remote.ui && (remote.ui.progressAt||0) > (state.ui.progressAt||0)){
+    state.ui.mode = remote.ui.mode || state.ui.mode;
+    state.ui.filterType = remote.ui.filterType || state.ui.filterType;
+    state.ui.tag = remote.ui.tag || state.ui.tag;
+    state.ui.progressAt = remote.ui.progressAt;
+    if(remote.ui.lastRoundKey) state.ui.lastRoundKey = remote.ui.lastRoundKey;
+    if(remote.currentBankId && state.banks[remote.currentBankId]){
+      state.currentBankId = remote.currentBankId;
+    }
+    stat.uiMerged = true;
+  }
+
+  if(state.currentBankId && !state.banks[state.currentBankId]){
+    state.currentBankId = Object.keys(state.banks)[0] || null;
+  }
+
+  const now = Date.now();
+  Object.keys(state.tombstones).forEach(tid => {
+    if(now - state.tombstones[tid].deletedAt > TOMBSTONE_TTL) delete state.tombstones[tid];
+  });
+
+  return stat;
+}
+
+function applyRemoteTombstones(remoteTombs, stat){
+  Object.keys(remoteTombs).forEach(tid => {
+    const tomb = remoteTombs[tid];
+    if(!tomb || !tomb.deletedAt) return;
+    if(!state.tombstones[tid] || tomb.deletedAt > state.tombstones[tid].deletedAt){
+      state.tombstones[tid] = tomb;
+    }
+    const localBank = state.banks[tid];
+    if(!localBank) return;
+    const localAct = getBankLastActivity(localBank);
+    if(tomb.deletedAt >= localAct){
+      delete state.banks[tid];
+      stat.deletedBanks++;
+    }else{
+      localBank._conflictDelete = true;
+      delete state.tombstones[tid];
+      stat.conflicts.push(localBank.name);
+    }
+  });
 }
 
 async function pullRemote(){
@@ -1368,7 +1689,7 @@ async function syncNow(showAlert){
     saveState();
     if(stat.uiMerged) syncSegs();
     ensureModeHistory();
-    renderAll();
+    renderAll(true);
     if(btn){ btn.textContent = '☁️✓'; }
     setTimeout(()=>{ if(btn) btn.textContent = '☁️'; }, 1800);
     if(showAlert){
@@ -1446,7 +1767,6 @@ D. DDS
 - 题目会追加到所选题库末尾，新题 id 自动分配`;
 
 let importMode = 'bank';
-let pendingImport = null;
 
 function setImportMode(m){
   importMode = m;
@@ -1454,7 +1774,6 @@ function setImportMode(m){
   $('importBankSection').style.display = m === 'bank' ? '' : 'none';
   $('importQuestionsSection').style.display = m === 'questions' ? '' : 'none';
   $('formatSpec').textContent = m === 'bank' ? FORMAT_BANK : FORMAT_QUESTIONS;
-  pendingImport = null;
 }
 
 function fillImportTargetBanks(){
@@ -1493,11 +1812,9 @@ function parseImportText(text){
       };
     }catch(e){ return null; }
   }
-
   const lines = src.replace(/\r\n?/g,'\n').split('\n');
   let bankName = ''; let section = null; let cur = null; const out = [];
   const flush = () => { if(cur){ out.push(cur); cur = null; } };
-
   for(const raw of lines){
     const line = raw.trim();
     if(!line) continue;
@@ -1525,7 +1842,6 @@ function parseImportText(text){
     else if(cur.q && !cur.rawAnswer) cur.q += ' ' + line;
   }
   flush();
-
   const valid = [];
   for(const q of out){
     const v = (q.rawAnswer || '').trim();
@@ -1549,7 +1865,6 @@ function parseImportText(text){
     q.type = 'choice'; q.options = opts; q.answer = idxAns;
     delete q.rawAnswer; valid.push(q);
   }
-
   return { name: bankName, questions: valid };
 }
 
@@ -1574,7 +1889,7 @@ function doImportBank(result){
   dynList = []; dynPos = 0;
   saveState();
   $('importDlg').close();
-  syncSegs(); ensureModeHistory(); renderAll();
+  syncSegs(); ensureModeHistory(); renderAll(true);
   alert(`导入成功：${name}\n共 ${result.questions.length} 道题`);
 }
 
@@ -1582,13 +1897,9 @@ function doImportQuestions(result){
   const targetId = $('importTargetBank').value;
   const bank = state.banks[targetId];
   if(!bank){ alert('请选择目标题库'); return; }
-
   const before = bank.questions.length;
   const after = before + result.questions.length;
-
-  if(!confirm(`将向「${bank.name}」追加 ${result.questions.length} 道题。\n当前 ${before} 题，追加后 ${after} 题。\n确认吗？`)){
-    return;
-  }
+  if(!confirm(`将向「${bank.name}」追加 ${result.questions.length} 道题。\n当前 ${before} 题，追加后 ${after} 题。\n确认吗？`)) return;
 
   const newIds = [];
   result.questions.forEach(item => {
@@ -1602,19 +1913,16 @@ function doImportQuestions(result){
     newIds.push(qid);
   });
 
-  // 把新题追加进随机序列末尾，保持已有随机序列稳定
-  ensureRandOrder(bank);
-  const expectedBefore = bank.questions.length - newIds.length;
-  if(bank.randOrder.length === expectedBefore){
-    bank.randOrder.push(...newIds);
-  }else{
-    bank.randOrder = shuffle(bank.questions.map(q => q.id));
-  }
+  // 重建本轮序列，把新题放进未答池
+  buildRoundOrders(bank);
+  // 把新题补进随机序列（如果还没被 buildRoundOrders 覆盖）
+  const existingRand = bank.roundRandOrder.filter(id => !newIds.includes(id));
+  bank.roundRandOrder = existingRand.concat(shuffle(newIds));
 
   state.ui.progressAt = Date.now();
   saveState();
   $('importDlg').close();
-  ensureModeHistory(); renderAll();
+  ensureModeHistory(); renderAll(true);
   alert(`追加成功：${bank.name}\n新增 ${newIds.length} 题，当前共 ${bank.questions.length} 题`);
 }
 
@@ -1622,7 +1930,6 @@ $('importModeSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   setImportMode(b.dataset.im);
 });
-
 $('importBtn').onclick = openImport;
 $('importCancel').onclick = () => $('importDlg').close();
 $('copyFormatBtn').onclick = () => {
@@ -1641,7 +1948,6 @@ $('importConfirm').onclick = () => {
   else doImportQuestions(result);
 };
 
-/* ======================= 导出 / 分享 ======================= */
 function encodeShare(bank){
   const payload = { n: bank.name, q: bank.questions.map(q => ({ t: q.type, q: q.q, o: q.options, a: q.answer, e: q.explain || '', g: q.tag || '' })) };
   return SHARE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
@@ -1700,20 +2006,31 @@ $('card').addEventListener('click', e => {
     if(a === 'new-bank'){ createNewBank(); return; }
     if(a === 'open-settings'){ $('settingsBtn').click(); return; }
     if(a === 'dismiss-conflict'){
-      if(bank){ delete bank._conflictDelete; saveState(); renderAll(); }
+      if(bank){ delete bank._conflictDelete; saveState(); renderAll(true); }
       return;
     }
     if(a === 'star'){ toggleStar(); return; }
+    if(a === 'note'){ openNote(); return; }
     if(a === 'ai'){ runAI(); return; }
-    if(a === 'new-round'){ startNewRound(); return; }
+    if(a === 'ai-followup'){ runFollowup(); return; }
+    if(a === 'new-round'){ startNewRound(false); return; }
     if(a === 'ai-clear'){
       if(!q || !bank) return;
       delete bank.ai[q.id]; saveState();
+      delete followupCache[q.id];
       const out = document.getElementById('aiOut');
       const btn = document.querySelector('.ai-btn');
       if(out){ out.textContent = ''; out.classList.remove('err'); }
       if(btn) btn.textContent = '✨ AI 解析这道题';
-      const foot = actEl.parentElement; if(foot) foot.remove();
+      const zone = actEl.closest('.ai-zone');
+      if(zone){
+        const fu = zone.querySelector('.followup');
+        const fuOut = zone.querySelector('.followup-out');
+        if(fu) fu.remove();
+        if(fuOut) fuOut.remove();
+        const foot = zone.querySelector('.ai-foot');
+        if(foot) foot.remove();
+      }
       return;
     }
     if(a === 'retry'){
@@ -1735,7 +2052,7 @@ $('typeSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   state.ui.filterType = b.dataset.t;
   state.ui.progressAt = Date.now();
-  saveState(); syncSegs(); ensureModeHistory(); renderAll();
+  saveState(); syncSegs(); ensureModeHistory(); renderAll(true);
 });
 $('modeSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
@@ -1752,23 +2069,23 @@ $('bankSelect').addEventListener('change', e => {
   dynList = []; dynPos = 0;
   saveState();
   ensureBankFields(state.banks[id]);
-  ensureModeHistory(); renderAll();
+  ensureModeHistory(); renderAll(true);
 });
 
 $('searchInput').addEventListener('input', e => {
   state.ui.search = e.target.value;
   state.ui.progressAt = Date.now();
   saveState();
-  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(); }
-  else renderAll();
+  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(true); }
+  else renderAll(true);
 });
 
 $('tagSelect').addEventListener('change', e => {
   state.ui.tag = e.target.value;
   state.ui.progressAt = Date.now();
   saveState();
-  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(); }
-  else renderAll();
+  if(!currentModeIsHistoryMode()){ rebuildDynList(); renderAll(true); }
+  else renderAll(true);
 });
 
 $('fontBtn').onclick = () => {
@@ -1801,7 +2118,7 @@ async function createNewBank(){
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
-  saveState(); ensureModeHistory(); renderAll();
+  saveState(); ensureModeHistory(); renderAll(true);
   alert('题库已创建。点 📥 导入 → 导入题目，向这个题库追加题目。');
 }
 $('newBankBtn').onclick = createNewBank;
@@ -1826,6 +2143,7 @@ $('settingsBtn').onclick = () => {
   $('ghToken').value = gh.token;
   $('ghSaveMsg').textContent = '';
   renderGHStatus();
+  renderStatsPage();
   $('settingsDlg').showModal();
 };
 $('aiSave').onclick = () => {
@@ -1850,7 +2168,7 @@ $('ghSyncNow').onclick = () => { syncNow(true); };
 $('syncBtn').onclick = () => { syncNow(true); };
 
 $('backupBtn').onclick = () => {
-  const data = { v:9, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones };
+  const data = { v:10, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1871,6 +2189,7 @@ $('restoreFile').addEventListener('change', e => {
       if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')) return;
       state.banks = d.banks;
       state.tombstones = d.tombstones || {};
+      state.stats = d.stats || { daily:{}, streak:0, lastStreakKey:'' };
       Object.keys(state.banks).forEach(ensureBankFields);
       state.currentBankId = d.currentBankId && state.banks[d.currentBankId] ? d.currentBankId : Object.keys(d.banks)[0] || null;
       if(d.ui) state.ui = Object.assign(state.ui, d.ui);
@@ -1878,7 +2197,7 @@ $('restoreFile').addEventListener('change', e => {
       dynList = []; dynPos = 0;
       saveState();
       $('settingsDlg').close();
-      ensureModeHistory(); renderAll();
+      ensureModeHistory(); renderAll(true);
       alert('恢复完成。');
     }catch(err){ alert('恢复失败：' + (err.message || '文件无法解析')); }
   };
@@ -1890,27 +2209,24 @@ $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
   const name = await askName('重命名题库', bank.name);
   if(!name) return;
-  if(isBankNameTaken(name, bank.id)){
-    alert('这个名字已被其他题库使用，请换个名字。');
-    return;
-  }
+  if(isBankNameTaken(name, bank.id)){ alert('这个名字已被其他题库使用，请换个名字。'); return; }
   bank.name = name;
   saveState(); renderBankSelect();
 };
 
 $('clearRecordsBtn').onclick = () => {
   const bank = getBank(); if(!bank) return;
-  if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏和 AI 解析吗？`)) return;
-  bank.records = {}; bank.ai = {}; bank.stars = [];
+  if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏、笔记和 AI 解析吗？`)) return;
+  bank.records = {}; bank.ai = {}; bank.stars = []; bank.notes = {};
   bank.roundStartAt = Date.now();
-  bank.randOrder = [];
+  bank.roundSeqOrder = []; bank.roundRandOrder = [];
   bank.seqHistory = []; bank.seqPos = -1;
   bank.randHistory = []; bank.randPos = -1;
   delete bank._conflictDelete;
   completionByMode = { seq:false, rand:false, wrong:false, star:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
-  saveState(); ensureModeHistory(); renderAll();
+  saveState(); ensureModeHistory(); renderAll(true);
   $('settingsDlg').close();
 };
 
@@ -1924,12 +2240,12 @@ $('deleteBankBtn').onclick = () => {
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
   saveState(); $('settingsDlg').close();
-  ensureModeHistory(); renderAll();
+  ensureModeHistory(); renderAll(true);
 };
 
 document.addEventListener('keydown', e => {
   if(document.querySelector('dialog[open]')) return;
-  if($('nameModal').classList.contains('show')) return;
+  if($('nameModal').classList.contains('show') || $('noteModal').classList.contains('show')) return;
   if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
   const q = getCurrentQuestion(); if(!q) return;
   if(/^[1-4]$/.test(e.key)){
@@ -1945,7 +2261,6 @@ document.addEventListener('keydown', e => {
 /* ======================= 启动 ======================= */
 loadState();
 applyThemeFont();
-// 清理过期 tombstone
 (() => {
   const now = Date.now();
   Object.keys(state.tombstones).forEach(tid => {
@@ -1956,8 +2271,9 @@ applyThemeFont();
 if(!state.currentBankId && Object.keys(state.banks).length) state.currentBankId = Object.keys(state.banks)[0];
 Object.keys(state.banks).forEach(id => ensureBankFields(state.banks[id]));
 syncSegs();
+checkDailyReset();
 ensureModeHistory();
-renderAll();
+renderAll(true);
 
 setTimeout(()=>{
   const cfg = getGHCfg();
