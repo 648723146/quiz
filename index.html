@@ -630,6 +630,7 @@ function makeBank(name, questions){
 function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
+  if(!Array.isArray(bank.questions)) bank.questions = [];
   if(!Array.isArray(bank.batch)) bank.batch = [];
   if(typeof bank.batchViewPos !== 'number') bank.batchViewPos = 0;
   if(!bank.batchMeta) bank.batchMeta = { totalDueWrong: 0, batchSize: 0 };
@@ -640,8 +641,10 @@ function ensureBankFields(bank){
   bank.questions.forEach(q => {
     if(!Array.isArray(q.answers)) q.answers = [typeof q.answer === 'number' ? q.answer : 0];
     if(!q.type) q.type = q.answers.length > 1 ? 'multi' : 'choice';
+    if(!Array.isArray(q.options)) q.options = [];
     delete q.answer;
   });
+  bank.batch = bank.batch.filter(qid => bank.questions.some(q => q.id === qid));
 }
 
 function isCorrectAnswer(q, chosen){
@@ -2607,23 +2610,51 @@ $('restoreFile').addEventListener('change', e => {
   reader.onload = () => {
     try{
       const d = JSON.parse(reader.result);
-      if(!d || !d.banks || typeof d.banks !== 'object') throw new Error('格式不对');
+      if(!d || !d.banks || typeof d.banks !== 'object') throw new Error('文件格式不对，不是题库备份');
       if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')) return;
-      state.banks = d.banks;
+
+      const cleanBanks = {};
+      let skipped = 0;
+      Object.keys(d.banks).forEach(bid => {
+        const b = d.banks[bid];
+        if(!b || typeof b !== 'object' || !Array.isArray(b.questions)){
+          skipped++;
+          return;
+        }
+        cleanBanks[bid] = b;
+      });
+
+      if(!Object.keys(cleanBanks).length){
+        alert('备份文件里没有有效的题库，恢复已取消。');
+        e.target.value = '';
+        return;
+      }
+
+      state.banks = cleanBanks;
       state.tombstones = d.tombstones || {};
       state.stats = d.stats || { daily:{}, streak:0, lastStreakKey:'' };
       Object.keys(state.banks).forEach(ensureBankFields);
-      state.currentBankId = d.currentBankId && state.banks[d.currentBankId] ? d.currentBankId : Object.keys(d.banks)[0] || null;
+
+      state.currentBankId = d.currentBankId && state.banks[d.currentBankId]
+        ? d.currentBankId
+        : Object.keys(state.banks)[0] || null;
       if(d.ui) state.ui = Object.assign(state.ui, d.ui);
+
       dynList = []; dynPos = 0;
       saveState();
       $('settingsDlg').close();
-      ensureModeHistory(); renderAll(true);
-      alert('恢复完成。');
-    }catch(err){ alert('恢复失败：' + (err.message || '文件无法解析')); }
+      ensureModeHistory();
+      renderAll(true);
+
+      let msg = '恢复完成，共 ' + Object.keys(cleanBanks).length + ' 个题库。';
+      if(skipped > 0) msg += '\n已跳过 ' + skipped + ' 个结构不完整的题库。';
+      alert(msg);
+    }catch(err){
+      alert('恢复失败：' + (err.message || '文件无法解析'));
+    }
+    e.target.value = '';
   };
   reader.readAsText(f);
-  e.target.value = '';
 });
 
 $('renameBankBtn').onclick = async () => {
