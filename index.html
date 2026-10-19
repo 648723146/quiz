@@ -436,7 +436,6 @@ const STATE_KEY = 'quiz-state';
 const AI_KEY = 'quiz-ai';
 const GH_KEY = 'quiz-github';
 
-/* 旧版本 key，按从新到旧排列，启动时只迁移一次 */
 const OLD_STATE_KEYS = ['quiz-v12-state','quiz-v11-state','quiz-v10-state','quiz-v9-state','quiz-v8-state','quiz-v5-state'];
 const OLD_AI_KEYS = ['quiz-v12-ai','quiz-v11-ai','quiz-v10-ai','quiz-v9-ai','quiz-v8-ai','quiz-v5-ai'];
 const OLD_GH_KEYS = ['quiz-v12-github','quiz-v11-github','quiz-v10-github','quiz-v9-github','quiz-v8-github','quiz-v5-github'];
@@ -448,7 +447,6 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function uid(){ return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
-/* ★ 一次性迁移旧 key 到固定 key。只在固定 key 不存在时才迁移。 */
 function migrateKeys(){
   try{
     if(!localStorage.getItem(STATE_KEY)){
@@ -611,15 +609,10 @@ function ensureBankFields(bank){
   if(!bank.notes) bank.notes = {};
 }
 
-/* ★ 兜底：如果题库有题目但 roundIds 为空，自动抽一轮，避免 0/0 卡死 */
+/* ★ 只做字段保护，不再自动抽题 */
 function ensureRound(bank){
   if(!bank) return;
-  if(!Array.isArray(bank.roundIds) || bank.roundIds.length === 0){
-    if(bank.questions && bank.questions.length > 0){
-      startNewRound(bank);
-      saveState();
-    }
-  }
+  if(!Array.isArray(bank.roundIds)) bank.roundIds = [];
 }
 
 /* ======================= 判题 ======================= */
@@ -665,11 +658,18 @@ function buildRoundIds(bank){
   const due = [];
   const unlearned = [];
   const others = [];
+  const now = Date.now();
 
   all.forEach(q => {
-    if(isDueForReview(q, bank)) due.push(q);
-    else if(!isLearned(q, bank) && !(bank.records[q.id] && bank.records[q.id].mastered)) unlearned.push(q);
-    else others.push(q);
+    const r = bank.records[q.id];
+    /* ★ 已掌握且未到期：不进任何池子，彻底跳过 */
+    if(r && r.mastered && (r.reappearAt||0) > now) return;
+    /* ★ 已掌握且到期：进 due */
+    if(isDueForReview(q, bank)){ due.push(q); return; }
+    /* ★ 未学过的题进 unlearned */
+    if(!isLearned(q, bank)){ unlearned.push(q); return; }
+    /* ★ 其余进 others */
+    others.push(q);
   });
 
   due.sort((a,b)=>{
@@ -735,6 +735,17 @@ function getPendingDueCount(bank){
   }).length;
 }
 
+/* 是否有可抽的题（排除已掌握未到期） */
+function hasAvailableQuestions(bank){
+  if(!bank) return false;
+  const now = Date.now();
+  return bank.questions.some(q => {
+    const r = bank.records[q.id];
+    if(r && r.mastered && (r.reappearAt||0) > now) return false;
+    return true;
+  });
+}
+
 /* ======================= 模式与历史 ======================= */
 function currentModeIsHistoryMode(){ return state.ui.mode === 'seq' || state.ui.mode === 'rand'; }
 function getHist(){
@@ -772,7 +783,7 @@ function ensureModeHistory(){
     const hist = m === 'seq' ? bank.seqHistory : bank.randHistory;
     const posKey = m === 'seq' ? 'seqPos' : 'randPos';
 
-    if(hist.length === 0 && !isRoundComplete(bank)){
+    if(hist.length === 0 && !isRoundComplete(bank) && (bank.roundIds||[]).length > 0){
       const seq = getSeq(m);
       const first = seq.find(qid => !isAnsweredInRound(qid, bank));
       if(first){
@@ -937,7 +948,6 @@ function abortAI(){ if(aiCtrl){ try{ aiCtrl.abort(); }catch(e){} aiCtrl = null; 
 
 function renderAll(skipReset){
   if(!skipReset) checkDailyReset();
-  ensureRound(getBank());  /* ★ 兜底：roundIds 空时自动抽一轮 */
   abortAI();
   renderBankSelect();
   renderTagSelect();
@@ -1057,6 +1067,7 @@ function renderCard(){
 
   const m = state.ui.mode;
 
+  /* 已掌握模式 */
   if(m === 'mastered'){
     const items = bank.questions.filter(q => bank.records[q.id] && bank.records[q.id].mastered);
     if(!items.length){
@@ -1098,22 +1109,61 @@ function renderCard(){
     return;
   }
 
-  if((m === 'seq' || m === 'rand') && isRoundComplete(bank)){
-    const total = bank.roundIds.length;
-    let correct = 0;
-    bank.roundIds.forEach(id => { if(bank.records[id] && bank.records[id].correct) correct++; });
-    const rate = total ? Math.round(correct/total*100) : 0;
-    const pending = getPendingDueCount(bank);
-    card.innerHTML = `<div class="card empty">
-      <div class="big">🎉</div>
-      <h2>本轮完成！</h2>
-      <p>本轮共 ${total} 题，答对 ${correct} 题，正确率 ${rate}%。</p>
-      ${pending > 0 ? `<p style="color:#b45309;">还有 ${pending} 道错题待复习，点「↻ 再来一轮」立即复习。</p>` : '<p>所有到期错题都已复习完。</p>'}
-      <div class="acts">
-        <button class="primary" data-act="new-round">↻ 再来一轮</button>
-      </div>
-    </div>`;
-    return;
+  /* 顺序/随机模式 */
+  if(m === 'seq' || m === 'rand'){
+    /* ★ roundIds 为空：显示“可开始新一轮”界面，不自动抽 */
+    if(!bank.roundIds || !bank.roundIds.length){
+      if(!bank.questions.length){
+        card.innerHTML = `<div class="card empty">
+          <div class="big">📭</div>
+          <h2>题库还没有题目</h2>
+          <p>先点 📥 导入题目，或在题库文本里追加题目。</p>
+          <div class="acts">
+            <button class="primary" data-act="open-import">📥 导入题目</button>
+          </div>
+        </div>`;
+        return;
+      }
+      if(!hasAvailableQuestions(bank)){
+        card.innerHTML = `<div class="card empty">
+          <div class="big">✓</div>
+          <h2>暂无新题可练</h2>
+          <p>所有题都已标记为已掌握且尚未到期。等错题到期后再来，或在「已掌握」模式里恢复几道题。</p>
+          <div class="acts">
+            <button data-act="switch-mastered">查看已掌握</button>
+          </div>
+        </div>`;
+        return;
+      }
+      card.innerHTML = `<div class="card empty">
+        <div class="big">🎯</div>
+        <h2>可以开始新一轮</h2>
+        <p>当前题库共 ${bank.questions.length} 题，点「开始新一轮」会按到期错题优先、未学新题其次的顺序抽最多 ${ROUND_SIZE} 题。</p>
+        <div class="acts">
+          <button class="primary" data-act="new-round">↻ 开始新一轮</button>
+        </div>
+      </div>`;
+      return;
+    }
+
+    /* 本轮已全部答完 */
+    if(isRoundComplete(bank)){
+      const total = bank.roundIds.length;
+      let correct = 0;
+      bank.roundIds.forEach(id => { if(bank.records[id] && bank.records[id].correct) correct++; });
+      const rate = total ? Math.round(correct/total*100) : 0;
+      const pending = getPendingDueCount(bank);
+      card.innerHTML = `<div class="card empty">
+        <div class="big">🎉</div>
+        <h2>本轮完成！</h2>
+        <p>本轮共 ${total} 题，答对 ${correct} 题，正确率 ${rate}%。</p>
+        ${pending > 0 ? `<p style="color:#b45309;">还有 ${pending} 道错题待复习，点「↻ 再来一轮」立即复习。</p>` : '<p>所有到期错题都已复习完。</p>'}
+        <div class="acts">
+          <button class="primary" data-act="new-round">↻ 再来一轮</button>
+        </div>
+      </div>`;
+      return;
+    }
   }
 
   const q = getCurrentQuestion();
@@ -1192,6 +1242,9 @@ function renderCard(){
     body += `<div class="ex">${meta.join('；')}。</div>`;
     if(q.explain) body += `<div class="ex"><b>解析：</b>${esc(q.explain)}</div>`;
 
+    /* ★ 笔记只在答完后显示 */
+    if(note) body += `<div class="note-box">📝 ${esc(note)}</div>`;
+
     let actions = '';
     if(!mastered && rec.correct) actions += `<button class="master-btn" data-act="mark-mastered">✓ 太简单，标记已掌握</button>`;
     if(!mastered) actions += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
@@ -1208,8 +1261,6 @@ function renderCard(){
       <div class="followup-out" id="followupOut">${followup ? esc(followup) : ''}</div>` : ''}
     </div>`;
   }
-
-  if(note) body += `<div class="note-box">📝 ${esc(note)}</div>`;
 
   card.innerHTML = `<div class="card">
     <div class="qmeta">
@@ -1231,8 +1282,9 @@ function updateNavButtons(){
   if(!bank){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   if(m === 'mastered'){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
-  if((m === 'seq' || m === 'rand') && isRoundComplete(bank)){
-    $('prevBtn').disabled = true; $('nextBtn').disabled = true; return;
+  if((m === 'seq' || m === 'rand')){
+    if(!bank.roundIds || !bank.roundIds.length){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
+    if(isRoundComplete(bank)){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   }
   const hist = getHist();
   const pos = getPos();
@@ -1345,6 +1397,7 @@ function goPrev(){
   const m = state.ui.mode;
   if(m === 'mastered') return;
   if(m === 'seq' || m === 'rand'){
+    if(!bank.roundIds || !bank.roundIds.length) return;
     const pos = getPos();
     if(pos > 0) setPos(pos - 1);
     renderAll(true);
@@ -1358,7 +1411,10 @@ function goNext(){
   if(bank._conflictDelete) return;
   const m = state.ui.mode;
   if(m === 'mastered') return;
-  if((m === 'seq' || m === 'rand') && isRoundComplete(bank)) return;
+  if((m === 'seq' || m === 'rand')){
+    if(!bank.roundIds || !bank.roundIds.length) return;
+    if(isRoundComplete(bank)) return;
+  }
 
   if(m === 'seq' || m === 'rand'){
     const hist = getHist();
@@ -1670,7 +1726,7 @@ function collectSyncData(){
     };
   });
   return {
-    v:13,
+    v:14,
     savedAt: Date.now(),
     currentBankId: state.currentBankId,
     ui: {
@@ -1734,8 +1790,6 @@ function mergeRemote(remote){
     }
     ensureBankFields(local);
 
-    /* ★ 保护：只有远端有有效 roundIds 时，才覆盖本轮状态。
-       远端 roundIds 为空（旧版本数据）时，完全保留本地本轮状态。 */
     if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
       if(Array.isArray(r.roundIds) && r.roundIds.length > 0){
         local.roundStartAt = r.roundStartAt;
@@ -1873,7 +1927,6 @@ async function syncNow(showAlert){
     touchLastSync();
     saveState();
     if(stat.uiMerged) syncSegs();
-    ensureRound(getBank());
     ensureModeHistory();
     renderAll(true);
     if(btn){ btn.textContent = '☁️✓'; }
@@ -2217,6 +2270,7 @@ $('card').addEventListener('click', e => {
     if(a === 'new-bank'){ createNewBank(); return; }
     if(a === 'open-settings'){ $('settingsBtn').click(); return; }
     if(a === 'dismiss-conflict'){ if(bank){ delete bank._conflictDelete; saveState(); renderAll(true); } return; }
+    if(a === 'switch-mastered'){ switchMode('mastered'); return; }
     if(a === 'star'){ toggleStar(); return; }
     if(a === 'note'){ openNote(); return; }
     if(a === 'mark-mastered'){ markMastered(); return; }
@@ -2394,7 +2448,7 @@ $('ghSyncNow').onclick = () => { syncNow(true); };
 $('syncBtn').onclick = () => { syncNow(true); };
 
 $('backupBtn').onclick = () => {
-  const data = { v:13, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
+  const data = { v:14, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2493,7 +2547,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ======================= 启动 ======================= */
-migrateKeys();  /* ★ 一次性迁移旧版本 key */
+migrateKeys();
 loadState();
 applyThemeFont();
 (() => {
@@ -2509,7 +2563,6 @@ Object.keys(state.banks).forEach(id => {
 });
 syncSegs();
 checkDailyReset();
-ensureRound(getBank());  /* ★ 启动时兜底抽一轮 */
 ensureModeHistory();
 renderAll(true);
 
