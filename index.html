@@ -842,6 +842,19 @@ function ensureModeHistory(){
       if(bank[posKey] < 0 && curHist.length) bank[posKey] = 0;
       if(bank[posKey] >= curHist.length) bank[posKey] = curHist.length - 1;
     }
+      /* ★ 补全历史：确保当前题之前的所有题都在历史里 */
+    const curHistFinal = m === 'seq' ? bank.seqHistory : bank.randHistory;
+    const curPosFinal = m === 'seq' ? bank.seqPos : bank.randPos;
+    if(curPosFinal >= 0 && curPosFinal < curHistFinal.length){
+      const curQid = curHistFinal[curPosFinal];
+      const seqIdx = seq.indexOf(curQid);
+      if(seqIdx > 0 && curHistFinal.length < seqIdx + 1){
+        const newHist = seq.slice(0, seqIdx + 1);
+        if(m === 'seq'){ bank.seqHistory = newHist; bank.seqPos = seqIdx; }
+        else { bank.randHistory = newHist; bank.randPos = seqIdx; }
+        saveState();
+      }
+    }
   }else{
     rebuildDynList();
   }
