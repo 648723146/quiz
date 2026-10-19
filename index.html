@@ -212,8 +212,6 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .save-msg{font-size:.8em;color:var(--green);font-weight:600;margin-left:8px;}
 .tip{font-size:.76em;color:var(--muted);line-height:1.7;margin:14px 0 0;}
 .divider{border:0;border-top:1px solid var(--line);margin:18px 0 0;}
-.import-section{margin-top:10px;}
-.import-section .info{font-size:.78em;color:var(--muted);background:var(--soft2);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.55;}
 
 .stat-table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:8px;}
 .stat-table th,.stat-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;}
@@ -432,15 +430,47 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 const DAY = 86400000;
 const TOMBSTONE_TTL = 3 * DAY;
 const ROUND_SIZE = 50;
-const STATE_KEY = 'quiz-v12-state';
-const AI_KEY = 'quiz-v12-ai';
-const GH_KEY = 'quiz-v12-github';
+
+/* ★ 固定 key，不再带版本号。以后更新代码不会丢数据。 */
+const STATE_KEY = 'quiz-state';
+const AI_KEY = 'quiz-ai';
+const GH_KEY = 'quiz-github';
+
+/* 旧版本 key，按从新到旧排列，启动时只迁移一次 */
+const OLD_STATE_KEYS = ['quiz-v12-state','quiz-v11-state','quiz-v10-state','quiz-v9-state','quiz-v8-state','quiz-v5-state'];
+const OLD_AI_KEYS = ['quiz-v12-ai','quiz-v11-ai','quiz-v10-ai','quiz-v9-ai','quiz-v8-ai','quiz-v5-ai'];
+const OLD_GH_KEYS = ['quiz-v12-github','quiz-v11-github','quiz-v10-github','quiz-v9-github','quiz-v8-github','quiz-v5-github'];
+
 const SHARE_PREFIX = 'QZ1:';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function uid(){ return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+/* ★ 一次性迁移旧 key 到固定 key。只在固定 key 不存在时才迁移。 */
+function migrateKeys(){
+  try{
+    if(!localStorage.getItem(STATE_KEY)){
+      for(const k of OLD_STATE_KEYS){
+        const raw = localStorage.getItem(k);
+        if(raw){ localStorage.setItem(STATE_KEY, raw); break; }
+      }
+    }
+    if(!localStorage.getItem(AI_KEY)){
+      for(const k of OLD_AI_KEYS){
+        const raw = localStorage.getItem(k);
+        if(raw){ localStorage.setItem(AI_KEY, raw); break; }
+      }
+    }
+    if(!localStorage.getItem(GH_KEY)){
+      for(const k of OLD_GH_KEYS){
+        const raw = localStorage.getItem(k);
+        if(raw){ localStorage.setItem(GH_KEY, raw); break; }
+      }
+    }
+  }catch(e){ console.warn('迁移失败', e); }
+}
 
 /* ======================= 复习时间 ======================= */
 function next4amBase(){
@@ -581,6 +611,17 @@ function ensureBankFields(bank){
   if(!bank.notes) bank.notes = {};
 }
 
+/* ★ 兜底：如果题库有题目但 roundIds 为空，自动抽一轮，避免 0/0 卡死 */
+function ensureRound(bank){
+  if(!bank) return;
+  if(!Array.isArray(bank.roundIds) || bank.roundIds.length === 0){
+    if(bank.questions && bank.questions.length > 0){
+      startNewRound(bank);
+      saveState();
+    }
+  }
+}
+
 /* ======================= 判题 ======================= */
 function checkAnswer(q, chosen){
   if(q.type === 'multi'){
@@ -640,15 +681,12 @@ function buildRoundIds(bank){
 
   let ids = [];
   due.forEach(q => { if(ids.length < ROUND_SIZE) ids.push(q.id); });
-
   if(ids.length < ROUND_SIZE){
     shuffle(unlearned).forEach(q => { if(ids.length < ROUND_SIZE) ids.push(q.id); });
   }
-
   if(ids.length < ROUND_SIZE){
     shuffle(others).forEach(q => { if(ids.length < ROUND_SIZE && !ids.includes(q.id)) ids.push(q.id); });
   }
-
   return ids;
 }
 
@@ -660,16 +698,15 @@ function startNewRound(bank){
   bank.randHistory = []; bank.randPos = -1;
   dynList = []; dynPos = 0;
   multiSelection = {};
-  bank.roundSeqOrder = null;
   bank.roundRandOrder = null;
 }
 
 function getSeq(mode){
   const bank = getBank(); if(!bank) return [];
   const ids = bank.roundIds || [];
+  if(!ids.length) return [];
   if(mode === 'seq'){
-    const order = bank.questions.map(q => q.id).filter(id => ids.includes(id));
-    return order;
+    return bank.questions.map(q => q.id).filter(id => ids.includes(id));
   }
   if(!bank.roundRandOrder || bank.roundRandOrder.length !== ids.length || !ids.every(id => bank.roundRandOrder.includes(id))){
     bank.roundRandOrder = shuffle(ids.slice());
@@ -728,6 +765,7 @@ function pushHist(qid){
 
 function ensureModeHistory(){
   const bank = getBank(); if(!bank) return;
+  ensureRound(bank);
   const m = state.ui.mode;
 
   if(m === 'seq' || m === 'rand'){
@@ -899,6 +937,7 @@ function abortAI(){ if(aiCtrl){ try{ aiCtrl.abort(); }catch(e){} aiCtrl = null; 
 
 function renderAll(skipReset){
   if(!skipReset) checkDailyReset();
+  ensureRound(getBank());  /* ★ 兜底：roundIds 空时自动抽一轮 */
   abortAI();
   renderBankSelect();
   renderTagSelect();
@@ -983,7 +1022,7 @@ function renderStats(){
   $('stRate').textContent = answered ? Math.round(correct/answered*100) + '%' : '--';
   $('stWrong').textContent = getPendingDueCount(bank);
   $('stStreak').textContent = state.stats.streak || 0;
-  $('bar').style.width = bank.roundIds.length ? (answered/bank.roundIds.length*100) + '%' : '0%';
+  $('bar').style.width = (bank.roundIds||[]).length ? (answered/bank.roundIds.length*100) + '%' : '0%';
 }
 
 function renderCard(){
@@ -1018,7 +1057,6 @@ function renderCard(){
 
   const m = state.ui.mode;
 
-  // 已掌握模式
   if(m === 'mastered'){
     const items = bank.questions.filter(q => bank.records[q.id] && bank.records[q.id].mastered);
     if(!items.length){
@@ -1060,7 +1098,6 @@ function renderCard(){
     return;
   }
 
-  // 顺序/随机模式：完成页判断
   if((m === 'seq' || m === 'rand') && isRoundComplete(bank)){
     const total = bank.roundIds.length;
     let correct = 0;
@@ -1092,9 +1129,7 @@ function renderCard(){
   const rec = bank.records[q.id];
   const answeredThisRound = isAnsweredInRound(q.id, bank);
   const isMulti = q.type === 'multi';
-  const submitted = answeredThisRound || (rec && rec.lastChoice != null && (q.type === 'multi' ? Array.isArray(rec.lastChoice) : true) && !isMulti);
-  // 多选：本轮答过才算锁定；单选/判断：本轮答过锁定
-  const locked = answeredThisRound || (q.type !== 'multi' && rec && rec.lastChoice != null && !isAnsweredInRound(q.id, bank));
+  const locked = answeredThisRound;
 
   const starred = (bank.stars||[]).includes(q.id);
   const cachedAI = bank.ai[q.id];
@@ -1102,7 +1137,6 @@ function renderCard(){
   const followup = followupCache[q.id] || '';
   const mastered = rec && rec.mastered;
 
-  // 多选临时选中
   const sel = multiSelection[q.id] || new Set();
   const showSubmit = isMulti && !answeredThisRound;
 
@@ -1241,22 +1275,14 @@ function answerWith(q, chosen){
     }else{
       r.streak = (r.streak || 0) + 1;
       if(r.wrongCount > 0 && r.streak >= 3){
-        r.mastered = true;
-        r.masteredAt = now;
-        r.masteredBy = 'auto';
-        r.reappearAt = next4amPlusDays(7);
-        r.nextReviewAt = 0;
+        r.mastered = true; r.masteredAt = now; r.masteredBy = 'auto';
+        r.reappearAt = next4amPlusDays(7); r.nextReviewAt = 0;
       }else{
         r.nextReviewAt = nextReviewTime(r.streak);
       }
     }
   }else{
-    if(r.mastered){
-      r.mastered = false;
-      delete r.masteredAt;
-      delete r.masteredBy;
-      delete r.reappearAt;
-    }
+    if(r.mastered){ r.mastered = false; delete r.masteredAt; delete r.masteredBy; delete r.reappearAt; }
     r.wrongCount = (r.wrongCount || 0) + 1;
     r.streak = 0;
     r.nextReviewAt = nextReviewTime(r.wrongCount);
@@ -1283,29 +1309,19 @@ function markMastered(){
   const bank = getBank(); const q = getCurrentQuestion();
   if(!bank || !q) return;
   const r = bank.records[q.id] || {};
-  r.mastered = true;
-  r.masteredAt = Date.now();
-  r.masteredBy = 'manual';
-  r.reappearAt = next4amPlusDays(7);
-  r.nextReviewAt = 0;
+  r.mastered = true; r.masteredAt = Date.now(); r.masteredBy = 'manual';
+  r.reappearAt = next4amPlusDays(7); r.nextReviewAt = 0;
   if(r.lastChoice == null){ r.lastChoice = -1; r.lastAt = Date.now(); }
   bank.records[q.id] = r;
-  saveState();
-  renderAll(true);
+  saveState(); renderAll(true);
 }
 
 function restoreMastered(qid){
   const bank = getBank(); if(!bank) return;
-  const r = bank.records[qid];
-  if(!r) return;
-  r.mastered = false;
-  delete r.masteredAt;
-  delete r.masteredBy;
-  delete r.reappearAt;
+  const r = bank.records[qid]; if(!r) return;
+  r.mastered = false; delete r.masteredAt; delete r.masteredBy; delete r.reappearAt;
   r.nextReviewAt = 0;
-  saveState();
-  ensureModeHistory();
-  renderAll(true);
+  saveState(); ensureModeHistory(); renderAll(true);
 }
 
 function deleteQuestionForever(qid){
@@ -1319,9 +1335,7 @@ function deleteQuestionForever(qid){
   bank.randHistory = bank.randHistory.filter(x => x !== qid);
   if(bank.seqPos >= bank.seqHistory.length) bank.seqPos = bank.seqHistory.length - 1;
   if(bank.randPos >= bank.randHistory.length) bank.randPos = bank.randHistory.length - 1;
-  saveState();
-  ensureModeHistory();
-  renderAll(true);
+  saveState(); ensureModeHistory(); renderAll(true);
 }
 
 /* ======================= 导航 ======================= */
@@ -1656,7 +1670,7 @@ function collectSyncData(){
     };
   });
   return {
-    v:12,
+    v:13,
     savedAt: Date.now(),
     currentBankId: state.currentBankId,
     ui: {
@@ -1676,7 +1690,7 @@ function buildLocalFromRemote(r, bid){
     questions: r.questions || [], records: r.records || {},
     ai: r.ai || {}, stars: r.stars || [], notes: r.notes || {},
     roundStartAt: r.roundStartAt || 0,
-    roundIds: r.roundIds || [],
+    roundIds: Array.isArray(r.roundIds) ? r.roundIds : [],
     seqHistory: r.seqHistory || [],
     seqPos: typeof r.seqPos === 'number' ? r.seqPos : -1,
     randHistory: r.randHistory || [],
@@ -1719,14 +1733,22 @@ function mergeRemote(remote){
       return;
     }
     ensureBankFields(local);
+
+    /* ★ 保护：只有远端有有效 roundIds 时，才覆盖本轮状态。
+       远端 roundIds 为空（旧版本数据）时，完全保留本地本轮状态。 */
     if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
-      local.roundStartAt = r.roundStartAt;
-      local.roundIds = r.roundIds || [];
-      local.seqHistory = r.seqHistory || [];
-      local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : -1;
-      local.randHistory = r.randHistory || [];
-      local.randPos = typeof r.randPos === 'number' ? r.randPos : -1;
+      if(Array.isArray(r.roundIds) && r.roundIds.length > 0){
+        local.roundStartAt = r.roundStartAt;
+        local.roundIds = r.roundIds;
+        local.seqHistory = r.seqHistory || [];
+        local.seqPos = typeof r.seqPos === 'number' ? r.seqPos : -1;
+        local.randHistory = r.randHistory || [];
+        local.randPos = typeof r.randPos === 'number' ? r.randPos : -1;
+      }else if(!Array.isArray(local.roundIds) || local.roundIds.length === 0){
+        local.roundStartAt = r.roundStartAt;
+      }
     }
+
     if(r.records && typeof r.records === 'object'){
       Object.keys(r.records).forEach(qid => {
         const rr = r.records[qid]; if(!rr) return;
@@ -1851,6 +1873,7 @@ async function syncNow(showAlert){
     touchLastSync();
     saveState();
     if(stat.uiMerged) syncSegs();
+    ensureRound(getBank());
     ensureModeHistory();
     renderAll(true);
     if(btn){ btn.textContent = '☁️✓'; }
@@ -2083,8 +2106,7 @@ function doImportQuestions(result){
   result.questions.forEach(item => {
     const qid = nextQid(bank);
     bank.questions.push({
-      id: qid,
-      type: item.type || 'choice',
+      id: qid, type: item.type || 'choice',
       q: item.q, options: item.options, answer: item.answer,
       explain: item.explain || '', tag: item.tag || ''
     });
@@ -2372,7 +2394,7 @@ $('ghSyncNow').onclick = () => { syncNow(true); };
 $('syncBtn').onclick = () => { syncNow(true); };
 
 $('backupBtn').onclick = () => {
-  const data = { v:12, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
+  const data = { v:13, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2471,6 +2493,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ======================= 启动 ======================= */
+migrateKeys();  /* ★ 一次性迁移旧版本 key */
 loadState();
 applyThemeFont();
 (() => {
@@ -2483,15 +2506,10 @@ applyThemeFont();
 if(!state.currentBankId && Object.keys(state.banks).length) state.currentBankId = Object.keys(state.banks)[0];
 Object.keys(state.banks).forEach(id => {
   ensureBankFields(state.banks[id]);
-  if(!state.banks[id].roundIds || !state.banks[id].roundIds.length){
-    // 旧数据没有 roundIds，抽一次题单
-    if(state.banks[id].questions && state.banks[id].questions.length){
-      startNewRound(state.banks[id]);
-    }
-  }
 });
 syncSegs();
 checkDailyReset();
+ensureRound(getBank());  /* ★ 启动时兜底抽一轮 */
 ensureModeHistory();
 renderAll(true);
 
