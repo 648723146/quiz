@@ -2497,14 +2497,11 @@ $('typeSeg').addEventListener('click', e => {
   if(state.ui.filterType === b.dataset.t) return;
   state.ui.filterType = b.dataset.t;
   state.ui.progressAt = Date.now();
-  /* ★ 切换筛选时清空两个模式的历史，从当前筛选下第一个未答开始 */
-  const bank = getBank();
-  if(bank){
-    bank.seqHistory = []; bank.seqPos = -1;
-    bank.randHistory = []; bank.randPos = -1;
-  }
+  /* 保留历史，ensureModeHistory 会自动过滤掉不在新筛选序列里的题，
+     当前题被过滤时指针会调整到合理位置 */
   saveState(); syncSegs(); ensureModeHistory(); renderAll(true);
 });
+
 $('modeSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   switchMode(b.dataset.m);
