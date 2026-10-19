@@ -251,6 +251,8 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .stat-table th,.stat-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;}
 .stat-table th{color:var(--muted);font-weight:600;font-size:.92em;}
 .stat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.stat-section-title{font-size:.82em;color:var(--muted);font-weight:600;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line);}
+.stat-section-title:first-child{margin-top:0;}
 .stat-empty{font-size:.82em;color:var(--muted);padding:12px 0;}
 
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
@@ -1293,7 +1295,7 @@ function renderCard(){
     </div>`;
   }
 
-  if(note) body += `<div class="note-box">📝 ${esc(note)}</div>`;
+  if(note && locked) body += `<div class="note-box">📝 ${esc(note)}</div>`;
 
   card.innerHTML = `<div class="card">
     <div class="qmeta">
@@ -1786,29 +1788,54 @@ $('noteClear').onclick = () => {
 /* ======================= 统计页 ======================= */
 function renderStatsPage(){
   const area = $('statsArea');
-  const map = {};
-  Object.keys(state.banks).forEach(bid => {
-    const b = state.banks[bid];
-    b.questions.forEach(q => {
-      const tag = (q.tag||'').trim() || '未分类';
-      if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
-      const r = b.records[q.id];
-      if(r && r.lastChoices && r.lastChoices.length){
-        map[tag].total++;
-        if(r.correct) map[tag].correct++;
-      }
-      if(r && !r.mastered && r.wrongCount > 0) map[tag].wrong++;
+
+  function calcMap(bankIds){
+    const map = {};
+    bankIds.forEach(bid => {
+      const b = state.banks[bid];
+      if(!b) return;
+      b.questions.forEach(q => {
+        const tag = (q.tag||'').trim() || '未分类';
+        if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
+        const r = b.records[q.id];
+        if(r && r.lastChoices && r.lastChoices.length){
+          map[tag].total++;
+          if(r.correct) map[tag].correct++;
+        }
+        if(r && !r.mastered && r.wrongCount > 0) map[tag].wrong++;
+      });
     });
-  });
-  const tags = Object.keys(map).sort();
-  if(!tags.length){ area.innerHTML = '<div class="stat-empty">还没有答题记录。</div>'; return; }
-  let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">错题</th></tr></thead><tbody>';
-  tags.forEach(tag => {
-    const m = map[tag];
-    const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
-    html += `<tr><td>${esc(tag)}</td><td class="num">${m.total}</td><td class="num">${rate}</td><td class="num">${m.wrong}</td></tr>`;
-  });
-  html += '</tbody></table>';
+    return map;
+  }
+
+  function renderTable(map){
+    const tags = Object.keys(map).sort();
+    if(!tags.length) return '<div class="stat-empty">还没有答题记录。</div>';
+    let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">错题</th></tr></thead><tbody>';
+    tags.forEach(tag => {
+      const m = map[tag];
+      const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
+      html += `<tr><td>${esc(tag)}</td><td class="num">${m.total}</td><td class="num">${rate}</td><td class="num">${m.wrong}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+
+  const allIds = Object.keys(state.banks);
+  const curBank = getBank();
+  let html = '';
+
+  if(curBank){
+    html += `<div class="stat-section-title">当前题库：${esc(curBank.name)}</div>`;
+    html += renderTable(calcMap([curBank.id]));
+  }
+
+  if(allIds.length > 1){
+    html += `<div class="stat-section-title">全部题库（${allIds.length} 个）</div>`;
+    html += renderTable(calcMap(allIds));
+  }
+
+  if(!html) html = '<div class="stat-empty">还没有题库。</div>';
   area.innerHTML = html;
 }
 
