@@ -2747,6 +2747,59 @@ setTimeout(()=>{
   const cfg = getGHCfg();
   if(cfg.gistId && cfg.token) syncNow(false);
 }, 1200);
+function getMaxLastAt(bank){
+  if(!bank || !bank.records) return 0;
+  let max = 0;
+  for(const qid in bank.records){
+    const r = bank.records[qid];
+    if(r && r.lastAt > max) max = r.lastAt;
+  }
+  return max;
+}
+
+function startNewRound(){
+  const bank = getBank(); if(!bank) return;
+  const maxLast = getMaxLastAt(bank);
+  bank.roundStartAt = Math.max(Date.now(), maxLast + 1000);
+  buildRoundOrders(bank);
+  bank.seqHistory = []; bank.seqPos = -1;
+  bank.randHistory = []; bank.randPos = -1;
+  dynList = []; dynPos = 0;
+  followupCache = {};
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
+  state.ui.progressAt = Date.now();
+  state.ui.lastRoundKey = getLogicalDateKey();
+  saveState();
+  ensureModeHistory();
+  renderAll(true);
+}
+
+function checkDailyReset(){
+  const key = getLogicalDateKey();
+  if(!state.ui.lastRoundKey){
+    state.ui.lastRoundKey = key;
+    saveState();
+    return false;
+  }
+  if(key === state.ui.lastRoundKey) return false;
+
+  const bank = getBank();
+  let didReset = false;
+  if(bank && bankAllAnsweredOnce(bank)){
+    const maxLast = getMaxLastAt(bank);
+    bank.roundStartAt = Math.max(Date.now(), maxLast + 1000);
+    buildRoundOrders(bank);
+    bank.seqHistory = []; bank.seqPos = -1;
+    bank.randHistory = []; bank.randPos = -1;
+    dynList = []; dynPos = 0;
+    completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
+    didReset = true;
+  }
+  state.ui.lastRoundKey = key;
+  state.ui.progressAt = Date.now();
+  saveState();
+  return didReset;
+  }
 </script>
 </body>
 </html>
