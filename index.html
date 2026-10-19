@@ -32,9 +32,7 @@ body{
 body.font-s{font-size:14px;}
 body.font-m{font-size:16px;}
 body.font-l{font-size:18px;}
-
 .wrap{max-width:860px;margin:0 auto;padding:16px 14px 200px;}
-
 .header-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
 .header-top h1{font-size:1.15em;margin:0;letter-spacing:.3px;}
 .bank-name{font-size:.75em;color:var(--muted);}
@@ -51,12 +49,10 @@ body.font-l{font-size:18px;}
   padding:9px 12px;font-size:1em;font-family:inherit;cursor:pointer;color:var(--text);line-height:1;
 }
 .bank-row button:hover{background:var(--soft);}
-
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
 .seg{display:inline-flex;background:var(--card);border-radius:12px;padding:3px;box-shadow:var(--shadow);flex-wrap:wrap;}
 .seg button{border:0;background:transparent;padding:8px 13px;border-radius:9px;font-size:.86em;color:var(--muted);cursor:pointer;font-weight:500;transition:.15s;font-family:inherit;}
 .seg button.active{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.35);}
-
 .searchrow{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;}
 .searchrow input[type=text]{
   flex:1 1 160px;min-width:120px;padding:10px 12px;border-radius:11px;
@@ -76,15 +72,12 @@ body.font-l{font-size:18px;}
   border-radius:11px;padding:9px 11px;font-size:.9em;font-family:inherit;cursor:pointer;line-height:1;
 }
 .searchrow button:hover{background:var(--soft);}
-
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
 .stat{background:var(--card);border-radius:12px;padding:10px 6px;text-align:center;box-shadow:var(--shadow);}
 .stat .num{display:block;font-size:1.15em;font-weight:700;color:var(--blue);}
 .stat .lbl{display:block;font-size:.7em;color:var(--muted);margin-top:2px;}
-
 .progress{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden;}
 .progress .bar{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:99px;transition:width .25s;}
-
 .daily-banner{
   margin-top:12px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.12));
   border:1px solid var(--line);border-radius:14px;padding:11px 14px;
@@ -92,7 +85,6 @@ body.font-l{font-size:18px;}
 }
 .daily-banner .fire{font-size:1.2em;}
 .daily-banner .praise{margin-left:auto;color:#b45309;font-weight:600;font-size:.92em;}
-
 .card{background:var(--card);border-radius:16px;padding:18px 16px;margin-top:14px;box-shadow:var(--shadow);}
 .qmeta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
 .tag{font-size:.68em;padding:3px 9px;border-radius:99px;font-weight:600;background:var(--tagbg);color:var(--tagfg);}
@@ -109,7 +101,6 @@ body.font-l{font-size:18px;}
 .note-btn{border:1.5px solid var(--line);background:var(--soft);border-radius:9px;padding:4px 9px;font-size:.72em;font-family:inherit;cursor:pointer;color:var(--muted);}
 .note-btn:hover{background:var(--soft2);}
 .qtext{font-size:1.06em;line-height:1.65;font-weight:500;margin-bottom:16px;}
-
 .opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:.96em;line-height:1.5;color:var(--text);cursor:pointer;font-family:inherit;transition:.15s;}
 .opt:last-child{margin-bottom:0;}
 .opt:hover:not(.locked){border-color:#93c5fd;background:var(--soft2);}
@@ -124,19 +115,16 @@ body.font-l{font-size:18px;}
 .opt.missed .key{background:rgba(16,185,129,.5);color:#fff;}
 .opt.dim{opacity:.55;}
 .opt.locked{cursor:default;}
-
 .multi-submit{margin-top:12px;}
 .multi-submit button{
   width:100%;padding:12px;border-radius:11px;border:1.5px solid var(--blue);
   background:var(--blue);color:#fff;font-size:.95em;font-weight:600;font-family:inherit;cursor:pointer;
 }
 .multi-submit button:disabled{opacity:.5;cursor:not-allowed;background:var(--soft2);color:var(--muted);border-color:var(--line);}
-
 .fb{margin-top:14px;padding:10px 14px;border-radius:10px;font-size:.95em;font-weight:600;}
 .fb.ok{background:rgba(16,185,129,.12);color:#047857;}
 .fb.no{background:rgba(239,68,68,.12);color:#b91c1c;}
 .ex{margin-top:10px;padding:10px 14px;background:var(--soft2);border-radius:10px;font-size:.86em;line-height:1.7;color:var(--text);}
-
 .action-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
 .action-row button{flex:1;min-width:120px;padding:10px;border-radius:11px;font-size:.88em;font-weight:600;font-family:inherit;cursor:pointer;}
 .retry-btn{border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;}
@@ -145,7 +133,6 @@ body.theme-dark .retry-btn{color:#a5b4fc;border-color:#3730a3;}
 .master-btn{border:1.5px solid #a7f3d0;background:rgba(16,185,129,.1);color:#047857;}
 body.theme-dark .master-btn{color:#6ee7b7;border-color:#065f46;}
 .master-btn:hover{background:rgba(16,185,129,.18);}
-
 .ai-zone{margin-top:14px;}
 .ai-btn{width:100%;padding:12px;border-radius:11px;border:1.5px dashed #a5b4fc;background:rgba(99,102,241,.1);color:#4338ca;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
 body.theme-dark .ai-btn{color:#a5b4fc;border-color:#3730a3;}
@@ -157,7 +144,6 @@ body.theme-dark .ai-btn{color:#a5b4fc;border-color:#3730a3;}
 .ai-foot{display:flex;justify-content:flex-end;margin-top:6px;}
 .ai-foot button{border:0;background:transparent;color:var(--muted);font-size:.75em;font-family:inherit;cursor:pointer;padding:4px 6px;}
 .ai-foot button:hover{color:var(--red);}
-
 .followup{margin-top:10px;display:flex;gap:8px;}
 .followup input{flex:1;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:var(--soft);color:var(--text);font-size:.84em;font-family:inherit;}
 .followup input:focus{outline:none;border-color:#93c5fd;}
@@ -165,10 +151,8 @@ body.theme-dark .ai-btn{color:#a5b4fc;border-color:#3730a3;}
 body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
 .followup-out{margin-top:8px;padding:10px 13px;background:var(--soft2);border-radius:8px;font-size:.84em;line-height:1.7;white-space:pre-wrap;color:var(--text);}
 .followup-out:empty{display:none;}
-
 .note-box{margin-top:10px;padding:10px 13px;background:rgba(245,158,11,.09);border-left:3px solid #f59e0b;border-radius:8px;font-size:.84em;line-height:1.7;white-space:pre-wrap;color:var(--text);}
 .note-box:empty{display:none;}
-
 .mastered-list{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
 .mastered-item{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--soft);}
 .mastered-item .mi-q{font-size:.9em;line-height:1.55;margin-bottom:6px;}
@@ -177,7 +161,6 @@ body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
 .mastered-item .mi-actions button{flex:1;padding:7px;border-radius:8px;font-size:.8em;font-weight:600;font-family:inherit;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--text);}
 .mastered-item .mi-actions button.restore{border-color:#a7f3d0;color:#047857;background:rgba(16,185,129,.08);}
 .mastered-item .mi-actions button.del{border-color:#fecaca;color:#b91c1c;background:rgba(239,68,68,.07);}
-
 .empty{text-align:center;padding:44px 10px;}
 .empty .big{font-size:2.6em;}
 .empty h2{font-size:1.05em;margin:10px 0 6px;}
@@ -186,8 +169,6 @@ body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
 .empty .acts button{border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:11px;padding:11px 20px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;}
 .empty .acts button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
 .empty .note{font-size:.78em;color:#b45309;background:rgba(245,158,11,.1);border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.6;}
-
-/* 底部：长按条 + 导航 */
 .bottom-dock{
   position:fixed;left:0;right:0;bottom:0;z-index:50;
   background:var(--navbg);backdrop-filter:blur(10px);
@@ -209,18 +190,14 @@ body.theme-dark .longpress-hint{color:#a5b4fc;border-color:#3730a3;}
   background:rgba(99,102,241,.3);pointer-events:none;
   border-radius:11px;
 }
-.longpress-hint.pressing .lp-fill{
-  width:100%;transition:width 1.5s linear;
-}
+.longpress-hint.pressing .lp-fill{width:100%;transition:width 1.5s linear;}
 .longpress-hint.done{background:rgba(16,185,129,.15);color:#047857;border-color:#10b981;}
 .longpress-hint .lp-label{position:relative;z-index:1;}
 .longpress-hint.hidden{display:none;}
-
 .nav-buttons{display:flex;gap:10px;}
 .nav-buttons button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px 8px;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
 .nav-buttons button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
 .nav-buttons button:disabled{opacity:.4;cursor:not-allowed;}
-
 dialog{border:0;border-radius:16px;padding:0;width:min(92vw,560px);max-height:88vh;box-shadow:0 20px 60px rgba(15,23,42,.28);color:var(--text);font-family:inherit;background:var(--card);}
 dialog::backdrop{background:rgba(15,23,42,.45);}
 .dlg-body{padding:20px 20px 16px;overflow-y:auto;max-height:88vh;}
@@ -246,15 +223,13 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .tip{font-size:.76em;color:var(--muted);line-height:1.7;margin:14px 0 0;}
 .divider{border:0;border-top:1px solid var(--line);margin:18px 0 0;}
 .import-section .info{font-size:.78em;color:var(--muted);background:var(--soft2);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.55;}
-
+.stat-section-title{font-size:.82em;color:var(--muted);font-weight:600;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line);}
+.stat-section-title:first-child{margin-top:0;}
 .stat-table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:8px;}
 .stat-table th,.stat-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;}
 .stat-table th{color:var(--muted);font-weight:600;font-size:.92em;}
 .stat-table td.num{text-align:right;font-variant-numeric:tabular-nums;}
-.stat-section-title{font-size:.82em;color:var(--muted);font-weight:600;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line);}
-.stat-section-title:first-child{margin-top:0;}
 .stat-empty{font-size:.82em;color:var(--muted);padding:12px 0;}
-
 .modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
 .modal.show{display:flex;}
 .modal-box{background:var(--card);border-radius:16px;padding:20px;width:min(92vw,420px);box-shadow:0 20px 60px rgba(15,23,42,.28);}
@@ -265,10 +240,8 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
 .modal-actions button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 18px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text);}
 .modal-actions button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-
 .toast{position:fixed;left:50%;bottom:180px;transform:translateX(-50%);background:rgba(15,23,42,.9);color:#fff;padding:9px 18px;border-radius:99px;font-size:.85em;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;}
 .toast.show{opacity:1;}
-
 @media (min-width: 860px) {
   .wrap{max-width:1100px;padding:20px 24px 200px;}
   .card{padding:24px 28px;}
@@ -352,8 +325,10 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
       <button data-im="questions">导入题目</button>
     </div>
     <div id="importBankSection">
-      <div class="info">粘贴题库文本或分享码。如果题库名已存在，会要求你改名后再导入。</div>
-      <label for="importText">粘贴内容</label>
+      <div class="info">粘贴文本 / 分享码，或从文件导入（.json）。如果题库名已存在，会要求改名。</div>
+      <button class="copy-format-btn" id="importFileBtn">📂 从文件导入题库</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden style="display:none;">
+      <label for="importText">或粘贴内容</label>
       <textarea id="importText" placeholder="题库文本，或 QZ1: 开头的分享码…"></textarea>
     </div>
     <div id="importQuestionsSection" style="display:none;">
@@ -375,9 +350,11 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <dialog id="shareDlg">
   <div class="dlg-body">
     <h3>分享 / 导出</h3>
-    <p class="sub">分享码包含题目、选项、答案、解析和标签，不含你的答题记录和笔记。</p>
+    <p class="sub">推荐下载 JSON 文件，通过聊天软件发文件即可，大小不受限制。分享码适合少量题目。</p>
+    <button class="copy-format-btn" id="downloadJsonBtn" style="border-color:#a7f3d0;background:rgba(16,185,129,.1);color:#047857;">📥 下载 JSON 文件</button>
+    <hr class="divider">
     <label>分享码</label>
-    <textarea id="shareCode" readonly style="min-height:120px;"></textarea>
+    <textarea id="shareCode" readonly style="min-height:90px;"></textarea>
     <button class="copy-format-btn" id="copyShareBtn">📋 复制分享码</button>
     <hr class="divider">
     <label>题库文本</label>
@@ -393,42 +370,33 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
   <div class="dlg-body">
     <h3>设置</h3>
     <p class="sub">API Key 和 GitHub Token 只保存在这台设备的浏览器里，不会上传。</p>
-
     <label for="aiKey">DeepSeek API Key</label>
     <input type="password" id="aiKey" placeholder="sk-... 从 platform.deepseek.com 创建" autocomplete="off" spellcheck="false">
-
     <label for="aiModel">模型</label>
     <select id="aiModel">
       <option value="deepseek-chat">deepseek-chat（速度快，推荐）</option>
       <option value="deepseek-reasoner">deepseek-reasoner（会推理，稍慢）</option>
     </select>
-
     <div class="dlg-actions">
       <button id="aiSave" class="primary">保存 Key</button>
       <span class="save-msg" id="aiSaveMsg"></span>
     </div>
-
     <hr class="divider">
     <label style="margin-top:18px;">GitHub 同步（Gist）</label>
     <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。笔记和已掌握状态随同步。</p>
-
     <label for="gistId">Gist ID</label>
     <input type="text" id="gistId" placeholder="例如 a1b2c3d4e5f6..." autocomplete="off" spellcheck="false">
-
     <label for="ghToken">Classic Token</label>
     <input type="password" id="ghToken" placeholder="ghp_... 只勾选 gist 权限" autocomplete="off" spellcheck="false">
-
     <div class="dlg-actions" style="justify-content:flex-start;">
       <button id="ghSave" class="primary">保存</button>
       <button id="ghSyncNow">立即同步</button>
       <span class="save-msg" id="ghSaveMsg"></span>
     </div>
     <p class="tip" id="ghStatus"></p>
-
     <hr class="divider">
-    <label>标签掌握度（全部历史）</label>
+    <label>标签掌握度</label>
     <div id="statsArea"></div>
-
     <hr class="divider">
     <label>数据备份</label>
     <div class="dlg-actions" style="justify-content:flex-start;margin-top:8px;">
@@ -436,7 +404,6 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
       <button id="restoreBtn">恢复备份</button>
     </div>
     <input type="file" id="restoreFile" accept=".json,application/json" hidden>
-
     <hr class="divider">
     <label>当前题库</label>
     <div class="dlg-actions" style="justify-content:flex-start;margin-top:8px;">
@@ -473,21 +440,17 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ======================= 常量 ======================= */
 const DAY = 86400000;
 const TOMBSTONE_TTL = 3 * DAY;
 const BATCH_SIZE = 50;
 const SHARE_PREFIX = 'QZ1:';
-
 const STATE_KEY = 'quiz-state';
 const AI_KEY = 'quiz-ai-cfg';
 const GH_KEY = 'quiz-github-cfg';
-
 const OLD_STATE_KEYS = ['quiz-v12-state','quiz-v11-state','quiz-v10-state','quiz-v9-state','quiz-v8-state','quiz-v5-state'];
 const OLD_AI_KEYS = ['quiz-v12-ai','quiz-v11-ai','quiz-v10-ai','quiz-v9-ai','quiz-v8-ai','quiz-v5-ai'];
 const OLD_GH_KEYS = ['quiz-v12-github','quiz-v11-github','quiz-v10-github','quiz-v9-github','quiz-v8-github','quiz-v5-github'];
 
-/* ======================= 工具 ======================= */
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -507,7 +470,6 @@ function showToast(msg){
   toastTimer = setTimeout(()=>el.classList.remove('show'), 1800);
 }
 
-/* ======================= 时间工具 ======================= */
 function next4amBase(){
   const now = new Date();
   const today4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 4, 0, 0, 0);
@@ -538,7 +500,6 @@ function getPrevDateKey(key){
 }
 function fmtLeft(ms){ if(ms <= 0) return '现在'; const h = Math.ceil(ms/3600000); return h < 24 ? h + ' 小时后' : Math.ceil(ms/86400000) + ' 天后'; }
 
-/* ======================= 迁移旧 key ======================= */
 function migrateOldKeys(){
   if(!localStorage.getItem(STATE_KEY)){
     for(const k of OLD_STATE_KEYS){
@@ -560,7 +521,6 @@ function migrateOldKeys(){
   }
 }
 
-/* ======================= 状态 ======================= */
 let state = {
   banks: {},
   tombstones: {},
@@ -684,7 +644,6 @@ function ensureBankFields(bank){
   });
 }
 
-/* ======================= 答题判定 ======================= */
 function isCorrectAnswer(q, chosen){
   if(!Array.isArray(chosen) || !chosen.length) return false;
   if(q.type === 'multi'){
@@ -704,7 +663,7 @@ function isAnsweredThisRound(qid, bank){
   return (r.lastAt || 0) >= (bank.roundStartAt || 0);
 }
 
-/* ======================= 批次构建 ======================= */
+/* 修复 Bug4：抽批次时排除已掌握未到期、错题未到复习时间的题 */
 function buildBatch(bank){
   if(!bank) return;
   const now = Date.now();
@@ -715,12 +674,19 @@ function buildBatch(bank){
   bank.questions.forEach(q => {
     const r = bank.records[q.id];
     if(r && r.mastered){
-      masteredDue.push(q);
-    }else if(r && r.wrongCount > 0 && (r.nextReviewAt||0) <= now){
-      dueWrong.push(q);
-    }else{
-      unmastered.push(q);
+      // 已掌握：只有 reappearAt 到期才可回到批次
+      if((r.reappearAt||0) <= now) masteredDue.push(q);
+      // 未到期：跳过
+      return;
     }
+    if(r && r.wrongCount > 0){
+      // 有错题记录：只有 nextReviewAt 到期才进批次
+      if((r.nextReviewAt||0) <= now) dueWrong.push(q);
+      // 未到复习时间：跳过，等复习时间再出现
+      return;
+    }
+    // 未答过、或答对过但未掌握：归入 unmastered
+    unmastered.push(q);
   });
 
   dueWrong.sort((a,b)=> (bank.records[a.id].nextReviewAt||0) - (bank.records[b.id].nextReviewAt||0));
@@ -746,12 +712,10 @@ function buildBatch(bank){
   saveState();
 }
 
-/* ======================= 练习模式视图 ======================= */
 function getPracticeViewList(bank){
   if(!bank) return [];
   const ui = state.ui;
   let list = bank.batch.slice();
-
   if(ui.filterType !== 'all'){
     list = list.filter(qid => {
       const q = bank.questions.find(x => x.id === qid);
@@ -777,6 +741,21 @@ function getPracticeViewList(bank){
   return list;
 }
 
+/* 修复 Bug3：切筛选后定位到该视图里第一个未答的题 */
+function repositionPracticeView(bank){
+  if(!bank || state.ui.mode !== 'practice') return;
+  const view = getPracticeViewList(bank);
+  if(!view.length){ bank.batchViewPos = 0; return; }
+  for(let i = 0; i < view.length; i++){
+    if(!isAnsweredThisRound(view[i], bank)){
+      bank.batchViewPos = i;
+      return;
+    }
+  }
+  // 全部答过 → 回第一题
+  bank.batchViewPos = 0;
+}
+
 function ensurePracticeViewPos(bank){
   if(!bank) return;
   const view = getPracticeViewList(bank);
@@ -784,13 +763,11 @@ function ensurePracticeViewPos(bank){
   if(bank.batchViewPos < 0) bank.batchViewPos = 0;
 }
 
-/* ======================= 错题 / 收藏 / 已掌握 列表 ======================= */
 function rebuildDynList(){
   const bank = getBank(); if(!bank) return;
   const m = state.ui.mode;
   const ui = state.ui;
   if(m === 'practice') return;
-
   let pool = bank.questions.slice();
   if(ui.filterType !== 'all') pool = pool.filter(q => q.type === ui.filterType);
   if(ui.tag && ui.tag !== 'all') pool = pool.filter(q => (q.tag||'') === ui.tag);
@@ -802,7 +779,6 @@ function rebuildDynList(){
       (q.explain||'').toLowerCase().includes(kw)
     );
   }
-
   if(m === 'wrong'){
     const now = Date.now();
     pool = pool.filter(q => {
@@ -840,7 +816,6 @@ function ensureModeHistory(){
   rebuildDynList();
 }
 
-/* ======================= 当前题目 ======================= */
 function getCurrentQuestion(){
   const bank = getBank(); if(!bank) return null;
   const m = state.ui.mode;
@@ -855,7 +830,6 @@ function getCurrentQuestion(){
   return bank.questions.find(q => q.id === dynList[dynPos]) || null;
 }
 
-/* ======================= 每日重置 ======================= */
 function checkDailyReset(){
   const key = getLogicalDateKey();
   if(!state.ui.lastRoundKey){
@@ -864,7 +838,6 @@ function checkDailyReset(){
     return false;
   }
   if(key === state.ui.lastRoundKey) return false;
-
   const bank = getBank();
   if(bank){
     buildBatch(bank);
@@ -875,7 +848,6 @@ function checkDailyReset(){
   return true;
 }
 
-/* ======================= 每日打卡 ======================= */
 function recordDailyAnswer(correct){
   const key = getLogicalDateKey();
   if(!state.stats) state.stats = { daily:{}, streak:0, lastStreakKey:'' };
@@ -883,7 +855,6 @@ function recordDailyAnswer(correct){
   if(!state.stats.daily[key]) state.stats.daily[key] = { answered:0, correct:0 };
   state.stats.daily[key].answered++;
   if(correct) state.stats.daily[key].correct++;
-
   if(state.stats.daily[key].answered >= 10 && state.stats.lastStreakKey !== key){
     const prev = getPrevDateKey(key);
     const prevDaily = state.stats.daily[prev];
@@ -929,7 +900,6 @@ function getPraiseText(){
   return '每天 10 题，坚持就是胜利';
 }
 
-/* ======================= 渲染 ======================= */
 let aiCtrl = null;
 function abortAI(){ if(aiCtrl){ try{ aiCtrl.abort(); }catch(e){} aiCtrl = null; } }
 
@@ -977,7 +947,9 @@ function renderTagSelect(){
   const tags = [];
   if(bank){
     const seen = new Set();
-    const source = state.ui.mode === 'practice' ? bank.questions.filter(q => bank.batch.includes(q.id)) : bank.questions;
+    const source = state.ui.mode === 'practice'
+      ? bank.questions.filter(q => bank.batch.includes(q.id))
+      : bank.questions;
     source.forEach(q => {
       const t = (q.tag||'').trim();
       if(t && !seen.has(t)){ seen.add(t); tags.push(t); }
@@ -1044,7 +1016,6 @@ function updateLongpressHint(){
 function renderCard(){
   const card = $('card');
   const bank = getBank();
-
   if(!bank){
     card.innerHTML = `<div class="card empty">
       <div class="big">📚</div>
@@ -1057,7 +1028,6 @@ function renderCard(){
     </div>`;
     return;
   }
-
   if(bank._conflictDelete){
     card.innerHTML = `<div class="card empty">
       <div class="big">⚠</div>
@@ -1070,7 +1040,6 @@ function renderCard(){
     </div>`;
     return;
   }
-
   const m = state.ui.mode;
 
   if(m === 'mastered'){
@@ -1117,9 +1086,7 @@ function renderCard(){
     return;
   }
 
-  // practice 模式完成判断
   if(m === 'practice'){
-    // 本批全部答完？
     const batchAllAnswered = bank.batch.length > 0 && bank.batch.every(qid => isAnsweredThisRound(qid, bank));
     if(batchAllAnswered){
       const correctCount = bank.batch.filter(qid => {
@@ -1144,20 +1111,16 @@ function renderCard(){
       </div>`;
       return;
     }
-
-    // 当前视图空？
     const view = getPracticeViewList(bank);
     if(!view.length){
-      // 区分：批次本身空 / 筛选后为空
       if(!bank.batch.length){
         card.innerHTML = `<div class="card empty">
           <div class="big">📭</div>
           <h2>本批没有题目</h2>
-          <p>题库为空，或所有题都已掌握等待复习。</p>
+          <p>所有题都在复习等待期、或已掌握未到期。凌晨 4 点后会自动重抽，或点下方长按重抽试试。</p>
         </div>`;
         return;
       }
-      // 筛选后为空
       let msg = '当前筛选条件下，本批没有对应的题。';
       if(state.ui.filterType !== 'all'){
         const typeName = {choice:'单选', multi:'多选', judge:'判断'}[state.ui.filterType] || '';
@@ -1221,7 +1184,6 @@ function renderCard(){
     qnoHtml = (dynPos + 1) + ' / ' + dynList.length;
   }
 
-  const selectedSet = new Set(answered ? (rec.lastChoices || []) : tempSelection);
   let optsHtml = '';
   q.options.forEach((opt, i) => {
     let cls = 'opt';
@@ -1316,7 +1278,6 @@ function updateNavButtons(){
   const m = state.ui.mode;
   if(!bank){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
-
   if(m === 'practice'){
     const view = getPracticeViewList(bank);
     if(!view.length){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
@@ -1328,12 +1289,10 @@ function updateNavButtons(){
   }
 }
 
-/* ======================= 答题 ======================= */
 function submitAnswer(q, chosen){
   const bank = getBank(); if(!bank) return;
   if(isAnsweredThisRound(q.id, bank)) return;
   if(!chosen.length) return;
-
   const correct = isCorrectAnswer(q, chosen);
   const now = Date.now();
   let r = bank.records[q.id];
@@ -1341,7 +1300,6 @@ function submitAnswer(q, chosen){
   r.lastChoices = chosen.slice();
   r.correct = correct;
   r.lastAt = now;
-
   if(correct){
     if(r.mastered){
       r.reappearAt = next4amPlusDays(14);
@@ -1370,7 +1328,6 @@ function submitAnswer(q, chosen){
     r.streak = 0;
     r.nextReviewAt = nextReviewTime(r.wrongCount);
   }
-
   bank.records[q.id] = r;
   state.ui.progressAt = now;
   recordDailyAnswer(correct);
@@ -1384,7 +1341,6 @@ function handleOptionClick(i){
   if(!q) return;
   const bank = getBank();
   if(isAnsweredThisRound(q.id, bank)) return;
-
   if(q.type === 'multi'){
     const k = tempSelection.indexOf(i);
     if(k >= 0) tempSelection.splice(k, 1);
@@ -1395,7 +1351,6 @@ function handleOptionClick(i){
   submitAnswer(q, [i]);
 }
 
-/* ======================= 长按重抽 ======================= */
 let pressTimer = null;
 let pressStartAt = 0;
 let pressStartX = 0, pressStartY = 0;
@@ -1457,7 +1412,6 @@ function bindLongPress(){
   el.addEventListener('touchcancel', end);
 }
 
-/* ======================= 导航 ======================= */
 function goPrev(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
@@ -1496,7 +1450,9 @@ function clearFilter(){
   $('searchInput').value = '';
   syncSegs();
   const bank = getBank();
-  if(bank){ bank.batchViewPos = 0; }
+  if(bank){
+    repositionPracticeView(bank);
+  }
   saveState();
   renderAll(true);
 }
@@ -1515,7 +1471,6 @@ function syncSegs(){
   document.querySelectorAll('#modeSeg button').forEach(b => b.classList.toggle('active', b.dataset.m === state.ui.mode));
 }
 
-/* ======================= 收藏 / 掌握 ======================= */
 function toggleStar(){
   const bank = getBank(); const q = getCurrentQuestion();
   if(!bank || !q) return;
@@ -1572,17 +1527,13 @@ function deleteQuestionForever(qid){
   renderAll(true);
 }
 
-/* ======================= AI ======================= */
 function buildPrompt(q, rec){
   const typeText = q.type === 'multi' ? '多选题' : (q.type === 'judge' ? '判断题' : '单选题');
   const optText = q.options.map((o,i)=>`${'ABCD'[i]}. ${o}`).join('\n');
-  const ansText = q.type === 'judge'
-    ? q.options[q.answers[0]]
-    : q.answers.map(i => 'ABCD'[i]).join('');
+  const ansText = q.type === 'judge' ? q.options[q.answers[0]] : q.answers.map(i => 'ABCD'[i]).join('');
   const chosenText = (rec.lastChoices && rec.lastChoices.length)
     ? rec.lastChoices.map(i => q.type === 'judge' ? q.options[i] : 'ABCD'[i]).join('')
     : '（未作答）';
-
   return `请讲解下面这道${typeText}题，对象是正在备考的一线操作工。
 
 【题型】
@@ -1713,14 +1664,11 @@ async function runFollowup(){
   if(!question) return;
   const cfg = getAICfg();
   if(!cfg.key){ out.textContent = '还没有填写 API Key。'; return; }
-
   const rec = bank.records[q.id];
   const originalPrompt = buildPrompt(q, rec);
   const prevAI = bank.ai[q.id] || '';
-
   input.value = '';
   out.textContent = '思考中…';
-
   let full = '';
   try{
     const res = await fetch('https://api.deepseek.com/chat/completions', {
@@ -1761,7 +1709,6 @@ async function runFollowup(){
   }
 }
 
-/* ======================= 笔记 ======================= */
 function openNote(){
   const bank = getBank(); const q = getCurrentQuestion();
   if(!bank || !q) return;
@@ -1785,10 +1732,8 @@ $('noteClear').onclick = () => {
   saveState(); closeNote(); renderCard();
 };
 
-/* ======================= 统计页 ======================= */
 function renderStatsPage(){
   const area = $('statsArea');
-
   function calcMap(bankIds){
     const map = {};
     bankIds.forEach(bid => {
@@ -1807,7 +1752,6 @@ function renderStatsPage(){
     });
     return map;
   }
-
   function renderTable(map){
     const tags = Object.keys(map).sort();
     if(!tags.length) return '<div class="stat-empty">还没有答题记录。</div>';
@@ -1820,26 +1764,21 @@ function renderStatsPage(){
     html += '</tbody></table>';
     return html;
   }
-
   const allIds = Object.keys(state.banks);
   const curBank = getBank();
   let html = '';
-
   if(curBank){
     html += `<div class="stat-section-title">当前题库：${esc(curBank.name)}</div>`;
     html += renderTable(calcMap([curBank.id]));
   }
-
   if(allIds.length > 1){
     html += `<div class="stat-section-title">全部题库（${allIds.length} 个）</div>`;
     html += renderTable(calcMap(allIds));
   }
-
   if(!html) html = '<div class="stat-empty">还没有题库。</div>';
   area.innerHTML = html;
 }
 
-/* ======================= 同步 ======================= */
 function collectSyncData(){
   const banks = {};
   Object.keys(state.banks).forEach(bid => {
@@ -1891,9 +1830,7 @@ function mergeRemote(remote){
     if(remote && remote.tombstones) applyRemoteTombstones(remote.tombstones, stat);
     return stat;
   }
-
   applyRemoteTombstones(remote.tombstones || {}, stat);
-
   Object.keys(state.tombstones).forEach(tid => {
     const tomb = state.tombstones[tid];
     const remoteBank = remote.banks[tid];
@@ -1907,7 +1844,6 @@ function mergeRemote(remote){
       stat.addedBanks++;
     }
   });
-
   Object.keys(remote.banks).forEach(bid => {
     if(state.tombstones[bid]) return;
     const r = remote.banks[bid];
@@ -1955,7 +1891,6 @@ function mergeRemote(remote){
       });
     }
   });
-
   if(remote.stats){
     if(!state.stats) state.stats = { daily:{}, streak:0, lastStreakKey:'' };
     if(remote.stats.daily){
@@ -1970,7 +1905,6 @@ function mergeRemote(remote){
       state.stats.lastStreakKey = remote.stats.lastStreakKey;
     }
   }
-
   if(remote.ui && (remote.ui.progressAt||0) > (state.ui.progressAt||0)){
     state.ui.mode = remote.ui.mode || state.ui.mode;
     state.ui.filterType = remote.ui.filterType || state.ui.filterType;
@@ -1980,16 +1914,13 @@ function mergeRemote(remote){
     if(remote.currentBankId && state.banks[remote.currentBankId]) state.currentBankId = remote.currentBankId;
     stat.uiMerged = true;
   }
-
   if(state.currentBankId && !state.banks[state.currentBankId]){
     state.currentBankId = Object.keys(state.banks)[0] || null;
   }
-
   const now = Date.now();
   Object.keys(state.tombstones).forEach(tid => {
     if(now - state.tombstones[tid].deletedAt > TOMBSTONE_TTL) delete state.tombstones[tid];
   });
-
   return stat;
 }
 
@@ -2117,7 +2048,6 @@ function renderGHStatus(errMsg){
   el.textContent = '已配置。上次同步：' + t;
 }
 
-/* ======================= 导入 / 导出 ======================= */
 const FORMAT_BANK = `# 题库名称：示例题库
 
 ## 单选题
@@ -2140,7 +2070,7 @@ D. N2
 标签：工艺
 
 ## 判断题
-1. DCS 是以分散的控制适应分散的过程对象，以集中的监视、操作和管理达到掌管全局目的。
+1. DCS 是以分散的控制适应分散的过程对象。
 答案：正确
 标签：仪表`;
 
@@ -2217,6 +2147,22 @@ function parseImportText(text){
         }))
       };
     }catch(e){ return null; }
+  }
+  // JSON 格式
+  if(src.startsWith('{')){
+    try{
+      const d = JSON.parse(src);
+      if(d && d.format === 'quiz-bank' && Array.isArray(d.questions)){
+        return {
+          name: d.name || '',
+          questions: d.questions.map(x => ({
+            type: x.type || 'choice',
+            q: x.q, options: x.options, answers: x.answers,
+            explain: x.explain || '', tag: x.tag || ''
+          }))
+        };
+      }
+    }catch(e){}
   }
   const lines = src.replace(/\r\n?/g,'\n').split('\n');
   let bankName = ''; let section = null; let cur = null; const out = [];
@@ -2316,7 +2262,6 @@ function doImportQuestions(result){
   const before = bank.questions.length;
   const after = before + result.questions.length;
   if(!confirm(`将向「${bank.name}」追加 ${result.questions.length} 道题。\n当前 ${before} 题，追加后 ${after} 题。\n确认吗？`)) return;
-
   result.questions.forEach(item => {
     const qid = nextQid(bank);
     bank.questions.push({
@@ -2326,7 +2271,6 @@ function doImportQuestions(result){
       explain: item.explain || '', tag: item.tag || ''
     });
   });
-
   state.ui.progressAt = Date.now();
   saveState();
   $('importDlg').close();
@@ -2344,9 +2288,25 @@ $('copyFormatBtn').onclick = () => {
   const spec = importMode === 'bank' ? FORMAT_BANK : FORMAT_QUESTIONS;
   copyText(spec, '格式说明已复制。');
 };
+$('importFileBtn').onclick = () => $('importFile').click();
+$('importFile').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = parseImportText(reader.result);
+    if(!result || !result.questions.length){
+      alert('文件里没有解析到有效题目。请确认是本页面导出的 JSON 文件。');
+      e.target.value = '';
+      return;
+    }
+    doImportBank(result);
+    e.target.value = '';
+  };
+  reader.readAsText(f);
+});
 $('importConfirm').onclick = () => {
   const text = importMode === 'bank' ? $('importText').value.trim() : $('importQText').value.trim();
-  if(!text){ alert('请先粘贴内容'); return; }
+  if(!text){ alert('请先粘贴内容或选择文件'); return; }
   const result = parseImportText(text);
   if(!result || !result.questions.length){
     alert('没有解析到有效题目。请检查题号、选项、答案行格式，或分享码是否完整。');
@@ -2359,6 +2319,18 @@ $('importConfirm').onclick = () => {
 function encodeShare(bank){
   const payload = { n: bank.name, q: bank.questions.map(q => ({ t: q.type, q: q.q, o: q.options, a: q.answers, e: q.explain || '', g: q.tag || '' })) };
   return SHARE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+
+function bankToJson(bank){
+  return {
+    format: 'quiz-bank',
+    version: 1,
+    name: bank.name,
+    questions: bank.questions.map(q => ({
+      type: q.type, q: q.q, options: q.options, answers: q.answers,
+      explain: q.explain || '', tag: q.tag || ''
+    }))
+  };
 }
 
 function bankToText(bank){
@@ -2401,7 +2373,6 @@ function bankToText(bank){
   return lines.join('\n');
 }
 
-/* ======================= 名称弹窗 ======================= */
 let nameResolver = null;
 function askName(title, defaultValue){
   return new Promise(resolve => {
@@ -2416,38 +2387,22 @@ $('nameModalCancel').onclick = () => { $('nameModal').classList.remove('show'); 
 $('nameModalOk').onclick = () => { const v = $('nameModalInput').value.trim(); $('nameModal').classList.remove('show'); if(nameResolver){ nameResolver(v || null); nameResolver = null; } };
 $('nameModalInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); $('nameModalOk').click(); } else if(e.key === 'Escape'){ e.preventDefault(); $('nameModalCancel').click(); } });
 
-/* ======================= 卡片事件 ======================= */
 $('card').addEventListener('click', e => {
   const actEl = e.target.closest('[data-act]');
   if(actEl){
     const a = actEl.dataset.act;
     const q = getCurrentQuestion(); const bank = getBank();
-
-    if(a === 'mastered-restore'){
-      const qid = actEl.dataset.qid;
-      if(qid) restoreMastered(qid);
-      return;
-    }
-    if(a === 'mastered-delete'){
-      const qid = actEl.dataset.qid;
-      if(qid) deleteQuestionForever(qid);
-      return;
-    }
+    if(a === 'mastered-restore'){ const qid = actEl.dataset.qid; if(qid) restoreMastered(qid); return; }
+    if(a === 'mastered-delete'){ const qid = actEl.dataset.qid; if(qid) deleteQuestionForever(qid); return; }
     if(a === 'open-import'){ openImport(); return; }
     if(a === 'new-bank'){ createNewBank(); return; }
     if(a === 'open-settings'){ $('settingsBtn').click(); return; }
-    if(a === 'dismiss-conflict'){
-      if(bank){ delete bank._conflictDelete; saveState(); renderAll(true); }
-      return;
-    }
+    if(a === 'dismiss-conflict'){ if(bank){ delete bank._conflictDelete; saveState(); renderAll(true); } return; }
     if(a === 'clear-filter'){ clearFilter(); return; }
     if(a === 'star'){ toggleStar(); return; }
     if(a === 'note'){ openNote(); return; }
     if(a === 'mark-mastered'){ markMastered(); return; }
-    if(a === 'submit-multi'){
-      if(q) submitAnswer(q, tempSelection.slice());
-      return;
-    }
+    if(a === 'submit-multi'){ if(q) submitAnswer(q, tempSelection.slice()); return; }
     if(a === 'next-batch'){ startNextBatch(); return; }
     if(a === 'ai'){ runAI(); return; }
     if(a === 'ai-followup'){ runFollowup(); return; }
@@ -2491,14 +2446,12 @@ $('typeSeg').addEventListener('click', e => {
   state.ui.progressAt = Date.now();
   const bank = getBank();
   if(bank && state.ui.mode === 'practice'){
-    // 切题型后如果当前批次里没有该题型，提示
     const tmp = getPracticeViewList(bank);
     if(!tmp.length){
       const typeName = {all:'全部', choice:'单选', multi:'多选', judge:'判断'}[b.dataset.t] || '';
       showToast('本批 50 题里没有' + typeName + '题');
-    }else{
-      bank.batchViewPos = 0;
     }
+    repositionPracticeView(bank);
   }else if(bank){
     dynPos = 0;
   }
@@ -2526,7 +2479,7 @@ $('searchInput').addEventListener('input', e => {
   state.ui.progressAt = Date.now();
   const bank = getBank();
   if(bank){
-    if(state.ui.mode === 'practice') bank.batchViewPos = 0;
+    if(state.ui.mode === 'practice') repositionPracticeView(bank);
     else dynPos = 0;
   }
   saveState();
@@ -2539,7 +2492,7 @@ $('tagSelect').addEventListener('change', e => {
   state.ui.progressAt = Date.now();
   const bank = getBank();
   if(bank){
-    if(state.ui.mode === 'practice') bank.batchViewPos = 0;
+    if(state.ui.mode === 'practice') repositionPracticeView(bank);
     else dynPos = 0;
   }
   saveState();
@@ -2586,6 +2539,21 @@ $('shareBtn').onclick = () => {
 $('shareClose').onclick = () => $('shareDlg').close();
 $('copyShareBtn').onclick = () => copyText($('shareCode').value, '分享码已复制。');
 $('copyTextBtn').onclick = () => copyText($('shareText').value, '题库文本已复制。');
+$('downloadJsonBtn').onclick = () => {
+  const bank = getBank(); if(!bank) return;
+  const json = JSON.stringify(bankToJson(bank), null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeName = bank.name.replace(/[\\/:*?"<>|]/g, '_');
+  a.href = url;
+  a.download = safeName + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  showToast('JSON 文件已下载');
+};
 
 $('settingsBtn').onclick = () => {
   const cfg = getAICfg();
@@ -2699,7 +2667,6 @@ document.addEventListener('keydown', e => {
   else if(e.key === 'ArrowLeft'){ e.preventDefault(); goPrev(); }
 });
 
-/* ======================= 启动 ======================= */
 migrateOldKeys();
 loadState();
 applyThemeFont();
