@@ -54,8 +54,8 @@ body.font-l{font-size:18px;}
 .bank-row button:disabled{opacity:.5;cursor:default;}
 
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
-.seg{display:inline-flex;background:var(--card);border-radius:12px;padding:3px;box-shadow:var(--shadow);}
-.seg button{border:0;background:transparent;padding:8px 14px;border-radius:9px;font-size:.86em;color:var(--muted);cursor:pointer;font-weight:500;transition:.15s;font-family:inherit;}
+.seg{display:inline-flex;background:var(--card);border-radius:12px;padding:3px;box-shadow:var(--shadow);flex-wrap:wrap;}
+.seg button{border:0;background:transparent;padding:8px 13px;border-radius:9px;font-size:.86em;color:var(--muted);cursor:pointer;font-weight:500;transition:.15s;font-family:inherit;}
 .seg button.active{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(37,99,235,.35);}
 
 .searchrow{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap;}
@@ -86,7 +86,6 @@ body.font-l{font-size:18px;}
 .progress{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden;}
 .progress .bar{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:99px;transition:width .25s;}
 
-/* 每日横幅 */
 .daily-banner{
   margin-top:12px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.12));
   border:1px solid var(--line);border-radius:14px;padding:11px 14px;
@@ -104,7 +103,7 @@ body.font-l{font-size:18px;}
 .tag.ok{background:rgba(16,185,129,.16);color:#047857;}
 .tag.due{background:rgba(245,158,11,.16);color:#b45309;}
 .tag.hist{background:rgba(99,102,241,.14);color:#4338ca;}
-.tag.warn{background:rgba(220,38,38,.15);color:#b91c1c;font-weight:700;}
+.tag.mastered{background:rgba(16,185,129,.2);color:#047857;}
 .qno{margin-left:auto;font-size:.75em;color:var(--muted);}
 .star-btn{border:0;background:transparent;font-size:1.2em;line-height:1;cursor:pointer;color:#f59e0b;padding:0 2px;}
 .note-btn{border:1.5px solid var(--line);background:var(--soft);border-radius:9px;padding:4px 9px;font-size:.72em;font-family:inherit;cursor:pointer;color:var(--muted);}
@@ -128,9 +127,14 @@ body.font-l{font-size:18px;}
 .fb.no{background:rgba(239,68,68,.12);color:#b91c1c;}
 .ex{margin-top:10px;padding:10px 14px;background:var(--soft2);border-radius:10px;font-size:.86em;line-height:1.7;color:var(--text);}
 
-.retry-btn{width:100%;margin-top:12px;padding:11px;border-radius:11px;border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
+.action-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.action-row button{flex:1;min-width:120px;padding:10px;border-radius:11px;font-size:.88em;font-weight:600;font-family:inherit;cursor:pointer;}
+.retry-btn{border:1.5px solid #c7d2fe;background:rgba(99,102,241,.1);color:#4338ca;}
 body.theme-dark .retry-btn{color:#a5b4fc;border-color:#3730a3;}
 .retry-btn:hover{background:rgba(99,102,241,.18);}
+.master-btn{border:1.5px solid #a7f3d0;background:rgba(16,185,129,.1);color:#047857;}
+body.theme-dark .master-btn{color:#6ee7b7;border-color:#065f46;}
+.master-btn:hover{background:rgba(16,185,129,.18);}
 
 .ai-zone{margin-top:14px;}
 .ai-btn{width:100%;padding:12px;border-radius:11px;border:1.5px dashed #a5b4fc;background:rgba(99,102,241,.1);color:#4338ca;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s;}
@@ -154,6 +158,17 @@ body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
 
 .note-box{margin-top:10px;padding:10px 13px;background:rgba(245,158,11,.09);border-left:3px solid #f59e0b;border-radius:8px;font-size:.84em;line-height:1.7;white-space:pre-wrap;color:var(--text);}
 .note-box:empty{display:none;}
+
+/* 已掌握列表 */
+.mastered-list{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.mastered-item{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--soft);}
+.mastered-item .mi-q{font-size:.9em;line-height:1.55;margin-bottom:6px;}
+.mastered-item .mi-meta{font-size:.74em;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;}
+.mastered-item .mi-actions{display:flex;gap:8px;margin-top:9px;}
+.mastered-item .mi-actions button{flex:1;padding:7px;border-radius:8px;font-size:.8em;font-weight:600;font-family:inherit;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--text);}
+.mastered-item .mi-actions button.restore{border-color:#a7f3d0;color:#047857;background:rgba(16,185,129,.08);}
+.mastered-item .mi-actions button.del{border-color:#fecaca;color:#b91c1c;background:rgba(239,68,68,.07);}
+.mastered-item .mi-actions button:hover{filter:brightness(0.97);}
 
 .empty{text-align:center;padding:44px 10px;}
 .empty .big{font-size:2.6em;}
@@ -196,7 +211,6 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .import-section{margin-top:10px;}
 .import-section .info{font-size:.78em;color:var(--muted);background:var(--soft2);border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.55;}
 
-/* 统计表 */
 .stat-table{width:100%;border-collapse:collapse;font-size:.8em;margin-top:8px;}
 .stat-table th,.stat-table td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;}
 .stat-table th{color:var(--muted);font-weight:600;font-size:.92em;}
@@ -219,7 +233,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
   .card{padding:24px 28px;}
   .opt{padding:15px 18px;gap:14px;}
   .opt .key{flex-basis:28px;height:28px;width:28px;}
-  .seg button{padding:10px 22px;}
+  .seg button{padding:10px 18px;}
   .stat{padding:14px 10px;}
 }
 </style>
@@ -253,6 +267,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
       <button data-m="rand">随机</button>
       <button data-m="wrong">错题</button>
       <button data-m="star">收藏</button>
+      <button data-m="mastered">已掌握</button>
     </div>
   </div>
 
@@ -348,7 +363,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 
     <hr class="divider">
     <label style="margin-top:18px;">GitHub 同步（Gist）</label>
-    <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。笔记随同步。</p>
+    <p class="sub" style="margin:0 0 10px;">按题库 id 合并。删除记录保留 3 天；删除冲突会保留题库并标注。笔记和已攻克状态随同步。</p>
 
     <label for="gistId">Gist ID</label>
     <input type="text" id="gistId" placeholder="例如 a1b2c3d4e5f6..." autocomplete="off" spellcheck="false">
@@ -411,9 +426,9 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 <script>
 const DAY = 86400000;
 const TOMBSTONE_TTL = 3 * DAY;
-const STATE_KEY = 'quiz-v10-state';
-const AI_KEY = 'quiz-v10-ai';
-const GH_KEY = 'quiz-v10-github';
+const STATE_KEY = 'quiz-v11-state';
+const AI_KEY = 'quiz-v11-ai';
+const GH_KEY = 'quiz-v11-github';
 const SHARE_PREFIX = 'QZ1:';
 
 const $ = id => document.getElementById(id);
@@ -422,27 +437,27 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 function uid(){ return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
 /* ======================= 4 点复习时间 ======================= */
-function nextReviewTime(wrongCount){
+function next4amBase(){
   const now = new Date();
   const today4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 4, 0, 0, 0);
   let base = today4.getTime();
   if(now.getTime() >= base) base += DAY;
+  return base;
+}
+function nextReviewTime(wrongCount){
+  const base = next4amBase();
   if(wrongCount <= 1) return base;
   if(wrongCount === 2) return base + 2 * DAY;
   return base + 6 * DAY;
+}
+function next4amPlusDays(days){
+  return next4amBase() + (days - 1) * DAY;
 }
 function getLogicalDateKey(){
   const now = new Date();
   const d = new Date(now);
   if(now.getHours() < 4) d.setDate(d.getDate() - 1);
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-function getNext4amDateKey(){
-  const now = new Date();
-  const today4 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 4, 0, 0, 0);
-  let target = today4;
-  if(now.getTime() >= today4.getTime()) target = new Date(today4.getTime() + DAY);
-  return target.getFullYear() + '-' + String(target.getMonth()+1).padStart(2,'0') + '-' + String(target.getDate()).padStart(2,'0');
 }
 function getPrevDateKey(key){
   const parts = key.split('-').map(Number);
@@ -473,7 +488,7 @@ let state = {
   }
 };
 
-let completionByMode = { seq:false, rand:false, wrong:false, star:false };
+let completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
 let dynList = [], dynPos = 0;
 let followupCache = {};
 
@@ -574,6 +589,20 @@ function isAnsweredThisRound(qid, bank){
   return (r.lastAt || 0) >= (bank.roundStartAt || 0);
 }
 
+function isMasteredWaiting(q, bank){
+  if(!bank || !q) return false;
+  const r = bank.records[q.id];
+  if(!r || !r.mastered) return false;
+  return (r.reappearAt || 0) > Date.now();
+}
+
+function isMasteredDue(q, bank){
+  if(!bank || !q) return false;
+  const r = bank.records[q.id];
+  if(!r || !r.mastered) return false;
+  return (r.reappearAt || 0) <= Date.now();
+}
+
 function buildRoundOrders(bank){
   if(!bank) return;
   const now = Date.now();
@@ -581,7 +610,8 @@ function buildRoundOrders(bank){
   const others = [];
   bank.questions.forEach(q => {
     const r = bank.records[q.id];
-    if(r && r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now){
+    if(r && r.mastered && (r.reappearAt || 0) > now) return;
+    if(r && !r.mastered && r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now){
       dueWrong.push(q);
     }else{
       others.push(q);
@@ -682,7 +712,8 @@ function rebuildDynList(){
     const now = Date.now();
     pool = pool.filter(q => {
       const r = bank.records[q.id];
-      if(!r || r.wrongCount === 0 || (r.streak||0) >= 3) return false;
+      if(!r || r.mastered) return false;
+      if(r.wrongCount === 0 || (r.streak||0) >= 3) return false;
       if(isAnsweredThisRound(q.id, bank)) return false;
       return !r.nextReviewAt || r.nextReviewAt <= now;
     });
@@ -694,6 +725,11 @@ function rebuildDynList(){
   }else if(m === 'star'){
     const set = new Set(bank.stars || []);
     pool = pool.filter(q => set.has(q.id));
+  }else if(m === 'mastered'){
+    pool = pool.filter(q => {
+      const r = bank.records[q.id];
+      return r && r.mastered;
+    });
   }
   dynList = pool.map(q => q.id);
   if(dynPos >= dynList.length) dynPos = Math.max(0, dynList.length - 1);
@@ -734,8 +770,17 @@ function getDueWrongCount(bank){
   const now = Date.now();
   return bank.questions.filter(q => {
     const r = bank.records[q.id];
-    return r && r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now;
+    if(!r || r.mastered) return false;
+    return r.wrongCount > 0 && (r.streak||0) < 3 && (r.nextReviewAt||0) <= now;
   }).length;
+}
+
+function bankAllAnsweredOnce(bank){
+  if(!bank || !bank.questions.length) return false;
+  return bank.questions.every(q => {
+    const r = bank.records[q.id];
+    return r && r.lastChoice != null;
+  });
 }
 
 /* ======================= 每日重置 ======================= */
@@ -746,22 +791,24 @@ function checkDailyReset(){
     saveState();
     return false;
   }
-  if(key !== state.ui.lastRoundKey){
-    const bank = getBank();
-    if(bank){
-      bank.roundStartAt = Date.now();
-      buildRoundOrders(bank);
-      bank.seqHistory = []; bank.seqPos = -1;
-      bank.randHistory = []; bank.randPos = -1;
-      dynList = []; dynPos = 0;
-      completionByMode = { seq:false, rand:false, wrong:false, star:false };
-    }
-    state.ui.lastRoundKey = key;
-    state.ui.progressAt = Date.now();
-    saveState();
-    return true;
+  if(key === state.ui.lastRoundKey) return false;
+
+  // 跨天：检查是否允许重置
+  const bank = getBank();
+  let didReset = false;
+  if(bank && bankAllAnsweredOnce(bank)){
+    bank.roundStartAt = Date.now();
+    buildRoundOrders(bank);
+    bank.seqHistory = []; bank.seqPos = -1;
+    bank.randHistory = []; bank.randPos = -1;
+    dynList = []; dynPos = 0;
+    completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
+    didReset = true;
   }
-  return false;
+  state.ui.lastRoundKey = key;
+  state.ui.progressAt = Date.now();
+  saveState();
+  return didReset;
 }
 
 /* ======================= 每日打卡 ======================= */
@@ -807,17 +854,13 @@ function getWeekAnswered(){
 function getPraiseText(){
   const today = getTodayAnswered();
   const streak = state.stats.streak || 0;
-  const week = getWeekAnswered();
   if(today >= 10){
     if(streak >= 30) return '一个月了，这已经不是临时抱佛脚';
     if(streak >= 7) return '一周全勤，节奏稳了';
     if(streak >= 3) return '坚持三天，继续保持';
     return '今天任务完成，干得漂亮';
   }
-  if(today > 0){
-    const left = 10 - today;
-    return `再答 ${left} 题就打卡，加油`;
-  }
+  if(today > 0) return `再答 ${10 - today} 题就打卡，加油`;
   if(streak > 0) return '今天还没开始，先来一题热身';
   return '每天 10 题，坚持就是胜利';
 }
@@ -947,6 +990,51 @@ function renderCard(){
 
   const m = state.ui.mode;
 
+  // 已掌握模式：列表
+  if(m === 'mastered'){
+    const items = bank.questions.filter(q => {
+      const r = bank.records[q.id];
+      return r && r.mastered;
+    });
+    if(!items.length){
+      card.innerHTML = `<div class="card empty">
+        <div class="big">✓</div>
+        <h2>还没有已掌握的题</h2>
+        <p>答对后可以点「✓ 已掌握」标记，或连续答对 3 次会自动标记。</p>
+      </div>`;
+      return;
+    }
+    items.sort((a,b)=>{
+      const ra = bank.records[a.id], rb = bank.records[b.id];
+      return (ra.reappearAt||0) - (rb.reappearAt||0);
+    });
+    let html = `<div class="card"><div class="qmeta">
+      <span class="tag mastered">已掌握 ${items.length}</span>
+      <span class="qno">永久删除不可恢复</span>
+    </div><div class="mastered-list">`;
+    items.forEach(q => {
+      const r = bank.records[q.id];
+      const due = (r.reappearAt||0) <= Date.now();
+      const left = due ? '已到期，已回到序列' : '下次出现：' + fmtLeft((r.reappearAt||0) - Date.now());
+      const by = r.masteredBy === 'manual' ? '手动' : '自动';
+      html += `<div class="mastered-item">
+        <div class="mi-q">${esc(q.q)}</div>
+        <div class="mi-meta">
+          <span>${by}攻克</span>
+          <span>${esc(left)}</span>
+          ${q.tag ? `<span>标签：${esc(q.tag)}</span>` : ''}
+        </div>
+        <div class="mi-actions">
+          <button class="restore" data-act="mastered-restore" data-qid="${q.id}">恢复</button>
+          <button class="del" data-act="mastered-delete" data-qid="${q.id}">永久删除</button>
+        </div>
+      </div>`;
+    });
+    html += `</div></div>`;
+    card.innerHTML = html;
+    return;
+  }
+
   if(completionByMode[m] && (m === 'seq' || m === 'rand')){
     let correct = 0;
     bank.questions.forEach(q => {
@@ -982,13 +1070,14 @@ function renderCard(){
   const cachedAI = bank.ai[q.id];
   const note = bank.notes[q.id] || '';
   const followup = followupCache[q.id] || '';
+  const mastered = rec && rec.mastered;
 
   let tags = `<span class="tag ${q.type==='judge'?'judge':''}">${q.type==='judge'?'判断题':'单选题'}</span>`;
   if(q.tag) tags += `<span class="tag know">${esc(q.tag)}</span>`;
-  if(answeredThisRound && !rec.correct) tags += `<span class="tag miss">本轮答错</span>`;
+  if(mastered) tags += `<span class="tag mastered">已掌握</span>`;
+  else if(answeredThisRound && !rec.correct) tags += `<span class="tag miss">本轮答错</span>`;
   else if(answeredThisRound && rec.correct) tags += `<span class="tag ok">本轮答对</span>`;
   else if(rec && rec.wrongCount > 0 && (rec.streak||0) < 3) tags += `<span class="tag due">历史错 ${rec.wrongCount} 次</span>`;
-  else if(rec && (rec.streak||0) >= 3) tags += `<span class="tag ok">已攻克</span>`;
   if(starred) tags += `<span class="tag hist">收藏</span>`;
 
   const dis = getDisplayIndex(q);
@@ -1018,15 +1107,30 @@ function renderCard(){
         : `${'ABCD'[q.answer]}. ${esc(q.options[q.answer])}`;
       body += `<div class="fb no">✗ 回答错误，正确答案：<b>${ansText}</b></div>`;
     }
-    const myChoice = q.type === 'judge' ? esc(q.options[rec.lastChoice])
-      : `${'ABCD'[rec.lastChoice]}. ${esc(q.options[rec.lastChoice])}`;
+    const myChoice = (rec.lastChoice >= 0 && q.options[rec.lastChoice])
+      ? (q.type === 'judge' ? esc(q.options[rec.lastChoice])
+          : `${'ABCD'[rec.lastChoice]}. ${esc(q.options[rec.lastChoice])}`)
+      : '（未作答）';
     const meta = ['当时选：' + myChoice];
     if(rec.wrongCount > 0) meta.push('累计错 ' + rec.wrongCount + ' 次');
     if((rec.streak||0) > 0) meta.push('连续对 ' + rec.streak + ' 次');
-    if((rec.nextReviewAt||0) > Date.now()) meta.push('下次复习：' + fmtLeft(rec.nextReviewAt - Date.now()));
+    if(mastered){
+      meta.push('已掌握，下次出现：' + fmtLeft((rec.reappearAt||0) - Date.now()));
+    }else if((rec.nextReviewAt||0) > Date.now()){
+      meta.push('下次复习：' + fmtLeft(rec.nextReviewAt - Date.now()));
+    }
     body += `<div class="ex">${meta.join('；')}。</div>`;
     if(q.explain) body += `<div class="ex"><b>解析：</b>${esc(q.explain)}</div>`;
-    body += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
+
+    let actions = '';
+    if(!mastered && rec.correct){
+      actions += `<button class="master-btn" data-act="mark-mastered">✓ 太简单，标记已掌握</button>`;
+    }
+    if(!mastered){
+      actions += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
+    }
+    if(actions) body += `<div class="action-row">${actions}</div>`;
+
     body += `<div class="ai-zone">
       <button class="ai-btn" data-act="ai">${cachedAI ? '🔄 重新解析这道题' : '✨ AI 解析这道题'}</button>
       <div class="ai-out" id="aiOut">${cachedAI ? esc(cachedAI) : ''}</div>
@@ -1059,6 +1163,7 @@ function updateNavButtons(){
   const m = state.ui.mode;
   if(!bank){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
+  if(m === 'mastered'){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
   if(completionByMode[m] && (m === 'seq' || m === 'rand')){
     $('prevBtn').disabled = true; $('nextBtn').disabled = true; return;
   }
@@ -1094,15 +1199,39 @@ function answerWith(q, chosen){
   let r = bank.records[q.id];
   if(!r) r = { lastChoice:null, correct:null, wrongCount:0, streak:0, lastAt:0, nextReviewAt:0 };
   r.lastChoice = chosen; r.correct = correct; r.lastAt = now;
+
   if(correct){
-    r.streak = (r.streak || 0) + 1;
-    if(r.wrongCount > 0 && r.streak >= 3) r.nextReviewAt = now + 30 * DAY;
-    else r.nextReviewAt = nextReviewTime(r.streak);
+    if(r.mastered){
+      // 已掌握题到期回来答对 → 14 天后再见
+      r.reappearAt = next4amPlusDays(14);
+      r.streak = (r.streak||0) + 1;
+      r.nextReviewAt = 0;
+    }else{
+      r.streak = (r.streak || 0) + 1;
+      if(r.wrongCount > 0 && r.streak >= 3){
+        // 自动攻克
+        r.mastered = true;
+        r.masteredAt = now;
+        r.masteredBy = 'auto';
+        r.reappearAt = next4amPlusDays(7);
+        r.nextReviewAt = 0;
+      }else{
+        r.nextReviewAt = nextReviewTime(r.streak);
+      }
+    }
   }else{
+    if(r.mastered){
+      // 已掌握题答错 → 退出已掌握，进错题本
+      r.mastered = false;
+      delete r.masteredAt;
+      delete r.masteredBy;
+      delete r.reappearAt;
+    }
     r.wrongCount = (r.wrongCount || 0) + 1;
     r.streak = 0;
     r.nextReviewAt = nextReviewTime(r.wrongCount);
   }
+
   bank.records[q.id] = r;
   state.ui.progressAt = now;
   recordDailyAnswer(correct);
@@ -1119,11 +1248,65 @@ function toggleStar(){
   saveState(); renderBankSelect(); renderCard(); updateNavButtons();
 }
 
+function markMastered(){
+  const bank = getBank(); const q = getCurrentQuestion();
+  if(!bank || !q) return;
+  const r = bank.records[q.id] || {};
+  r.mastered = true;
+  r.masteredAt = Date.now();
+  r.masteredBy = 'manual';
+  r.reappearAt = next4amPlusDays(7);
+  r.nextReviewAt = 0;
+  if(r.lastChoice == null){
+    r.lastChoice = -1;
+    r.lastAt = Date.now();
+  }
+  bank.records[q.id] = r;
+  saveState();
+  renderAll(true);
+}
+
+function restoreMastered(qid){
+  const bank = getBank(); if(!bank) return;
+  const r = bank.records[qid];
+  if(!r) return;
+  r.mastered = false;
+  delete r.masteredAt;
+  delete r.masteredBy;
+  delete r.reappearAt;
+  r.nextReviewAt = 0;
+  saveState();
+  buildRoundOrders(bank);
+  ensureModeHistory();
+  renderAll(true);
+}
+
+function deleteQuestionForever(qid){
+  const bank = getBank(); if(!bank) return;
+  if(!confirm('确定永久删除这道题吗？\n题目、答题记录、笔记、AI 解析都会一起删除，无法恢复。')) return;
+  bank.questions = bank.questions.filter(q => q.id !== qid);
+  delete bank.records[qid];
+  delete bank.ai[qid];
+  delete bank.notes[qid];
+  bank.stars = (bank.stars||[]).filter(x => x !== qid);
+  bank.seqHistory = bank.seqHistory.filter(x => x !== qid);
+  bank.randHistory = bank.randHistory.filter(x => x !== qid);
+  buildRoundOrders(bank);
+  if(bank.seqPos >= bank.seqHistory.length) bank.seqPos = bank.seqHistory.length - 1;
+  if(bank.randPos >= bank.randHistory.length) bank.randPos = bank.randHistory.length - 1;
+  if(bank.seqPos < -1) bank.seqPos = -1;
+  if(bank.randPos < -1) bank.randPos = -1;
+  saveState();
+  ensureModeHistory();
+  renderAll(true);
+}
+
 /* ======================= 导航 ======================= */
 function goPrev(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
   const m = state.ui.mode;
+  if(m === 'mastered') return;
   if(m === 'seq' || m === 'rand'){
     if(completionByMode[m]) completionByMode[m] = false;
     const pos = getPos();
@@ -1138,6 +1321,7 @@ function goNext(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
   const m = state.ui.mode;
+  if(m === 'mastered') return;
 
   if(m === 'seq' || m === 'rand'){
     if(completionByMode[m]) return;
@@ -1168,7 +1352,7 @@ function goNext(){
   if(dynPos < dynList.length - 1){ dynPos++; renderAll(true); }
 }
 
-function startNewRound(isAuto){
+function startNewRound(){
   const bank = getBank(); if(!bank) return;
   bank.roundStartAt = Date.now();
   buildRoundOrders(bank);
@@ -1176,15 +1360,9 @@ function startNewRound(isAuto){
   bank.randHistory = []; bank.randPos = -1;
   dynList = []; dynPos = 0;
   followupCache = {};
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   state.ui.progressAt = Date.now();
-  if(isAuto){
-    state.ui.lastRoundKey = getLogicalDateKey();
-  }else{
-    const a = getLogicalDateKey();
-    const b = getNext4amDateKey();
-    state.ui.lastRoundKey = a > b ? a : b;
-  }
+  state.ui.lastRoundKey = getLogicalDateKey();
   saveState();
   ensureModeHistory();
   renderAll(true);
@@ -1206,7 +1384,9 @@ function buildPrompt(q, rec){
   const typeText = q.type === 'choice' ? '单选题' : '判断题';
   const optText = q.options.map((o,i)=>`${'ABCD'[i]}. ${o}`).join('\n');
   const ansText = q.type === 'choice' ? `${'ABCD'[q.answer]}. ${q.options[q.answer]}` : q.options[q.answer];
-  const chosenText = q.type === 'choice' ? `${'ABCD'[rec.lastChoice]}. ${q.options[rec.lastChoice]}` : q.options[rec.lastChoice];
+  const chosenText = (rec.lastChoice >= 0 && q.options[rec.lastChoice])
+    ? (q.type === 'choice' ? `${'ABCD'[rec.lastChoice]}. ${q.options[rec.lastChoice]}` : q.options[rec.lastChoice])
+    : '（未作答）';
   return `请讲解下面这道${typeText}题，对象是正在备考的一线操作工。
 
 【题干】
@@ -1414,11 +1594,11 @@ function renderStatsPage(){
       const tag = (q.tag||'').trim() || '未分类';
       if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
       const r = b.records[q.id];
-      if(r && r.lastChoice != null){
+      if(r && r.lastChoice != null && r.lastChoice >= 0){
         map[tag].total++;
         if(r.correct) map[tag].correct++;
       }
-      if(r && r.wrongCount > 0 && (r.streak||0) < 3) map[tag].wrong++;
+      if(r && !r.mastered && r.wrongCount > 0 && (r.streak||0) < 3) map[tag].wrong++;
     });
   });
   const tags = Object.keys(map).sort();
@@ -1452,7 +1632,7 @@ function collectSyncData(){
     };
   });
   return {
-    v:10,
+    v:11,
     savedAt: Date.now(),
     currentBankId: state.currentBankId,
     ui: {
@@ -1566,9 +1746,7 @@ function mergeRemote(remote){
       Object.keys(remote.stats.daily).forEach(k => {
         const rd = remote.stats.daily[k];
         const ld = state.stats.daily[k];
-        if(!ld || rd.answered > ld.answered){
-          state.stats.daily[k] = rd;
-        }
+        if(!ld || rd.answered > ld.answered) state.stats.daily[k] = rd;
       });
     }
     if((remote.stats.streak||0) > (state.stats.streak||0)) state.stats.streak = remote.stats.streak;
@@ -1583,9 +1761,7 @@ function mergeRemote(remote){
     state.ui.tag = remote.ui.tag || state.ui.tag;
     state.ui.progressAt = remote.ui.progressAt;
     if(remote.ui.lastRoundKey) state.ui.lastRoundKey = remote.ui.lastRoundKey;
-    if(remote.currentBankId && state.banks[remote.currentBankId]){
-      state.currentBankId = remote.currentBankId;
-    }
+    if(remote.currentBankId && state.banks[remote.currentBankId]) state.currentBankId = remote.currentBankId;
     stat.uiMerged = true;
   }
 
@@ -1885,7 +2061,7 @@ function doImportBank(result){
   state.ui.search = ''; state.ui.tag = 'all';
   state.ui.progressAt = Date.now();
   $('searchInput').value = '';
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   dynList = []; dynPos = 0;
   saveState();
   $('importDlg').close();
@@ -1913,9 +2089,7 @@ function doImportQuestions(result){
     newIds.push(qid);
   });
 
-  // 重建本轮序列，把新题放进未答池
   buildRoundOrders(bank);
-  // 把新题补进随机序列（如果还没被 buildRoundOrders 覆盖）
   const existingRand = bank.roundRandOrder.filter(id => !newIds.includes(id));
   bank.roundRandOrder = existingRand.concat(shuffle(newIds));
 
@@ -2002,6 +2176,18 @@ $('card').addEventListener('click', e => {
   if(actEl){
     const a = actEl.dataset.act;
     const q = getCurrentQuestion(); const bank = getBank();
+
+    if(a === 'mastered-restore'){
+      const qid = actEl.dataset.qid;
+      if(qid) restoreMastered(qid);
+      return;
+    }
+    if(a === 'mastered-delete'){
+      const qid = actEl.dataset.qid;
+      if(qid) deleteQuestionForever(qid);
+      return;
+    }
+
     if(a === 'open-import'){ openImport(); return; }
     if(a === 'new-bank'){ createNewBank(); return; }
     if(a === 'open-settings'){ $('settingsBtn').click(); return; }
@@ -2011,9 +2197,10 @@ $('card').addEventListener('click', e => {
     }
     if(a === 'star'){ toggleStar(); return; }
     if(a === 'note'){ openNote(); return; }
+    if(a === 'mark-mastered'){ markMastered(); return; }
     if(a === 'ai'){ runAI(); return; }
     if(a === 'ai-followup'){ runFollowup(); return; }
-    if(a === 'new-round'){ startNewRound(false); return; }
+    if(a === 'new-round'){ startNewRound(); return; }
     if(a === 'ai-clear'){
       if(!q || !bank) return;
       delete bank.ai[q.id]; saveState();
@@ -2065,7 +2252,7 @@ $('bankSelect').addEventListener('change', e => {
   state.ui.search = ''; $('searchInput').value = '';
   state.ui.tag = 'all';
   state.ui.progressAt = Date.now();
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   dynList = []; dynPos = 0;
   saveState();
   ensureBankFields(state.banks[id]);
@@ -2108,14 +2295,11 @@ function applyThemeFont(){
 async function createNewBank(){
   const name = await askName('新建题库', '新题库');
   if(!name) return;
-  if(isBankNameTaken(name)){
-    alert('这个名字已被其他题库使用，请换个名字。');
-    return;
-  }
+  if(isBankNameTaken(name)){ alert('这个名字已被其他题库使用，请换个名字。'); return; }
   const bank = makeBank(name, []);
   state.banks[bank.id] = bank;
   state.currentBankId = bank.id;
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
   saveState(); ensureModeHistory(); renderAll(true);
@@ -2168,7 +2352,7 @@ $('ghSyncNow').onclick = () => { syncNow(true); };
 $('syncBtn').onclick = () => { syncNow(true); };
 
 $('backupBtn').onclick = () => {
-  const data = { v:10, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
+  const data = { v:11, savedAt: Date.now(), currentBankId: state.currentBankId, ui: state.ui, banks: state.banks, tombstones: state.tombstones, stats: state.stats };
   const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2193,7 +2377,7 @@ $('restoreFile').addEventListener('change', e => {
       Object.keys(state.banks).forEach(ensureBankFields);
       state.currentBankId = d.currentBankId && state.banks[d.currentBankId] ? d.currentBankId : Object.keys(d.banks)[0] || null;
       if(d.ui) state.ui = Object.assign(state.ui, d.ui);
-      completionByMode = { seq:false, rand:false, wrong:false, star:false };
+      completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
       dynList = []; dynPos = 0;
       saveState();
       $('settingsDlg').close();
@@ -2216,14 +2400,14 @@ $('renameBankBtn').onclick = async () => {
 
 $('clearRecordsBtn').onclick = () => {
   const bank = getBank(); if(!bank) return;
-  if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏、笔记和 AI 解析吗？`)) return;
+  if(!confirm(`确定清空“${bank.name}”的全部答题记录、错题进度、收藏、笔记、已掌握状态和 AI 解析吗？`)) return;
   bank.records = {}; bank.ai = {}; bank.stars = []; bank.notes = {};
   bank.roundStartAt = Date.now();
   bank.roundSeqOrder = []; bank.roundRandOrder = [];
   bank.seqHistory = []; bank.seqPos = -1;
   bank.randHistory = []; bank.randPos = -1;
   delete bank._conflictDelete;
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
   saveState(); ensureModeHistory(); renderAll(true);
@@ -2236,7 +2420,7 @@ $('deleteBankBtn').onclick = () => {
   state.tombstones[bank.id] = { name: bank.name, deletedAt: Date.now() };
   delete state.banks[bank.id];
   state.currentBankId = Object.keys(state.banks)[0] || null;
-  completionByMode = { seq:false, rand:false, wrong:false, star:false };
+  completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
   dynList = []; dynPos = 0;
   state.ui.progressAt = Date.now();
   saveState(); $('settingsDlg').close();
@@ -2248,6 +2432,7 @@ document.addEventListener('keydown', e => {
   if($('nameModal').classList.contains('show') || $('noteModal').classList.contains('show')) return;
   if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
   const q = getCurrentQuestion(); if(!q) return;
+  if(state.ui.mode === 'mastered') return;
   if(/^[1-4]$/.test(e.key)){
     const i = Number(e.key) - 1;
     if(i < q.options.length){ e.preventDefault(); answerWith(q, i); }
