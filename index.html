@@ -491,6 +491,7 @@ let state = {
 let completionByMode = { seq:false, rand:false, wrong:false, star:false, mastered:false };
 let dynList = [], dynPos = 0;
 let followupCache = {};
+let statsScope = 'current';
 
 function loadState(){
   try{
@@ -1587,9 +1588,16 @@ $('noteClear').onclick = () => {
 /* ======================= 统计页 ======================= */
 function renderStatsPage(){
   const area = $('statsArea');
+  const banks = [];
+  if(statsScope === 'current'){
+    const bank = getBank();
+    if(bank) banks.push(bank);
+  }else{
+    Object.keys(state.banks).forEach(bid => banks.push(state.banks[bid]));
+  }
+
   const map = {};
-  Object.keys(state.banks).forEach(bid => {
-    const b = state.banks[bid];
+  banks.forEach(b => {
     b.questions.forEach(q => {
       const tag = (q.tag||'').trim() || '未分类';
       if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
@@ -1601,9 +1609,21 @@ function renderStatsPage(){
       if(r && !r.mastered && r.wrongCount > 0 && (r.streak||0) < 3) map[tag].wrong++;
     });
   });
+
   const tags = Object.keys(map).sort();
-  if(!tags.length){ area.innerHTML = '<div class="stat-empty">还没有答题记录。</div>'; return; }
-  let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">待复习</th></tr></thead><tbody>';
+
+  let html = `<div style="display:flex;gap:6px;margin-bottom:10px;">
+    <button onclick="statsScope='current';renderStatsPage()" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--line);background:${statsScope==='current'?'var(--blue)':'var(--card)'};color:${statsScope==='current'?'#fff':'var(--text)'};font-size:.8em;font-weight:600;font-family:inherit;cursor:pointer;">当前题库</button>
+    <button onclick="statsScope='all';renderStatsPage()" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--line);background:${statsScope==='all'?'var(--blue)':'var(--card)'};color:${statsScope==='all'?'#fff':'var(--text)'};font-size:.8em;font-weight:600;font-family:inherit;cursor:pointer;">全部题库</button>
+  </div>`;
+
+  if(!tags.length){
+    html += '<div class="stat-empty">还没有答题记录。</div>';
+    area.innerHTML = html;
+    return;
+  }
+
+  html += '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">待复习</th></tr></thead><tbody>';
   tags.forEach(tag => {
     const m = map[tag];
     const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
