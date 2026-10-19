@@ -33,7 +33,7 @@ body.font-s{font-size:14px;}
 body.font-m{font-size:16px;}
 body.font-l{font-size:18px;}
 
-.wrap{max-width:860px;margin:0 auto;padding:16px 14px 130px;}
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 200px;}
 
 .header-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
 .header-top h1{font-size:1.15em;margin:0;letter-spacing:.3px;}
@@ -51,7 +51,6 @@ body.font-l{font-size:18px;}
   padding:9px 12px;font-size:1em;font-family:inherit;cursor:pointer;color:var(--text);line-height:1;
 }
 .bank-row button:hover{background:var(--soft);}
-.bank-row button:disabled{opacity:.5;cursor:default;}
 
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
 .seg{display:inline-flex;background:var(--card);border-radius:12px;padding:3px;box-shadow:var(--shadow);flex-wrap:wrap;}
@@ -85,24 +84,6 @@ body.font-l{font-size:18px;}
 
 .progress{height:6px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden;}
 .progress .bar{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#22c55e);border-radius:99px;transition:width .25s;}
-
-/* 长按重抽 */
-.longpress-hint{
-  margin-top:10px;padding:9px 14px;border-radius:11px;border:1.5px dashed #a5b4fc;
-  background:rgba(99,102,241,.06);color:#4338ca;font-size:.82em;font-weight:600;
-  text-align:center;cursor:pointer;user-select:none;-webkit-user-select:none;
-  position:relative;overflow:hidden;transition:background .15s;
-}
-body.theme-dark .longpress-hint{color:#a5b4fc;border-color:#3730a3;}
-.longpress-hint.pressing{background:rgba(99,102,241,.15);}
-.longpress-hint::after{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
-  background:rgba(99,102,241,.25);pointer-events:none;
-}
-.longpress-hint.pressing::after{
-  width:100%;transition:width 1.5s linear;
-}
-.longpress-hint.done{background:rgba(16,185,129,.15);color:#047857;border-color:#10b981;}
 
 .daily-banner{
   margin-top:12px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.12));
@@ -206,10 +187,39 @@ body.theme-dark .followup button{color:#a5b4fc;border-color:#3730a3;}
 .empty .acts button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
 .empty .note{font-size:.78em;color:#b45309;background:rgba(245,158,11,.1);border-radius:8px;padding:8px 12px;margin-top:10px;line-height:1.6;}
 
-.nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:var(--navbg);backdrop-filter:blur(10px);border-top:1px solid var(--line);}
-.nav button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px 8px;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
-.nav button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-.nav button:disabled{opacity:.4;cursor:not-allowed;}
+/* 底部：长按条 + 导航 */
+.bottom-dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:var(--navbg);backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+}
+.longpress-hint{
+  position:relative;overflow:hidden;
+  padding:9px 14px;border-radius:11px;border:1.5px dashed #a5b4fc;
+  background:rgba(99,102,241,.06);color:#4338ca;
+  font-size:.82em;font-weight:600;text-align:center;
+  user-select:none;-webkit-user-select:none;cursor:pointer;
+  transition:background .15s;margin-bottom:10px;
+}
+body.theme-dark .longpress-hint{color:#a5b4fc;border-color:#3730a3;}
+.longpress-hint.pressing{background:rgba(99,102,241,.15);}
+.longpress-hint .lp-fill{
+  position:absolute;left:0;top:0;bottom:0;width:0;
+  background:rgba(99,102,241,.3);pointer-events:none;
+  border-radius:11px;
+}
+.longpress-hint.pressing .lp-fill{
+  width:100%;transition:width 1.5s linear;
+}
+.longpress-hint.done{background:rgba(16,185,129,.15);color:#047857;border-color:#10b981;}
+.longpress-hint .lp-label{position:relative;z-index:1;}
+.longpress-hint.hidden{display:none;}
+
+.nav-buttons{display:flex;gap:10px;}
+.nav-buttons button{flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:12px 8px;font-size:.92em;font-weight:600;font-family:inherit;cursor:pointer;}
+.nav-buttons button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+.nav-buttons button:disabled{opacity:.4;cursor:not-allowed;}
 
 dialog{border:0;border-radius:16px;padding:0;width:min(92vw,560px);max-height:88vh;box-shadow:0 20px 60px rgba(15,23,42,.28);color:var(--text);font-family:inherit;background:var(--card);}
 dialog::backdrop{background:rgba(15,23,42,.45);}
@@ -254,11 +264,11 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 .modal-actions button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 18px;font-size:.9em;font-weight:600;font-family:inherit;cursor:pointer;color:var(--text);}
 .modal-actions button.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
 
-.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:rgba(15,23,42,.9);color:#fff;padding:9px 18px;border-radius:99px;font-size:.85em;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;}
+.toast{position:fixed;left:50%;bottom:180px;transform:translateX(-50%);background:rgba(15,23,42,.9);color:#fff;padding:9px 18px;border-radius:99px;font-size:.85em;z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;}
 .toast.show{opacity:1;}
 
 @media (min-width: 860px) {
-  .wrap{max-width:1100px;padding:20px 24px 130px;}
+  .wrap{max-width:1100px;padding:20px 24px 200px;}
   .card{padding:24px 28px;}
   .opt{padding:15px 18px;gap:14px;}
   .opt .key{flex-basis:28px;height:28px;width:28px;}
@@ -318,15 +328,19 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
 
   <div class="progress"><div class="bar" id="bar"></div></div>
 
-  <div class="longpress-hint" id="longpressHint">长按 1.5 秒重抽本批</div>
-
   <main id="card"></main>
 </div>
 
-<nav class="nav">
-  <button id="prevBtn">← 上一题</button>
-  <button id="nextBtn" class="primary">下一题 →</button>
-</nav>
+<div class="bottom-dock">
+  <div class="longpress-hint" id="longpressHint">
+    <div class="lp-fill"></div>
+    <span class="lp-label">长按 1.5 秒重抽本批</span>
+  </div>
+  <div class="nav-buttons">
+    <button id="prevBtn">← 上一题</button>
+    <button id="nextBtn" class="primary">下一题 →</button>
+  </div>
+</div>
 
 <dialog id="importDlg">
   <div class="dlg-body">
@@ -463,12 +477,10 @@ const TOMBSTONE_TTL = 3 * DAY;
 const BATCH_SIZE = 50;
 const SHARE_PREFIX = 'QZ1:';
 
-/* 固定 key，永不变 */
 const STATE_KEY = 'quiz-state';
 const AI_KEY = 'quiz-ai-cfg';
 const GH_KEY = 'quiz-github-cfg';
 
-/* 旧 key 迁移表 */
 const OLD_STATE_KEYS = ['quiz-v12-state','quiz-v11-state','quiz-v10-state','quiz-v9-state','quiz-v8-state','quiz-v5-state'];
 const OLD_AI_KEYS = ['quiz-v12-ai','quiz-v11-ai','quiz-v10-ai','quiz-v9-ai','quiz-v8-ai','quiz-v5-ai'];
 const OLD_GH_KEYS = ['quiz-v12-github','quiz-v11-github','quiz-v10-github','quiz-v9-github','quiz-v8-github','quiz-v5-github'];
@@ -563,6 +575,7 @@ let state = {
 
 let followupCache = {};
 let tempSelection = [];
+let dynList = [], dynPos = 0;
 
 function loadState(){
   try{
@@ -647,8 +660,7 @@ function makeBank(name, questions){
     records: {}, ai: {}, stars: [], notes: {},
     roundStartAt: now,
     batch: [],
-    batchHistory: [],
-    batchPos: -1,
+    batchViewPos: 0,
     batchMeta: { totalDueWrong: 0, batchSize: 0 }
   };
 }
@@ -657,14 +669,12 @@ function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
   if(!Array.isArray(bank.batch)) bank.batch = [];
-  if(!Array.isArray(bank.batchHistory)) bank.batchHistory = [];
-  if(typeof bank.batchPos !== 'number') bank.batchPos = -1;
+  if(typeof bank.batchViewPos !== 'number') bank.batchViewPos = 0;
   if(!bank.batchMeta) bank.batchMeta = { totalDueWrong: 0, batchSize: 0 };
   if(!Array.isArray(bank.stars)) bank.stars = [];
   if(!bank.records) bank.records = {};
   if(!bank.ai) bank.ai = {};
   if(!bank.notes) bank.notes = {};
-  // 兼容旧数据：把 answer 转成 answers
   bank.questions.forEach(q => {
     if(!Array.isArray(q.answers)) q.answers = [typeof q.answer === 'number' ? q.answer : 0];
     if(!q.type) q.type = q.answers.length > 1 ? 'multi' : 'choice';
@@ -728,44 +738,51 @@ function buildBatch(bank){
   const maxLast = getMaxLastAt(bank);
   bank.roundStartAt = Math.max(Date.now(), maxLast + 1000);
   bank.batch = batch.map(q => q.id);
-  bank.batchHistory = [];
-  bank.batchPos = -1;
+  bank.batchViewPos = 0;
   bank.batchMeta = { totalDueWrong, batchSize: batch.length };
 
-  if(bank.batch.length > 0){
-    bank.batchHistory.push(bank.batch[0]);
-    bank.batchPos = 0;
-  }
   saveState();
 }
 
-function ensureBatch(bank){
-  if(!bank) return;
-  if(!Array.isArray(bank.batch) || bank.batch.length === 0){
-    buildBatch(bank);
+/* ======================= 练习模式视图 ======================= */
+function getPracticeViewList(bank){
+  if(!bank) return [];
+  const ui = state.ui;
+  let list = bank.batch.slice();
+
+  if(ui.filterType !== 'all'){
+    list = list.filter(qid => {
+      const q = bank.questions.find(x => x.id === qid);
+      return q && q.type === ui.filterType;
+    });
   }
-  if(bank.batch.length > 0 && bank.batchPos < 0){
-    bank.batchHistory = [bank.batch[0]];
-    bank.batchPos = 0;
-    saveState();
+  if(ui.tag && ui.tag !== 'all'){
+    list = list.filter(qid => {
+      const q = bank.questions.find(x => x.id === qid);
+      return q && (q.tag||'') === ui.tag;
+    });
   }
+  const kw = (ui.search||'').trim().toLowerCase();
+  if(kw){
+    list = list.filter(qid => {
+      const q = bank.questions.find(x => x.id === qid);
+      if(!q) return false;
+      return q.q.toLowerCase().includes(kw) ||
+        (q.options||[]).some(o => String(o).toLowerCase().includes(kw)) ||
+        (q.explain||'').toLowerCase().includes(kw);
+    });
+  }
+  return list;
 }
 
-function getCurrentQuestion(){
-  const bank = getBank(); if(!bank) return null;
-  const m = state.ui.mode;
-  if(m === 'practice'){
-    if(bank.batchPos < 0 || bank.batchPos >= bank.batchHistory.length) return null;
-    return bank.questions.find(q => q.id === bank.batchHistory[bank.batchPos]) || null;
-  }
-  const list = getList();
-  const pos = getListPos();
-  if(pos < 0 || pos >= list.length) return null;
-  return bank.questions.find(q => q.id === list[pos]) || null;
+function ensurePracticeViewPos(bank){
+  if(!bank) return;
+  const view = getPracticeViewList(bank);
+  if(bank.batchViewPos >= view.length) bank.batchViewPos = Math.max(0, view.length - 1);
+  if(bank.batchViewPos < 0) bank.batchViewPos = 0;
 }
 
 /* ======================= 错题 / 收藏 / 已掌握 列表 ======================= */
-let dynList = [], dynPos = 0;
 function rebuildDynList(){
   const bank = getBank(); if(!bank) return;
   const m = state.ui.mode;
@@ -811,19 +828,29 @@ function rebuildDynList(){
   if(dynPos < 0) dynPos = 0;
 }
 
-function getList(){
-  if(state.ui.mode === 'practice') return [];
-  return dynList;
-}
-function getListPos(){
-  if(state.ui.mode === 'practice') return 0;
-  return dynPos;
-}
-
 function ensureModeHistory(){
   const bank = getBank(); if(!bank) return;
-  if(state.ui.mode === 'practice'){ ensureBatch(bank); return; }
+  if(state.ui.mode === 'practice'){
+    if(!bank.batch || !bank.batch.length) buildBatch(bank);
+    ensurePracticeViewPos(bank);
+    return;
+  }
   rebuildDynList();
+}
+
+/* ======================= 当前题目 ======================= */
+function getCurrentQuestion(){
+  const bank = getBank(); if(!bank) return null;
+  const m = state.ui.mode;
+  if(m === 'practice'){
+    const view = getPracticeViewList(bank);
+    if(!view.length) return null;
+    if(bank.batchViewPos >= view.length) bank.batchViewPos = view.length - 1;
+    if(bank.batchViewPos < 0) bank.batchViewPos = 0;
+    return bank.questions.find(q => q.id === view[bank.batchViewPos]) || null;
+  }
+  if(dynPos < 0 || dynPos >= dynList.length) return null;
+  return bank.questions.find(q => q.id === dynList[dynPos]) || null;
 }
 
 /* ======================= 每日重置 ======================= */
@@ -836,7 +863,6 @@ function checkDailyReset(){
   }
   if(key === state.ui.lastRoundKey) return false;
 
-  // 4 点固定重置：清空进度，重抽 50 题
   const bank = getBank();
   if(bank){
     buildBatch(bank);
@@ -949,7 +975,8 @@ function renderTagSelect(){
   const tags = [];
   if(bank){
     const seen = new Set();
-    bank.questions.forEach(q => {
+    const source = state.ui.mode === 'practice' ? bank.questions.filter(q => bank.batch.includes(q.id)) : bank.questions;
+    source.forEach(q => {
       const t = (q.tag||'').trim();
       if(t && !seen.has(t)){ seen.add(t); tags.push(t); }
     });
@@ -1006,11 +1033,10 @@ function updateLongpressHint(){
   const el = $('longpressHint');
   const bank = getBank();
   if(!bank || state.ui.mode !== 'practice' || !bank.batch.length){
-    el.style.display = 'none';
+    el.classList.add('hidden');
     return;
   }
-  el.style.display = '';
-  el.classList.remove('pressing','done');
+  el.classList.remove('hidden','pressing','done');
 }
 
 function renderCard(){
@@ -1089,10 +1115,11 @@ function renderCard(){
     return;
   }
 
-  // practice 模式完成页
+  // practice 模式完成判断
   if(m === 'practice'){
-    const answeredCount = bank.batch.filter(qid => isAnsweredThisRound(qid, bank)).length;
-    if(bank.batch.length > 0 && answeredCount >= bank.batch.length){
+    // 本批全部答完？
+    const batchAllAnswered = bank.batch.length > 0 && bank.batch.every(qid => isAnsweredThisRound(qid, bank));
+    if(batchAllAnswered){
       const correctCount = bank.batch.filter(qid => {
         const r = bank.records[qid];
         return r && r.correct;
@@ -1111,6 +1138,40 @@ function renderCard(){
         ${note}
         <div class="acts">
           <button class="primary" data-act="next-batch">→ 开始下一轮</button>
+        </div>
+      </div>`;
+      return;
+    }
+
+    // 当前视图空？
+    const view = getPracticeViewList(bank);
+    if(!view.length){
+      // 区分：批次本身空 / 筛选后为空
+      if(!bank.batch.length){
+        card.innerHTML = `<div class="card empty">
+          <div class="big">📭</div>
+          <h2>本批没有题目</h2>
+          <p>题库为空，或所有题都已掌握等待复习。</p>
+        </div>`;
+        return;
+      }
+      // 筛选后为空
+      let msg = '当前筛选条件下，本批没有对应的题。';
+      if(state.ui.filterType !== 'all'){
+        const typeName = {choice:'单选', multi:'多选', judge:'判断'}[state.ui.filterType] || '';
+        msg = `本批 50 题里没有${typeName}题。`;
+      }else if(state.ui.search){
+        msg = `本批 50 题里没有匹配「${state.ui.search}」的题。`;
+      }else if(state.ui.tag !== 'all'){
+        msg = `本批 50 题里没有标签为「${state.ui.tag}」的题。`;
+      }
+      card.innerHTML = `<div class="card empty">
+        <div class="big">🔍</div>
+        <h2>当前筛选没有题目</h2>
+        <p>${esc(msg)}</p>
+        <div class="acts">
+          <button class="primary" data-act="clear-filter">清空筛选</button>
+          <button data-act="next-batch">→ 抽新一批</button>
         </div>
       </div>`;
       return;
@@ -1136,7 +1197,6 @@ function renderCard(){
   const followup = followupCache[q.id] || '';
   const mastered = rec && rec.mastered;
 
-  // 标签
   let tags = '';
   if(q.type === 'multi') tags += `<span class="tag multi">多选题</span>`;
   else if(q.type === 'judge') tags += `<span class="tag judge">判断题</span>`;
@@ -1148,15 +1208,17 @@ function renderCard(){
   else if(rec && rec.wrongCount > 0) tags += `<span class="tag due">历史错 ${rec.wrongCount} 次</span>`;
   if(starred) tags += `<span class="tag hist">收藏</span>`;
 
-  // 序号
   let qnoHtml = '';
   if(m === 'practice'){
-    qnoHtml = (bank.batchPos + 1) + ' / ' + bank.batch.length;
+    const view = getPracticeViewList(bank);
+    qnoHtml = (bank.batchViewPos + 1) + ' / ' + view.length;
+    if(view.length !== bank.batch.length){
+      qnoHtml += `（本批 ${bank.batch.length} 题）`;
+    }
   }else{
     qnoHtml = (dynPos + 1) + ' / ' + dynList.length;
   }
 
-  // 选项
   const selectedSet = new Set(answered ? (rec.lastChoices || []) : tempSelection);
   let optsHtml = '';
   q.options.forEach((opt, i) => {
@@ -1179,7 +1241,6 @@ function renderCard(){
     </button>`;
   });
 
-  // 多选提交按钮
   let submitHtml = '';
   if(q.type === 'multi' && !locked){
     submitHtml = `<div class="multi-submit">
@@ -1189,7 +1250,6 @@ function renderCard(){
     </div>`;
   }
 
-  // 反馈
   let body = '';
   if(locked){
     if(rec.correct) body += `<div class="fb ok">✓ 回答正确</div>`;
@@ -1256,9 +1316,10 @@ function updateNavButtons(){
   if(bank._conflictDelete){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
 
   if(m === 'practice'){
-    $('prevBtn').disabled = bank.batchPos <= 0;
-    // 下一题：如果当前位置之后有未答的，或还没到末尾，都可以点
-    $('nextBtn').disabled = bank.batchPos >= bank.batch.length - 1;
+    const view = getPracticeViewList(bank);
+    if(!view.length){ $('prevBtn').disabled = true; $('nextBtn').disabled = true; return; }
+    $('prevBtn').disabled = bank.batchViewPos <= 0;
+    $('nextBtn').disabled = bank.batchViewPos >= view.length - 1;
   }else{
     $('prevBtn').disabled = dynPos <= 0;
     $('nextBtn').disabled = dynPos >= dynList.length - 1;
@@ -1329,19 +1390,24 @@ function handleOptionClick(i){
     renderCard();
     return;
   }
-  // 单选/判断：立即提交
   submitAnswer(q, [i]);
 }
 
 /* ======================= 长按重抽 ======================= */
 let pressTimer = null;
 let pressStartAt = 0;
+let pressStartX = 0, pressStartY = 0;
+const PRESS_MOVE_TOLERANCE = 20;
+
 function bindLongPress(){
   const el = $('longpressHint');
   const start = (e) => {
-    if(e.cancelable) e.preventDefault();
     const bank = getBank();
     if(!bank || state.ui.mode !== 'practice' || !bank.batch.length) return;
+    let x = 0, y = 0;
+    if(e.touches && e.touches[0]){ x = e.touches[0].clientX; y = e.touches[0].clientY; }
+    else { x = e.clientX; y = e.clientY; }
+    pressStartX = x; pressStartY = y;
     el.classList.remove('done');
     el.classList.add('pressing');
     pressStartAt = Date.now();
@@ -1355,7 +1421,21 @@ function bindLongPress(){
       pressTimer = null;
     }, 1500);
   };
-  const end = (e) => {
+  const move = (e) => {
+    if(!pressTimer) return;
+    let x = 0, y = 0;
+    if(e.touches && e.touches[0]){ x = e.touches[0].clientX; y = e.touches[0].clientY; }
+    else { x = e.clientX; y = e.clientY; }
+    const dx = Math.abs(x - pressStartX);
+    const dy = Math.abs(y - pressStartY);
+    if(dx > PRESS_MOVE_TOLERANCE || dy > PRESS_MOVE_TOLERANCE){
+      clearTimeout(pressTimer);
+      pressTimer = null;
+      el.classList.remove('pressing');
+      showToast('松开或移动会导致取消');
+    }
+  };
+  const end = () => {
     if(pressTimer){
       clearTimeout(pressTimer);
       pressTimer = null;
@@ -1366,9 +1446,11 @@ function bindLongPress(){
     }
   };
   el.addEventListener('mousedown', start);
+  el.addEventListener('mousemove', move);
   el.addEventListener('mouseup', end);
   el.addEventListener('mouseleave', end);
-  el.addEventListener('touchstart', start, {passive:false});
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('touchmove', move, {passive:true});
   el.addEventListener('touchend', end);
   el.addEventListener('touchcancel', end);
 }
@@ -1378,7 +1460,7 @@ function goPrev(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
   if(state.ui.mode === 'practice'){
-    if(bank.batchPos > 0){ bank.batchPos--; saveState(); renderAll(true); }
+    if(bank.batchViewPos > 0){ bank.batchViewPos--; saveState(); renderAll(true); }
   }else{
     if(dynPos > 0){ dynPos--; renderAll(true); }
   }
@@ -1388,9 +1470,9 @@ function goNext(){
   const bank = getBank(); if(!bank) return;
   if(bank._conflictDelete) return;
   if(state.ui.mode === 'practice'){
-    if(bank.batchPos < bank.batch.length - 1){
-      bank.batchPos++;
-      bank.batchHistory[bank.batchPos] = bank.batch[bank.batchPos];
+    const view = getPracticeViewList(bank);
+    if(bank.batchViewPos < view.length - 1){
+      bank.batchViewPos++;
       saveState();
       renderAll(true);
     }
@@ -1402,6 +1484,18 @@ function goNext(){
 function startNextBatch(){
   const bank = getBank(); if(!bank) return;
   buildBatch(bank);
+  renderAll(true);
+}
+
+function clearFilter(){
+  state.ui.filterType = 'all';
+  state.ui.tag = 'all';
+  state.ui.search = '';
+  $('searchInput').value = '';
+  syncSegs();
+  const bank = getBank();
+  if(bank){ bank.batchViewPos = 0; }
+  saveState();
   renderAll(true);
 }
 
@@ -1470,8 +1564,7 @@ function deleteQuestionForever(qid){
   delete bank.notes[qid];
   bank.stars = (bank.stars||[]).filter(x => x !== qid);
   bank.batch = bank.batch.filter(x => x !== qid);
-  bank.batchHistory = bank.batchHistory.filter(x => x !== qid);
-  if(bank.batchPos >= bank.batchHistory.length) bank.batchPos = bank.batchHistory.length - 1;
+  if(bank.batchViewPos >= bank.batch.length) bank.batchViewPos = Math.max(0, bank.batch.length - 1);
   saveState();
   rebuildDynList();
   renderAll(true);
@@ -1730,8 +1823,7 @@ function collectSyncData(){
       ai: b.ai || {}, stars: b.stars || [], notes: b.notes || {},
       roundStartAt: b.roundStartAt || 0,
       batch: b.batch || [],
-      batchHistory: b.batchHistory || [],
-      batchPos: typeof b.batchPos === 'number' ? b.batchPos : -1,
+      batchViewPos: typeof b.batchViewPos === 'number' ? b.batchViewPos : 0,
       batchMeta: b.batchMeta || { totalDueWrong: 0, batchSize: 0 }
     };
   });
@@ -1761,8 +1853,7 @@ function buildLocalFromRemote(r, bid){
     notes: r.notes || {},
     roundStartAt: r.roundStartAt || 0,
     batch: r.batch || [],
-    batchHistory: r.batchHistory || [],
-    batchPos: typeof r.batchPos === 'number' ? r.batchPos : -1,
+    batchViewPos: typeof r.batchViewPos === 'number' ? r.batchViewPos : 0,
     batchMeta: r.batchMeta || { totalDueWrong: 0, batchSize: 0 }
   };
 }
@@ -1806,8 +1897,7 @@ function mergeRemote(remote){
     if((r.roundStartAt || 0) > (local.roundStartAt || 0)){
       local.roundStartAt = r.roundStartAt;
       local.batch = r.batch || [];
-      local.batchHistory = r.batchHistory || [];
-      local.batchPos = typeof r.batchPos === 'number' ? r.batchPos : -1;
+      local.batchViewPos = typeof r.batchViewPos === 'number' ? r.batchViewPos : 0;
       local.batchMeta = r.batchMeta || { totalDueWrong: 0, batchSize: 0 };
     }
     if(r.records && typeof r.records === 'object'){
@@ -2181,7 +2271,7 @@ function doImportBank(result){
   state.banks[bank.id] = bank;
   state.currentBankId = bank.id;
   state.ui.mode = 'practice';
-  state.ui.search = ''; state.ui.tag = 'all';
+  state.ui.search = ''; state.ui.tag = 'all'; state.ui.filterType = 'all';
   state.ui.progressAt = Date.now();
   $('searchInput').value = '';
   dynList = []; dynPos = 0;
@@ -2323,6 +2413,7 @@ $('card').addEventListener('click', e => {
       if(bank){ delete bank._conflictDelete; saveState(); renderAll(true); }
       return;
     }
+    if(a === 'clear-filter'){ clearFilter(); return; }
     if(a === 'star'){ toggleStar(); return; }
     if(a === 'note'){ openNote(); return; }
     if(a === 'mark-mastered'){ markMastered(); return; }
@@ -2371,6 +2462,19 @@ $('typeSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   state.ui.filterType = b.dataset.t;
   state.ui.progressAt = Date.now();
+  const bank = getBank();
+  if(bank && state.ui.mode === 'practice'){
+    // 切题型后如果当前批次里没有该题型，提示
+    const tmp = getPracticeViewList(bank);
+    if(!tmp.length){
+      const typeName = {all:'全部', choice:'单选', multi:'多选', judge:'判断'}[b.dataset.t] || '';
+      showToast('本批 50 题里没有' + typeName + '题');
+    }else{
+      bank.batchViewPos = 0;
+    }
+  }else if(bank){
+    dynPos = 0;
+  }
   saveState(); syncSegs(); ensureModeHistory(); renderAll(true);
 });
 $('modeSeg').addEventListener('click', e => {
@@ -2393,16 +2497,26 @@ $('bankSelect').addEventListener('change', e => {
 $('searchInput').addEventListener('input', e => {
   state.ui.search = e.target.value;
   state.ui.progressAt = Date.now();
+  const bank = getBank();
+  if(bank){
+    if(state.ui.mode === 'practice') bank.batchViewPos = 0;
+    else dynPos = 0;
+  }
   saveState();
-  if(state.ui.mode !== 'practice'){ rebuildDynList(); }
+  if(state.ui.mode !== 'practice') rebuildDynList();
   renderAll(true);
 });
 
 $('tagSelect').addEventListener('change', e => {
   state.ui.tag = e.target.value;
   state.ui.progressAt = Date.now();
+  const bank = getBank();
+  if(bank){
+    if(state.ui.mode === 'practice') bank.batchViewPos = 0;
+    else dynPos = 0;
+  }
   saveState();
-  if(state.ui.mode !== 'practice'){ rebuildDynList(); }
+  if(state.ui.mode !== 'practice') rebuildDynList();
   renderAll(true);
 });
 
