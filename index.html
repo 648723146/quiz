@@ -981,7 +981,7 @@ function renderDailyBanner(){
 
 function renderStats(){
   const bank = getBank();
-  if(!bank){
+  if(!bank || !Array.isArray(bank.batch) || !Array.isArray(bank.questions)){
     $('stAnswered').textContent='0'; $('stRate').textContent='--';
     $('stWrong').textContent='0'; $('stStreak').textContent='0';
     $('bar').style.width='0%'; return;
@@ -1741,7 +1741,7 @@ function renderStatsPage(){
     const map = {};
     bankIds.forEach(bid => {
       const b = state.banks[bid];
-      if(!b) return;
+      if(!b || !Array.isArray(b.questions)) return;
       b.questions.forEach(q => {
         const tag = (q.tag||'').trim() || '未分类';
         if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
@@ -2375,7 +2375,40 @@ function bankToText(bank){
   }
   return lines.join('\n');
 }
-
+/* ======================= 恢复备份专用：彻底清洗题库 ======================= */
+function deepCleanBank(b){
+  if(!b || typeof b !== 'object' || Array.isArray(b)) return null;
+  const qs = Array.isArray(b.questions) ? b.questions.map(q => {
+    if(!q || typeof q !== 'object') return null;
+    const answers = Array.isArray(q.answers) ? q.answers.slice() : (typeof q.answer === 'number' ? [q.answer] : [0]);
+    return {
+      id: q.id || ('q' + Math.random().toString(36).slice(2,8)),
+      type: q.type || (answers.length > 1 ? 'multi' : 'choice'),
+      q: String(q.q || ''),
+      options: Array.isArray(q.options) ? q.options.map(o => String(o)) : ['','','',''],
+      answers: answers,
+      explain: String(q.explain || ''),
+      tag: String(q.tag || '')
+    };
+  }).filter(Boolean) : [];
+  if(!qs.length) return null;
+  const qidSet = new Set(qs.map(q => q.id));
+  const batch = Array.isArray(b.batch) ? b.batch.filter(qid => qidSet.has(qid)) : [];
+  return {
+    id: b.id || uid(),
+    name: String(b.name || '未命名题库'),
+    createdAt: typeof b.createdAt === 'number' ? b.createdAt : Date.now(),
+    questions: qs,
+    records: (b.records && typeof b.records === 'object' && !Array.isArray(b.records)) ? b.records : {},
+    ai: (b.ai && typeof b.ai === 'object' && !Array.isArray(b.ai)) ? b.ai : {},
+    stars: Array.isArray(b.stars) ? b.stars.filter(x => qidSet.has(x)) : [],
+    notes: (b.notes && typeof b.notes === 'object' && !Array.isArray(b.notes)) ? b.notes : {},
+    roundStartAt: typeof b.roundStartAt === 'number' ? b.roundStartAt : 0,
+    batch: batch,
+    batchViewPos: typeof b.batchViewPos === 'number' ? b.batchViewPos : 0,
+    batchMeta: (b.batchMeta && typeof b.batchMeta === 'object' && !Array.isArray(b.batchMeta)) ? b.batchMeta : { totalDueWrong: 0, batchSize: 0 }
+  };
+  }
 let nameResolver = null;
 function askName(title, defaultValue){
   return new Promise(resolve => {
@@ -2604,58 +2637,74 @@ $('backupBtn').onclick = () => {
   setTimeout(()=>URL.revokeObjectURL(url), 2000);
 };
 $('restoreBtn').onclick = () => $('restoreFile').click();
-$('restoreFile').addEventListener('change', e => {
-  const f = e.target.files && e.target.files[0]; if(!f) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try{
-      const d = JSON.parse(reader.result);
-      if(!d || !d.banks || typeof d.banks !== 'object') throw new Error('文件格式不对，不是题库备份');
-      if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')) return;
-
-      const cleanBanks = {};
-      let skipped = 0;
-      Object.keys(d.banks).forEach(bid => {
-        const b = d.banks[bid];
-        if(!b || typeof b !== 'object' || !Array.isArray(b.questions)){
-          skipped++;
-          return;
+(function rebindRestore(){
+  const old = $('restoreFile');
+  if(!old) return;
+  const neo = old.cloneNode(true);
+  old.parentNode.replaceChild(neo, old);
+  neo.addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0]; if(!f){ return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      let step = '解析 JSON';
+      try{
+        const d = JSON.parse(reader.result);
+        if(!d || typeof d !== 'object' || !d.banks || typeof d.banks !== 'object'){
+          throw new Error('文件格式不对，不是备份文件（缺少 banks 字段）');
         }
-        cleanBanks[bid] = b;
-      });
-
-      if(!Object.keys(cleanBanks).length){
-        alert('备份文件里没有有效的题库，恢复已取消。');
-        e.target.value = '';
-        return;
+        if(!confirm('恢复备份会用备份内容覆盖当前全部题库和记录，确定吗？')){
+          e.target.value = ''; return;
+        }
+        step = '清洗题库';
+        const cleanBanks = {};
+        let skipped = 0;
+        Object.keys(d.banks).forEach(bid => {
+          const cleaned = deepCleanBank(d.banks[bid]);
+          if(cleaned) cleanBanks[bid] = cleaned;
+          else skipped++;
+        });
+        if(!Object.keys(cleanBanks).length){
+          alert('备份文件里没有有效的题库，恢复已取消。');
+          e.target.value = ''; return;
+        }
+        step = '应用数据';
+        state.banks = cleanBanks;
+        state.tombstones = (d.tombstones && typeof d.tombstones === 'object' && !Array.isArray(d.tombstones)) ? d.tombstones : {};
+        state.stats = (d.stats && typeof d.stats === 'object') ? d.stats : { daily:{}, streak:0, lastStreakKey:'' };
+        if(!state.stats.daily || typeof state.stats.daily !== 'object' || Array.isArray(state.stats.daily)){
+          state.stats.daily = {};
+        }
+        state.currentBankId = (d.currentBankId && state.banks[d.currentBankId]) ? d.currentBankId : Object.keys(state.banks)[0];
+        if(d.ui && typeof d.ui === 'object' && !Array.isArray(d.ui)){
+          state.ui = Object.assign(state.ui, d.ui);
+        }
+        if(!['practice','wrong','star','mastered'].includes(state.ui.mode)) state.ui.mode = 'practice';
+        if(!['all','choice','multi','judge'].includes(state.ui.filterType)) state.ui.filterType = 'all';
+        if(!['light','dark'].includes(state.ui.theme)) state.ui.theme = 'light';
+        if(!['s','m','l'].includes(state.ui.font)) state.ui.font = 'm';
+        dynList = []; dynPos = 0;
+        saveState();
+        $('settingsDlg').close();
+        step = '初始化批次';
+        ensureModeHistory();
+        step = '刷新界面';
+        renderAll(true);
+        let msg = '恢复完成，共 ' + Object.keys(cleanBanks).length + ' 个题库。';
+        if(skipped > 0) msg += '\n已跳过 ' + skipped + ' 个结构不完整的题库。';
+        alert(msg);
+      }catch(err){
+        console.error('restore error at', step, err);
+        alert('恢复失败（' + step + '）：' + (err.message || '未知错误'));
       }
-
-      state.banks = cleanBanks;
-      state.tombstones = d.tombstones || {};
-      state.stats = d.stats || { daily:{}, streak:0, lastStreakKey:'' };
-      Object.keys(state.banks).forEach(ensureBankFields);
-
-      state.currentBankId = d.currentBankId && state.banks[d.currentBankId]
-        ? d.currentBankId
-        : Object.keys(state.banks)[0] || null;
-      if(d.ui) state.ui = Object.assign(state.ui, d.ui);
-
-      dynList = []; dynPos = 0;
-      saveState();
-      $('settingsDlg').close();
-      ensureModeHistory();
-      renderAll(true);
-
-      let msg = '恢复完成，共 ' + Object.keys(cleanBanks).length + ' 个题库。';
-      if(skipped > 0) msg += '\n已跳过 ' + skipped + ' 个结构不完整的题库。';
-      alert(msg);
-    }catch(err){
-      alert('恢复失败：' + (err.message || '文件无法解析'));
-    }
-    e.target.value = '';
-  };
-  reader.readAsText(f);
-});
+      e.target.value = '';
+    };
+    reader.onerror = () => {
+      alert('读文件失败：' + ((reader.error && reader.error.message) || '未知错误'));
+      e.target.value = '';
+    };
+    reader.readAsText(f);
+  });
+})();
 
 $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
