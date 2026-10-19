@@ -2666,7 +2666,43 @@ document.addEventListener('keydown', e => {
   if(e.key === 'ArrowRight'){ e.preventDefault(); goNext(); }
   else if(e.key === 'ArrowLeft'){ e.preventDefault(); goPrev(); }
 });
+/* ======================= 弹窗背景关闭 + 返回键拦截 ======================= */
+document.querySelectorAll('dialog').forEach(dlg => {
+  dlg.addEventListener('click', e => {
+    if(e.target === dlg) dlg.close();
+  });
+});
 
+const nameModalEl = $('nameModal');
+if(nameModalEl){
+  nameModalEl.addEventListener('click', e => {
+    if(e.target === nameModalEl) $('nameModalCancel').click();
+  });
+}
+const noteModalEl = $('noteModal');
+if(noteModalEl){
+  noteModalEl.addEventListener('click', e => {
+    if(e.target === noteModalEl) $('noteCancel').click();
+  });
+}
+
+history.pushState({ quiz: 1 }, '', location.href);
+window.addEventListener('popstate', () => {
+  const openDlg = document.querySelector('dialog[open]');
+  if(openDlg){
+    openDlg.close();
+    history.pushState({ quiz: 1 }, '', location.href);
+    return;
+  }
+  const openModal = document.querySelector('.modal.show');
+  if(openModal){
+    if(openModal.id === 'nameModal') $('nameModalCancel').click();
+    else if(openModal.id === 'noteModal') $('noteCancel').click();
+    history.pushState({ quiz: 1 }, '', location.href);
+    return;
+  }
+  history.pushState({ quiz: 1 }, '', location.href);
+});
 migrateOldKeys();
 loadState();
 applyThemeFont();
