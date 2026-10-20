@@ -396,6 +396,10 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
     <p class="tip" id="ghStatus"></p>
     <hr class="divider">
     <label>标签掌握度</label>
+    <div class="seg" id="statsScopeSeg" style="margin-bottom:10px;">
+      <button data-scope="current" class="active">当前题库</button>
+      <button data-scope="all">全部题库</button>
+    </div>
     <div id="statsArea"></div>
     <hr class="divider">
     <label>数据备份</label>
@@ -1767,50 +1771,76 @@ $('noteClear').onclick = () => {
   saveState(); closeNote(); renderCard();
 };
 
+let statsScope = 'current';
+$('statsScopeSeg').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if(!b || b.disabled) return;
+  statsScope = b.dataset.scope;
+  renderStatsPage();
+});
 function renderStatsPage(){
   const area = $('statsArea');
-  function calcMap(bankIds){
-    const map = {};
-    bankIds.forEach(bid => {
-      const b = state.banks[bid];
-      if(!b || !Array.isArray(b.questions)) return;
-      b.questions.forEach(q => {
-        const tag = (q.tag||'').trim() || '未分类';
-        if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
-        const r = b.records[q.id];
-        if(r && r.lastChoices && r.lastChoices.length){
-          map[tag].total++;
-          if(r.correct) map[tag].correct++;
-        }
-        if(r && !r.mastered && r.wrongCount > 0) map[tag].wrong++;
-      });
-    });
-    return map;
-  }
-  function renderTable(map){
-    const tags = Object.keys(map).sort();
-    if(!tags.length) return '<div class="stat-empty">还没有答题记录。</div>';
-    let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">错题</th></tr></thead><tbody>';
-    tags.forEach(tag => {
-      const m = map[tag];
-      const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
-      html += `<tr><td>${esc(tag)}</td><td class="num">${m.total}</td><td class="num">${rate}</td><td class="num">${m.wrong}</td></tr>`;
-    });
-    html += '</tbody></table>';
-    return html;
-  }
+  const seg = $('statsScopeSeg');
   const allIds = Object.keys(state.banks);
   const curBank = getBank();
-  let html = '';
-  if(curBank){
-    html += `<div class="stat-section-title">当前题库：${esc(curBank.name)}</div>`;
-    html += renderTable(calcMap([curBank.id]));
+
+  if(seg){
+    const allBtn = seg.querySelector('[data-scope="all"]');
+    if(allBtn){
+      if(allIds.length <= 1){
+        allBtn.disabled = true;
+        allBtn.style.opacity = '.4';
+      }else{
+        allBtn.disabled = false;
+        allBtn.style.opacity = '';
+      }
+    }
+    if(statsScope === 'all' && allIds.length <= 1) statsScope = 'current';
+    seg.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('active', b.dataset.scope === statsScope);
+    });
   }
-  if(allIds.length > 1){
-    html += `<div class="stat-section-title">全部题库（${allIds.length} 个）</div>`;
-    html += renderTable(calcMap(allIds));
+
+  if(statsScope === 'current' && !curBank && allIds.length) statsScope = 'all';
+
+  const scopeIds = statsScope === 'current'
+    ? (curBank ? [curBank.id] : [])
+    : allIds;
+
+  if(!scopeIds.length){
+    area.innerHTML = '<div class="stat-empty">还没有题库。</div>';
+    return;
   }
-  if(!html) html = '<div class="stat-empty">还没有题库。</div>';
+
+  const map = {};
+  scopeIds.forEach(bid => {
+    const b = state.banks[bid];
+    if(!b || !Array.isArray(b.questions)) return;
+    b.questions.forEach(q => {
+      const tag = (q.tag||'').trim() || '未分类';
+      if(!map[tag]) map[tag] = { total:0, correct:0, wrong:0 };
+      const r = b.records[q.id];
+      if(r && r.lastChoices && r.lastChoices.length){
+        map[tag].total++;
+        if(r.correct) map[tag].correct++;
+      }
+      if(r && !r.mastered && r.wrongCount > 0) map[tag].wrong++;
+    });
+  });
+
+  const tags = Object.keys(map).sort();
+  if(!tags.length){
+    area.innerHTML = '<div class="stat-empty">还没有答题记录。</div>';
+    return;
+  }
+
+  let html = '<table class="stat-table"><thead><tr><th>标签</th><th class="num">答题</th><th class="num">正确率</th><th class="num">错题</th></tr></thead><tbody>';
+  tags.forEach(tag => {
+    const m = map[tag];
+    const rate = m.total ? Math.round(m.correct/m.total*100) + '%' : '--';
+    html += `<tr><td>${esc(tag)}</td><td class="num">${m.total}</td><td class="num">${rate}</td><td class="num">${m.wrong}</td></tr>`;
+  });
+  html += '</tbody></table>';
   area.innerHTML = html;
 }
 
