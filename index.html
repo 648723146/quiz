@@ -449,6 +449,7 @@ const DAY = 86400000;
 const TOMBSTONE_TTL = 3 * DAY;
 const BATCH_SIZE = 50;
 const SHARE_PREFIX = 'QZ1:';
+const LETTERS = 'ABCDEFGH';
 const STATE_KEY = 'quiz-state';
 const AI_KEY = 'quiz-ai-cfg';
 const GH_KEY = 'quiz-github-cfg';
@@ -638,7 +639,7 @@ function normalizeQuestion(q){
     q.answers = (typeof q.answer === 'number') ? [q.answer] : [];
   }
   q.answers = Array.from(new Set(
-    q.answers.filter(n => typeof n === 'number' && n >= 0 && n <= 3)
+    q.answers.filter(n => typeof n === 'number' && n >= 0 && n < LETTERS.length)
   )).sort((a,b)=>a-b);
   if(q.answers.length === 0) q.answers = [0];
   delete q.answer;
@@ -1237,7 +1238,7 @@ function renderCard(){
     }else if(q.type === 'multi' && tempSelection.includes(i)){
       cls += ' selected';
     }
-    const key = q.type === 'judge' ? (i===0?'✓':'✗') : 'ABCD'[i];
+    const key = q.type === 'judge' ? (i===0?'✓':'✗') : (LETTERS[i] || String(i+1));
     optsHtml += `<button class="${cls}" data-i="${i}">
       <span class="key">${key}</span>
       <span class="txt">${esc(opt)}</span>
@@ -1258,11 +1259,11 @@ function renderCard(){
     if(rec.correct) body += `<div class="fb ok">✓ 回答正确</div>`;
     else{
       const ansText = q.type === 'judge' ? esc(q.options[q.answers[0]])
-        : q.answers.map(i => 'ABCD'[i]).join('');
+        : q.answers.map(i => LETTERS[i]).join('');
       body += `<div class="fb no">✗ 回答错误，正确答案：<b>${ansText}</b></div>`;
     }
     const myText = (rec.lastChoices && rec.lastChoices.length)
-      ? rec.lastChoices.map(i => q.type === 'judge' ? q.options[i] : 'ABCD'[i] + '. ' + q.options[i]).join('；')
+      ? rec.lastChoices.map(i => q.type === 'judge' ? q.options[i] : LETTERS[i] + '. ' + q.options[i]).join('；')
       : '（未作答）';
     const meta = ['当时选：' + myText];
     if(rec.wrongCount > 0) meta.push('累计错 ' + rec.wrongCount + ' 次');
@@ -1568,10 +1569,10 @@ function deleteQuestionForever(qid){
 
 function buildPrompt(q, rec){
   const typeText = q.type === 'multi' ? '多选题' : (q.type === 'judge' ? '判断题' : '单选题');
-  const optText = q.options.map((o,i)=>`${'ABCD'[i]}. ${o}`).join('\n');
-  const ansText = q.type === 'judge' ? q.options[q.answers[0]] : q.answers.map(i => 'ABCD'[i]).join('');
+  const optText = q.options.map((o,i)=>`${LETTERS[i] || (i+1)}. ${o}`).join('\n');
+  const ansText = q.type === 'judge' ? q.options[q.answers[0]] : q.answers.map(i => LETTERS[i]).join('');
   const chosenText = (rec.lastChoices && rec.lastChoices.length)
-    ? rec.lastChoices.map(i => q.type === 'judge' ? q.options[i] : 'ABCD'[i]).join('')
+    ? rec.lastChoices.map(i => q.type === 'judge' ? q.options[i] : LETTERS[i]).join('')
     : '（未作答）';
   return `请讲解下面这道${typeText}题，对象是正在备考的一线操作工。
 
@@ -2248,7 +2249,7 @@ function parseImportText(text){
     m = line.match(/^(\d+)\s*[\.、\)）]\s*(.+)$/);
     if(m){ flush(); cur = { type: section || 'choice', q: m[2].trim(), options: [], rawAnswer:'', explain:'', tag:'' }; continue; }
     if(!cur) continue;
-    m = line.match(/^([A-Da-d])\s*[\.、\)）]\s*(.+)$/);
+    m = line.match(/^([A-Za-z])\s*[\.、\)）]\s*(.+)$/);
     if(m){ cur.options.push({ key: m[1].toUpperCase(), text: m[2].trim() }); continue; }
     m = line.match(/^答案\s*[：:]\s*(.+)$/);
     if(m){ cur.rawAnswer = m[1].trim(); continue; }
@@ -2278,13 +2279,20 @@ function parseImportText(text){
       valid.push(q);
       continue;
     }
-    const letters = v.replace(/[^A-Da-d]/g,'');
+    const letters = v.replace(/[^A-Za-z]/g,'');
     if(!letters) continue;
-    const indices = letters.split('').map(c => 'ABCD'.indexOf(c.toUpperCase())).filter(i => i >= 0);
+    const indices = letters.split('').map(c => LETTERS.indexOf(c.toUpperCase())).filter(i => i >= 0);
     if(!indices.length) continue;
     const uniq = Array.from(new Set(indices)).sort((a,b)=>a-b);
-    const opts = ['','','',''];
-    q.options.forEach(o => { const i = 'ABCD'.indexOf(o.key); if(i >= 0) opts[i] = o.text; });
+    const optMap = {};
+    q.options.forEach(o => {
+      const i = LETTERS.indexOf(o.key);
+      if(i >= 0 && o.text) optMap[i] = o.text;
+    });
+    const maxIdx = Math.max(...Object.keys(optMap).map(Number));
+    if(isNaN(maxIdx)) continue;
+    const opts = [];
+    for(let i = 0; i <= maxIdx; i++) opts.push(optMap[i] || '');
     if(opts.filter(Boolean).length < 2) continue;
     q.type = uniq.length > 1 ? 'multi' : 'choice';
     q.options = opts;
@@ -2408,7 +2416,7 @@ function bankToText(bank){
     choices.forEach((q,i)=>{
       lines.push(`${i+1}. ${q.q}`);
       q.options.forEach((o,j)=> lines.push(`${'ABCD'[j]}. ${o}`));
-      lines.push(`答案：${'ABCD'[q.answers[0]]}`);
+      lines.push(`答案：${LETTERS[q.answers[0]]}`);
       if(q.explain) lines.push(`解析：${q.explain}`);
       if(q.tag) lines.push(`标签：${q.tag}`);
       lines.push('');
@@ -2419,7 +2427,7 @@ function bankToText(bank){
     multis.forEach((q,i)=>{
       lines.push(`${i+1}. ${q.q}`);
       q.options.forEach((o,j)=> lines.push(`${'ABCD'[j]}. ${o}`));
-      lines.push(`答案：${q.answers.map(n=>'ABCD'[n]).join('')}`);
+      lines.push(`答案：${q.answers.map(n=>LETTERS[n]).join('')}`);
       if(q.explain) lines.push(`解析：${q.explain}`);
       if(q.tag) lines.push(`标签：${q.tag}`);
       lines.push('');
@@ -2775,35 +2783,17 @@ $('fixBankBtn').onclick = () => {
     if(!b || !Array.isArray(b.questions)) return;
     b.questions.forEach(q => {
       if(!q || typeof q !== 'object') return;
-      if(!Array.isArray(q.answers)){
-        q.answers = (typeof q.answer === 'number') ? [q.answer] : [];
-      }
-      q.answers = Array.from(new Set(
-        q.answers.filter(n => typeof n === 'number' && n >= 0 && n <= 3)
-      )).sort((a,b)=>a-b);
-      if(q.answers.length === 0) q.answers = [0];
-      delete q.answer;
-
-      if(q.type === 'judge'){
-        q.options = ['正确','错误'];
-        q.answers = [q.answers[0] === 1 ? 1 : 0];
-      }else if(q.type === 'multi' && q.answers.length < 2){
-        q.type = 'choice';
-        fixed++;
-      }else if(q.type === 'choice' && q.answers.length > 1){
-        q.type = 'multi';
-        fixed++;
-      }else if(!q.type){
-        q.type = q.answers.length > 1 ? 'multi' : 'choice';
-        fixed++;
-      }
+      const beforeType = q.type;
+      const beforeLen = Array.isArray(q.answers) ? q.answers.length : 0;
+      normalizeQuestion(q);
+      if(q.type !== beforeType || q.answers.length !== beforeLen) fixed++;
     });
-    if(typeof ensureBankFields === 'function') ensureBankFields(b);
+    ensureBankFields(b);
   });
   saveState();
-  if(typeof ensureModeHistory === 'function') ensureModeHistory();
+  ensureModeHistory();
   renderAll(true);
-  alert(fixed > 0 ? `已修复 ${fixed} 道题的题型。` : '没有发现题型不一致的题。');
+  alert(fixed > 0 ? `已修复 ${fixed} 道题的题型或答案。` : '没有发现题型不一致的题。');
 };
 $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
