@@ -407,6 +407,7 @@ body.theme-dark .copy-format-btn{color:#a5b4fc;border-color:#3730a3;}
     <hr class="divider">
     <label>当前题库</label>
     <div class="dlg-actions" style="justify-content:flex-start;margin-top:8px;">
+      <button id="fixBankBtn">修复题库数据</button>
       <button id="renameBankBtn">重命名</button>
       <button id="clearRecordsBtn">清空答题记录</button>
       <button id="deleteBankBtn" class="danger">删除题库</button>
@@ -627,24 +628,55 @@ function makeBank(name, questions){
   };
 }
 
+function normalizeQuestion(q){
+  if(!q || typeof q !== 'object') return null;
+  if(!Array.isArray(q.answers)){
+    q.answers = (typeof q.answer === 'number') ? [q.answer] : [];
+  }
+  q.answers = Array.from(new Set(
+    q.answers.filter(n => typeof n === 'number' && n >= 0 && n <= 3)
+  )).sort((a,b)=>a-b);
+  if(q.answers.length === 0) q.answers = [0];
+  delete q.answer;
+
+  if(!Array.isArray(q.options)) q.options = [];
+  if(typeof q.q !== 'string') q.q = String(q.q || '');
+  if(typeof q.explain !== 'string') q.explain = '';
+  if(typeof q.tag !== 'string') q.tag = '';
+  if(!q.id) q.id = 'q' + Math.random().toString(36).slice(2,8);
+
+  if(q.type === 'judge'){
+    q.options = ['正确','错误'];
+    q.answers = [q.answers[0] === 1 ? 1 : 0];
+  }else if(q.type === 'multi'){
+    if(q.answers.length < 2) q.type = 'choice';
+  }else if(q.type === 'choice'){
+    if(q.answers.length > 1) q.type = 'multi';
+  }else{
+    q.type = q.answers.length > 1 ? 'multi' : 'choice';
+  }
+  return q;
+}
+
 function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
   if(!Array.isArray(bank.questions)) bank.questions = [];
   if(!Array.isArray(bank.batch)) bank.batch = [];
   if(typeof bank.batchViewPos !== 'number') bank.batchViewPos = 0;
-  if(!bank.batchMeta) bank.batchMeta = { totalDueWrong: 0, batchSize: 0 };
+  if(!bank.batchMeta || typeof bank.batchMeta !== 'object' || Array.isArray(bank.batchMeta)){
+    bank.batchMeta = { totalDueWrong: 0, batchSize: 0 };
+  }
   if(!Array.isArray(bank.stars)) bank.stars = [];
-  if(!bank.records) bank.records = {};
-  if(!bank.ai) bank.ai = {};
-  if(!bank.notes) bank.notes = {};
-  bank.questions.forEach(q => {
-    if(!Array.isArray(q.answers)) q.answers = [typeof q.answer === 'number' ? q.answer : 0];
-    if(!q.type) q.type = q.answers.length > 1 ? 'multi' : 'choice';
-    if(!Array.isArray(q.options)) q.options = [];
-    delete q.answer;
-  });
-  bank.batch = bank.batch.filter(qid => bank.questions.some(q => q.id === qid));
+  if(!bank.records || typeof bank.records !== 'object' || Array.isArray(bank.records)) bank.records = {};
+  if(!bank.ai || typeof bank.ai !== 'object' || Array.isArray(bank.ai)) bank.ai = {};
+  if(!bank.notes || typeof bank.notes !== 'object' || Array.isArray(bank.notes)) bank.notes = {};
+
+  bank.questions = bank.questions.map(normalizeQuestion).filter(Boolean);
+  const qidSet = new Set(bank.questions.map(q => q.id));
+  bank.batch = bank.batch.filter(qid => qidSet.has(qid));
+  bank.stars = bank.stars.filter(qid => qidSet.has(qid));
+  if(bank.batchViewPos >= bank.batch.length) bank.batchViewPos = Math.max(0, bank.batch.length - 1);
 }
 
 function isCorrectAnswer(q, chosen){
@@ -2705,7 +2737,23 @@ $('restoreBtn').onclick = () => $('restoreFile').click();
     reader.readAsText(f);
   });
 })();
-
+$('fixBankBtn').onclick = () => {
+  let fixed = 0;
+  Object.keys(state.banks).forEach(id => {
+    const b = state.banks[id];
+    if(!b || !Array.isArray(b.questions)) return;
+    b.questions.forEach(q => {
+      const before = q.type;
+      normalizeQuestion(q);
+      if(q.type !== before) fixed++;
+    });
+    ensureBankFields(b);
+  });
+  saveState();
+  ensureModeHistory();
+  renderAll(true);
+  alert(fixed > 0 ? `已修复 ${fixed} 道题的题型。` : '没有发现题型不一致的题。');
+};
 $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
   const name = await askName('重命名题库', bank.name);
@@ -2785,6 +2833,8 @@ window.addEventListener('popstate', () => {
 });
 migrateOldKeys();
 loadState();
+Object.keys(state.banks).forEach(id => ensureBankFields(state.banks[id]));
+saveState();
 applyThemeFont();
 (() => {
   const now = Date.now();
