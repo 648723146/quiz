@@ -662,7 +662,30 @@ function normalizeQuestion(q){
   }
   return q;
 }
-
+function repairMasteredData(){
+  let repaired = 0;
+  const now = Date.now();
+  Object.keys(state.banks).forEach(bid => {
+    const b = state.banks[bid];
+    if(!b || !b.records || typeof b.records !== 'object') return;
+    Object.keys(b.records).forEach(qid => {
+      const r = b.records[qid];
+      if(!r || typeof r !== 'object') return;
+      if(r.mastered) return;
+      if((r.streak||0) >= 3){
+        r.mastered = true;
+        r.masteredAt = r.lastAt || now;
+        r.masteredBy = 'auto';
+        r.reappearAt = (r.lastAt || now) + 7 * DAY;
+        r.nextReviewAt = 0;
+        r.streak = 0;
+        repaired++;
+      }
+    });
+  });
+  if(repaired > 0) saveState();
+  return repaired;
+}
 function ensureBankFields(bank){
   if(!bank) return;
   if(typeof bank.roundStartAt !== 'number') bank.roundStartAt = 0;
@@ -713,19 +736,17 @@ function buildBatch(bank){
 
   bank.questions.forEach(q => {
     const r = bank.records[q.id];
-    if(r && r.mastered){
-      // 已掌握：只有 reappearAt 到期才可回到批次
-      if((r.reappearAt||0) <= now) masteredDue.push(q);
-      // 未到期：跳过
+    // 关键：streak >= 3 视同已掌握，即使 mastered 标志没打上
+    const isMastered = r && (r.mastered || (r.streak||0) >= 3);
+    if(isMastered){
+      const reappear = r.mastered ? (r.reappearAt||0) : ((r.lastAt||0) + 7 * DAY);
+      if(reappear <= now) masteredDue.push(q);
       return;
     }
     if(r && r.wrongCount > 0){
-      // 有错题记录：只有 nextReviewAt 到期才进批次
       if((r.nextReviewAt||0) <= now) dueWrong.push(q);
-      // 未到复习时间：跳过，等复习时间再出现
       return;
     }
-    // 未答过、或答对过但未掌握：归入 unmastered
     unmastered.push(q);
   });
 
@@ -2777,7 +2798,7 @@ $('restoreBtn').onclick = () => $('restoreFile').click();
 })();
 
 $('fixBankBtn').onclick = () => {
-  let fixed = 0;
+  let typeFixed = 0;
   Object.keys(state.banks).forEach(id => {
     const b = state.banks[id];
     if(!b || !Array.isArray(b.questions)) return;
@@ -2786,14 +2807,15 @@ $('fixBankBtn').onclick = () => {
       const beforeType = q.type;
       const beforeLen = Array.isArray(q.answers) ? q.answers.length : 0;
       normalizeQuestion(q);
-      if(q.type !== beforeType || q.answers.length !== beforeLen) fixed++;
+      if(q.type !== beforeType || q.answers.length !== beforeLen) typeFixed++;
     });
     ensureBankFields(b);
   });
+  const masterFixed = repairMasteredData();
   saveState();
   ensureModeHistory();
   renderAll(true);
-  alert(fixed > 0 ? `已修复 ${fixed} 道题的题型或答案。` : '没有发现题型不一致的题。');
+  alert(`题型修复 ${typeFixed} 道，连对 3 次自动转为已掌握 ${masterFixed} 道。`);
 };
 $('renameBankBtn').onclick = async () => {
   const bank = getBank(); if(!bank) return;
@@ -2875,6 +2897,7 @@ window.addEventListener('popstate', () => {
 migrateOldKeys();
 loadState();
 Object.keys(state.banks).forEach(id => ensureBankFields(state.banks[id]));
+repairMasteredData();
 saveState();
 applyThemeFont();
 (() => {
