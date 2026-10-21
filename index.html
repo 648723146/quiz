@@ -1305,7 +1305,9 @@ function renderCard(){
       actions += `<button class="retry-btn" data-act="retry">↻ 提前复习这道题</button>`;
     }
     if(actions) body += `<div class="action-row">${actions}</div>`;
-
+    
+    if(note) body += `<div class="note-box">📝 ${esc(note)}</div>`;
+    
     body += `<div class="ai-zone">
       <button class="ai-btn" data-act="ai">${cachedAI ? '🔄 重新解析这道题' : '✨ AI 解析这道题'}</button>
       <div class="ai-out" id="aiOut">${cachedAI ? esc(cachedAI) : ''}</div>
@@ -1318,7 +1320,6 @@ function renderCard(){
     </div>`;
   }
 
-  if(note && locked) body += `<div class="note-box">📝 ${esc(note)}</div>`;
 
   card.innerHTML = `<div class="card">
     <div class="qmeta">
