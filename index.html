@@ -1347,7 +1347,7 @@ function submitAnswer(q, chosen){
       r.nextReviewAt = 0;
     }else{
       r.streak = (r.streak || 0) + 1;
-      if(r.wrongCount > 0 && r.streak >= 3){
+      if(r.streak >= 3){
         r.mastered = true;
         r.masteredAt = now;
         r.masteredBy = 'auto';
